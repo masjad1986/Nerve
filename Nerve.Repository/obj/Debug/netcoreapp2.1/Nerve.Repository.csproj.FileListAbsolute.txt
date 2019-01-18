@@ -1,0 +1,8 @@
+D:\Asjad\Apps\Nerve\Nerve.Repository\bin\Debug\netcoreapp2.1\Nerve.Repository.deps.json
+D:\Asjad\Apps\Nerve\Nerve.Repository\bin\Debug\netcoreapp2.1\Nerve.Repository.dll
+D:\Asjad\Apps\Nerve\Nerve.Repository\bin\Debug\netcoreapp2.1\Nerve.Repository.pdb
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.csproj.CoreCompileInputs.cache
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.AssemblyInfoInputs.cache
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.AssemblyInfo.cs
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.dll
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.pdb
