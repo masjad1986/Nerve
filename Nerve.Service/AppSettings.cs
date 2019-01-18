@@ -6,6 +6,6 @@ namespace Nerve.Service
 {
     public class AppSettings
     {
-        public string Secret { get; set; }
+        public const string Secret = "Brearer";
     }
 }

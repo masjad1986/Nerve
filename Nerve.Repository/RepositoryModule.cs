@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,11 +11,11 @@ namespace Nerve.Repository
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-           .Where(t => t.Name.EndsWith("Repository"))
-           .AsImplementedInterfaces()
-           .InstancePerRequest();
-
+            builder.RegisterAssemblyTypes(ThisAssembly)
+               .Where(t => t.Name.EndsWith("Repository"))
+               .AsImplementedInterfaces()
+               .InstancePerRequest();
+            // builder.RegisterAssemblyTypes(ThisAssembly).As(typeof(Profile)).As
             base.Load(builder);
         }
     }

@@ -2775,6 +2775,18 @@
           }
         }
       },
+      "NetCore.AutoRegisterDi/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "2.1.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/NetCore.AutoRegisterDi.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetCore.AutoRegisterDi.dll": {}
+        }
+      },
       "NETStandard.Library/2.0.3": {
         "type": "package",
         "dependencies": {
@@ -7670,6 +7682,19 @@
         "runtimes/win/lib/netstandard2.0/Microsoft.Win32.Registry.dll",
         "useSharedDesignerContext.txt",
         "version.txt"
+      ]
+    },
+    "NetCore.AutoRegisterDi/1.0.0": {
+      "sha512": "beWelOOFeCwQg+yWA2rtCgaJHbjOekJbCv6aTLxUpXafkRjHrVtccDsPjrZhiRyOl5ziavXuXR/pj8gF0fSi6Q==",
+      "type": "package",
+      "path": "netcore.autoregisterdi/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/NetCore.AutoRegisterDi.dll",
+        "lib/netstandard2.0/NetCore.AutoRegisterDi.xml",
+        "netcore.autoregisterdi.1.0.0.nupkg.sha512",
+        "netcore.autoregisterdi.nuspec"
       ]
     },
     "NETStandard.Library/2.0.3": {
@@ -12792,7 +12817,8 @@
       "Microsoft.NETCore.App >= 2.1.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.1.1",
       "Nerve.Repository >= 1.0.0",
-      "Nerve.Service >= 1.0.0"
+      "Nerve.Service >= 1.0.0",
+      "NetCore.AutoRegisterDi >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -12870,6 +12896,10 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
             "target": "Package",
             "version": "[2.1.1, )"
+          },
+          "NetCore.AutoRegisterDi": {
+            "target": "Package",
+            "version": "[1.0.0, )"
           }
         },
         "imports": [

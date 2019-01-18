@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "cf29382dae2fc9a514efc9820d9b1fe6b852abbb"
+    "signature": "afb50859f1e53bd50252f3edd893336062bbafbb"
   },
   "compilationOptions": {
     "defines": [
@@ -31,7 +31,8 @@
           "Microsoft.NETCore.App": "2.1.0",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "2.1.1",
           "Nerve.Repository": "1.0.0",
-          "Nerve.Service": "1.0.0"
+          "Nerve.Service": "1.0.0",
+          "NetCore.AutoRegisterDi": "1.0.0"
         },
         "runtime": {
           "Nerve.Web.dll": {}
@@ -405,6 +406,20 @@
         },
         "compile": {
           "lib/netstandard2.0/Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll": {}
+        }
+      },
+      "NetCore.AutoRegisterDi/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "2.1.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NetCore.AutoRegisterDi.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/NetCore.AutoRegisterDi.dll": {}
         }
       },
       "NETStandard.Library/2.0.3": {
@@ -3705,6 +3720,13 @@
       "sha512": "sha512-LhsJrKf4fMqOyaVqAexbpkR6GmHDuVeek+s1NFGwFYFZAgSbnLmBt8DIw41zGbEXO/GYiPLTOTA7F1fJknsf6g==",
       "path": "microsoft.visualstudio.web.codegenerators.mvc/2.1.1",
       "hashPath": "microsoft.visualstudio.web.codegenerators.mvc.2.1.1.nupkg.sha512"
+    },
+    "NetCore.AutoRegisterDi/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-beWelOOFeCwQg+yWA2rtCgaJHbjOekJbCv6aTLxUpXafkRjHrVtccDsPjrZhiRyOl5ziavXuXR/pj8gF0fSi6Q==",
+      "path": "netcore.autoregisterdi/1.0.0",
+      "hashPath": "netcore.autoregisterdi.1.0.0.nupkg.sha512"
     },
     "NETStandard.Library/2.0.3": {
       "type": "package",

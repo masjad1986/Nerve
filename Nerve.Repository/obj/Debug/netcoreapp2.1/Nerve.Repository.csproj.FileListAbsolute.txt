@@ -6,3 +6,4 @@ D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.As
 D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.AssemblyInfo.cs
 D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.dll
 D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.pdb
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.1\Nerve.Repository.csprojAssemblyReference.cache

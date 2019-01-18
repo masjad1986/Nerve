@@ -20,11 +20,11 @@ namespace Nerve.Service
             new User { Id = 2, FirstName = "Normal", LastName = "User", Username = "user", Password = "user", Role = Role.User }
         };
 
-        private readonly AppSettings _appSettings;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(IUserRepository userRepository)
         {
-            _appSettings = appSettings.Value;
+            _userRepository = userRepository;
         }
 
         public async Task<User> AuthenticateAsync(string username, string password)
@@ -37,7 +37,7 @@ namespace Nerve.Service
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

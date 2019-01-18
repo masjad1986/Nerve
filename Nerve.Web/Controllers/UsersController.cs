@@ -17,11 +17,6 @@ namespace Nerve.Web.Controllers
             _userService = userService;
         }
 
-        public UsersController()
-        {
-            
-        }
-
         [AllowAnonymous]
         //[Route("/login")]
         public async Task<IActionResult> Login()
