@@ -1,0 +1,267 @@
+    Private Sub InsertUpdateDelete(mode As String)
+
+        Dim warrantyType As String = ""
+        Dim fwarrantyType As String = ""
+        Dim jwarrantyType As String = ""
+        Dim mLocationCode, mCity, mDetailId, mTrfLocationcode
+        Dim mFdate
+
+        Dim pc = New PersianCalendar
+        Dim mdt = dtTrackingdate.Text
+        mFdate = pc.GetMonth(mdt) & "/ " & pc.GetDayOfMonth(mdt) & "/" & pc.GetYear(mdt) & " " & pc.GetHour(mdt) & ": " & pc.GetMinute(mdt) & ":" & pc.GetSecond(mdt)
+        'WeekdayName(pc.GetDayOfWeek(mdt)) & ", "
+
+        If rbEnglish.Checked = True Then mLanguage = 1 Else mLanguage = 0
+        If rbHami.Checked = True Then hamiNonhami = 1 Else hamiNonhami = 0
+        If cmbWarrantyType.Text = "Warranty" Then
+            warrantyType = "W"
+            fwarrantyType = "1"
+        ElseIf cmbWarrantyType.Text = "Non-Warranty" Then
+            warrantyType = "N"
+            fwarrantyType = "2"
+        ElseIf cmbWarrantyType.Text = "Service Warranty" Then
+            warrantyType = "S"
+            fwarrantyType = "3"
+        End If
+
+        If btnSave.Text = "Save" Then
+            newJobno()
+            newReceiptno()
+        End If
+
+        'query = "select logintype,language_id,password,emailcc,deliveryagent,cp_incharge,laptop_venderid,sc.location from usermaster usr left outer join Laptop_VendorMaster sc on usr.laptop_venderid=sc.id  where userid ='" & txtAcCode.Text & "'"
+        'query = "select logintype from usermaster where userid ='" & objApp.userId & "'"
+        'DBCom.getData("HSCP", query)
+        'If (DBCom.DBrdr.HasRows) Then
+        '    While (DBCom.DBrdr.Read())
+        '        mLogintype = DBCom.DBrdr("logintype").ToString().Trim
+        '    End While
+        'End If
+
+        query = "Select locationcode,detailid,lvm.City from M_ServiceCenter_Location As scl "
+        query = query & " left outer join Laptop_VendorMaster lvm on scl.ServiceCenterID=lvm.ID"
+        query = query & " where servicecenterid =" & mServiceCenterId
+        DBCom.getData("HSCP", query)
+        If (DBCom.DBrdr.HasRows) Then
+            While (DBCom.DBrdr.Read())
+                mLocationCode = DBCom.DBrdr("locationcode").ToString()
+                mCity = DBCom.DBrdr("city").ToString()
+                mDetailId = DBCom.DBrdr("detailid").ToString()
+            End While
+        End If
+
+        query = "Select locode from Laptop_VendorMaster "
+        query = query & " where id =" & mServiceCenterId
+        DBCom.getData("HSCP", query)
+        If (DBCom.DBrdr.HasRows) Then
+            While (DBCom.DBrdr.Read())
+                mTrfLocationcode = DBCom.DBrdr("locode").ToString()
+            End While
+        End If
+
+        Dim mTrackingdate, mPurcdate, mExpirydate, mUnitDroppedDate, mCollectedDate
+
+        mTrackingdate = Format(CDate(dtTrackingdate.Value), "dd/MMM/yyyy hh:mm:ss tt")
+        mPurcdate = Format(CDate(dtPopdate.Text), "dd/MMM/yyyy hh:mm:ss tt")
+        mExpirydate = Format(CDate(dtExpirydate.Text), "dd/MMM/yyyy hh:mm:ss tt")
+        mUnitDroppedDate = Format(CDate(dtpUnitDroppedDate.Value), "dd/MMM/yyyy hh:mm:ss tt")
+        mCollectedDate = Format(CDate(dtpCollectedDate.Value), "dd/MMM/yyyy hh:mm:ss tt")
+        If mode = "I" Then
+            mUnitDroppedDate = mTrackingdate
+            mCollectedDate = mTrackingdate
+        End If
+        Dim mDoa
+        If cbDOA.Checked = True Then mDoa = 1 Else mDoa = 0
+
+        hashTable.Clear()
+        hashTable.Add("Mode", mode)
+        hashTable.Add("id", selectedTrackingId)
+        hashTable.Add("dcustomerid", selectedCollectionPointId)
+        hashTable.Add("dcustomername", selectedCollectionPointText.ToString.Trim)
+        hashTable.Add("IMEINO", txtIMEINo2.Text.Trim)
+        hashTable.Add("msnno", txtAddSerialNo.Text.Trim)
+        hashTable.Add("docno", txtTrackingNo.Text.Trim)
+        hashTable.Add("docdate", mTrackingdate)
+        'hashTable.Add("prefix", Mid(txtTrackingNo.Text.Trim, 1, 4))
+
+        hashTable.Add("prefix", TrackingPrefix)
+        hashTable.Add("mlyear", objApp.mlLongYear)
+
+        hashTable.Add("collref", txtCRNOrRMANo.Text.Trim)
+        hashTable.Add("Product", LTrim(txtProduct.Text.Trim))
+        hashTable.Add("Brand", LTrim(txtBrand.Text.Trim))
+        hashTable.Add("Model", LTrim(txtModel.Text.Trim))
+        hashTable.Add("CustomerName", txtCustFirstName.Text.Trim)
+        hashTable.Add("LastName", txtCustLastName.Text.Trim)
+        hashTable.Add("Mobile", txtMobileNumber.Text.Trim)
+        hashTable.Add("SMSLanguage", mLanguage)
+        hashTable.Add("FARSICUSTNAME", txtFarsiCustomerName.Text.Trim)
+        hashTable.Add("PhyCondition", txtPhysicalCondition.Text.Trim)
+        hashTable.Add("Password", txtPassword.Text.Trim)
+        hashTable.Add("vista", hamiNonhami)
+        hashTable.Add("Purcdate", mPurcdate)
+        hashTable.Add("ExpiryDate", mExpirydate)
+        hashTable.Add("Expirymonths", txtPeriod.Text.Trim)
+        hashTable.Add("deliveryagent", cmbForwarder.Text)
+        hashTable.Add("forwardagent", cmbForwarder.Text)
+        hashTable.Add("awbno", txtAirwayBillNo.Text.Trim)
+        hashTable.Add("Warranty", warrantyType)
+        hashTable.Add("TypeOfWarranty", cmbType.SelectedValue)
+        hashTable.Add("UnitDroppedDate", mUnitDroppedDate)
+        hashTable.Add("phone", txtTelephoneNo.Text.Trim)
+        hashTable.Add("RMANO", txtVendorRMANo.Text.Trim)
+        hashTable.Add("NationalID", txtNationalId.Text.Trim)
+        hashTable.Add("EcoCode", txtEcoCode.Text.Trim)
+        hashTable.Add("PostalCode", txtPostalCode.Text.Trim)
+        hashTable.Add("FARSIDATE", mFdate)
+        hashTable.Add("doa", mDoa)
+
+        hashTable.Add("Transfer_To", txtTransferTo.Text)
+        hashTable.Add("locationname", txtServiceCentre.Text)
+        hashTable.Add("ServiceCenter", mServiceCenterId)
+        hashTable.Add("locationcode", mLocationCode)
+        hashTable.Add("loc", mCity)
+        hashTable.Add("detailid", mDetailId)
+
+        hashTable.Add("TCCollectedDate", mCollectedDate)
+        hashTable.Add("Email", txtEmail.Text.Trim)
+        hashTable.Add("custaddress", txtCustomerAddress.Text.Trim)
+
+        hashTable.Add("faultcode", txtFaultCode.Text.Trim)
+        hashTable.Add("faultdetails", txtFaultDesc.Text.Trim)
+        hashTable.Add("remarks", txtFaultRemarks.Text.Trim)
+
+        hashTable.Add("rbrand", txtStandbyBrand.Text.Trim)
+        hashTable.Add("rmodel", txtStandbyModel.Text.Trim)
+        hashTable.Add("rimeino", txtStandbyIMEINo.Text.Trim)
+        hashTable.Add("repldescr", txtStandbyremarks.Text.Trim)
+        hashTable.Add("rb0", cbReturned.CheckState)
+        hashTable.Add("rb1", cbBattery1.CheckState)
+        hashTable.Add("rb2", cbBattery2.CheckState)
+        hashTable.Add("rc1", cbCharger1.CheckState)
+        hashTable.Add("rc2", cbCharger2.CheckState)
+        hashTable.Add("ro1", cbOther1.CheckState)
+        hashTable.Add("ro2", cbOther2.CheckState)
+
+        'fields with default values (not sure)
+        hashTable.Add("PHONETYPE", "M")
+        hashTable.Add("country", mCountry)
+        hashTable.Add("UnitsReceived_TC", 1)
+        hashTable.Add("UnitsReceived_TC_Date", mTrackingdate)
+        hashTable.Add("UnitsAllocated_To", "COURIER #1")
+        hashTable.Add("RC_LogDate", mTrackingdate)
+        hashTable.Add("userid", objApp.userId)
+        hashTable.Add("FinalWarranty", fwarrantyType)
+        hashTable.Add("DirectCustomer", 0)
+        hashTable.Add("backend", 1) ' 0 is for web mlcp
+        hashTable.Add("logintype", mLogintype)
+        hashTable.Add("jobstatus", 1)
+        Dim mAutoCrn
+        If cbAutoCRN.Checked = True Then mAutoCrn = 1 Else mAutoCrn = 0
+        hashTable.Add("autocrn", mautocrn)
+
+        'JBREPAIR
+        hashTable.Add("trflocationcode", mTrfLocationcode)
+
+        Dim dbTrans As System.Data.SqlClient.SqlTransaction
+
+        Try
+            DBCom.openConnectionTrans("HSCP")
+            dbTrans = DBCom.conHscp.BeginTransaction(IsolationLevel.RepeatableRead)
+            'DBCom.exeStoredProcedure(dbTrans, DBCom.conHscp, "NRV_DeviceLoginUpdate", hashTable)
+            DBCom.exeStoredProcedure(dbTrans, DBCom.conHscp, "NRV_DeviceLoginUpdate", hashTable, "retid1", "retid2", "retid3")
+            Dim mNdocno = DBCom.returnParam3
+
+            Dim mSelected
+            For Each drRow As DataRow In DBCom.dtSet.Tables("dtAccessoriess").Rows
+                If Not IsDBNull(drRow("selected")) Then
+                    If (drRow("selected") = True) Then mSelected = "Y" Else mSelected = "N"
+                    If drRow("id") = "0" Then
+                        If drRow("selected") = True Then
+                            query = "insert into T_Accessories_Detail (trackingno,accessoryid,deleted) "
+                            query = query & " values('" & mNdocno & "','" & drRow("AccessoryID") & "','" & mSelected & "')"
+                            DBCom.putData(dbTrans, DBCom.conHscp, query)
+                        End If
+                    Else
+                        query = "update T_Accessories_Detail set deleted='" & mSelected & "' where id=" & drRow("id")
+                        DBCom.putData(dbTrans, DBCom.conHscp, query)
+                    End If
+                End If
+            Next
+
+            If btnSave.Text = "Save" Then
+
+                'DBCom.openConnectionTrans("HDATA")
+                'query = "insert into jbrepair (jobno,yrcd,imeino,jobtype, "
+                'query = query & " clcode,ccode,ccode_trf,collectionref,"
+                'query = query & " brand,model,name,dealerref,"
+                'query = query & " dealer_customername,dealer_mobile,jbfaultcode,unitdroppeddate,"
+                'query = query & " UnitRecieved_TCDate,rcmobile,indt,wrtype,"
+                'query = query & " voflt,warrtype)"
+                'query = query & " values(" & jobNO & ",'A','" & txtIMEINo1.Text & "','D', "
+                'query = query & " '" & selectedCollectionPointId & "','" & mLocationCode & "','" & mTrfLocationcode & "','" & txtTrackingNo.Text & "', "
+                'query = query & " '" & txtBrand.Text & "','" & txtModel.Text & "','" & cmbServiceCentre.Text & "','" & txtTrackingNo.Text & "', "
+                'query = query & " '" & selectedCollectionPointText.ToString.Trim & "','" & txtMobileNumber.Text & "','" & txtFaultCode.Text.ToString.Trim & "','" & mUnitDroppedDate & "', "
+                'query = query & " '" & mCollectedDate & "','1','" & mCollectedDate & "','" & jwarrantyType & "',"
+                'query = query & " '" & txtPhysicalCondition.Text & "','" & cmbType.SelectedValue & "')"
+                'DBCom.putData("HDATA", query)
+
+                'query = "insert into T_ReceiptTCDetail (documentno,imeino,received,receivedby, "
+                'query = query & " receiveddate,issued,issuedby,issueddate,"
+                'query = query & " dc_received,dc_receivedby,dc_receiveddate,locationcode,"
+                'query = query & " jobno,csocreated,csocreatedby,csocreateddate,"
+                'query = query & " dc_issued,dc_issuedby,dc_issueddate,deliveryagent,"
+                'query = query & " prodigyref,agent)"
+                'query = query & " values(" & receiptNo & ",'" & txtIMEINo1.Text & "','1','" & mUserid & "', "
+                'query = query & " '" & mTrackingdate & "','1','" & mUserid & "','" & mTrackingdate & "', "
+                'query = query & " '1','" & mUserid & "','" & mTrackingdate & "','" & mLocationCode & "', "
+                'query = query & " '" & jobNO & "','1','" & mUserid & "','" & mTrackingdate & "', "
+                'query = query & " '1','" & mUserid & "','" & mTrackingdate & "','" & cmbForwarder.Text & "', "
+                'query = query & " '" & txtTrackingNo.Text & "','" & cmbForwarder.Text & "') "
+                'DBCom.putData("HSCP", query)
+
+            End If
+
+            dbTrans.Commit()
+
+            If btnSave.Text = "Save" Then
+                If cbDOA.Checked = True Then
+                    Try
+                        Dim docPath = ConfigurationManager.AppSettings("popDocPath")
+                        mToFile = docPath & "\" & mNdocno & "-POP.jpg"
+                        'System.IO.File.Delete(mToFile)
+                        System.IO.File.Copy(mFromFile, mToFile, True)
+                        MsgBox("JOB UNDER DOA")
+                    Catch ex As Exception
+                        MsgBox("POP uploadd image not uploaded " & ex.Message)
+                    End Try
+                End If
+            End If
+
+
+            If (btnSave.Text = "Save") Then
+                MessageBox.Show("New Device Login inserted successfully", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            ElseIf (btnSave.Text = "Update") Then
+                MessageBox.Show("New Device Login updated successfully", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+
+            If (btnSave.Text = "Save") Then
+                If MessageBox.Show("Print Label?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    printLabel(mNdocno)
+                End If
+                If MessageBox.Show("Print Customer Receipt?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    printUnitReceipt(mNdocno)
+                End If
+            End If
+
+            setDefault()
+
+        Catch ex As Exception
+            dbTrans.Rollback()
+            MessageBox.Show(ex.Message)
+        Finally
+            DBCom.conHscp.Dispose()
+        End Try
+
+
+    End Sub

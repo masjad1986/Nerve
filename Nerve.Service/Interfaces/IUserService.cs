@@ -1,4 +1,5 @@
 ﻿using Nerve.Repository;
+using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +10,6 @@ namespace Nerve.Service
     public interface IUserService
     {
         Task<User> AuthenticateAsync(string username, string password);
-        Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(int id);
+        Task<IEnumerable<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId);
     }
 }

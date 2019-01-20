@@ -1,19 +1,17 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nerve.Repository;
-using Nerve.Service;
-using System;
-using System.Reflection;
-using System.Linq;
-using AutoMapper;
-using System.Collections.Generic;
 using NetCore.AutoRegisterDi;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Nerve.Web
 {
@@ -31,23 +29,27 @@ namespace Nerve.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+            //services.Configure<CookiePolicyOptions>(options =>
+            //{
+            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+            //    options.CheckConsentNeeded = context => true;
+            //    options.MinimumSameSitePolicy = SameSiteMode.None;
+            //});
+
+            services.Configure<Repository.AppSettings>(Configuration.GetSection("ApplicationSettings"));
+
+            services.AddMvc();
+                //.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                //.AddControllersAsServices()
+                //.AddSessionStateTempDataProvider();
+
+            services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession(state => {
+                state.IdleTimeout = TimeSpan.FromMinutes(20);
             });
-
-
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddControllersAsServices();
-
 
             // create a Autofac container builder
             var builder = new ContainerBuilder();
-
-            
 
             // read service collection to Autofac
             builder.Populate(services);
@@ -59,17 +61,8 @@ namespace Nerve.Web
 
             // Register referenced assemblies for included in web api
             var assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Where(x=>x.Name.StartsWith("Nerve.")).ToList();
-            //var assemblies = LibraryManager.GetReferencedAssemblies().Cast<Assembly>();
             var repositoryAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Repository")).ToArray();
             var serviceAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Service")).ToArray();
-            var commonAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Common")).ToArray();
-
-            // Register common
-            if (commonAssemblies.Length > 0)
-            {
-                var commonAssembly = Assembly.Load(commonAssemblies[0]);
-                RegisterCommons(builder, commonAssembly);
-            }
 
             // Register services
             if (serviceAssemblies.Length > 0)
@@ -114,8 +107,10 @@ namespace Nerve.Web
             }
 
             // app.UseHttpsRedirection();
+
+            app.UseSession();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
@@ -128,7 +123,6 @@ namespace Nerve.Web
         private static void RegisterCommons(ContainerBuilder builder, Assembly assembly)
         {
             builder.RegisterAssemblyModules(assembly);
-            // builder.RegisterType<Logger>().As<ILogger>();
         }
 
         private static void RegisterServices(ContainerBuilder builder, Assembly assembly)

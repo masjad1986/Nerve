@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using AutoMapper;
+using Nerve.Repository.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -15,7 +16,8 @@ namespace Nerve.Repository
                .Where(t => t.Name.EndsWith("Repository"))
                .AsImplementedInterfaces()
                .InstancePerRequest();
-            // builder.RegisterAssemblyTypes(ThisAssembly).As(typeof(Profile)).As
+            builder.RegisterType(typeof(DynamicSqlBuilderHelper)).AsImplementedInterfaces();
+
             base.Load(builder);
         }
     }

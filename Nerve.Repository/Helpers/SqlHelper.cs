@@ -52,6 +52,13 @@ namespace Nerve.Repository
             External
         }
 
+        #region SqlConnection
+        public static SqlConnection GetSqlConnectionAsync(string connectionString)
+        {
+            return new SqlConnection(connectionString);
+        }
+        #endregion
+
         #region private utility methods & constructors
 
         // Since this class provides only static methods, make the default constructor private to prevent 
@@ -140,8 +147,7 @@ namespace Nerve.Repository
             for (int i = 0, j = commandParameters.Length; i < j; i++)
             {
                 // If the current array value derives from IDbDataParameter, then assign its Value property
-                var value = parameterValues[i] as IDbDataParameter;
-                if (value != null)
+                if (parameterValues[i] is IDbDataParameter value)
                 {
                     var paramInstance = value;
                     commandParameters[i].Value = paramInstance.Value ?? DBNull.Value;

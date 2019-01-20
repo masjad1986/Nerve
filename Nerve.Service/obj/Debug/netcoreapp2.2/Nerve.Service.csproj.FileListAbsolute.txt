@@ -1,0 +1,14 @@
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.deps.json
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.runtimeconfig.json
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.runtimeconfig.dev.json
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.dll
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.pdb
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Repository.dll
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Repository.pdb
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.csprojResolveAssemblyReference.cache
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.csproj.CoreCompileInputs.cache
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.AssemblyInfoInputs.cache
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.AssemblyInfo.cs
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.csproj.CopyComplete
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.dll
+D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.pdb

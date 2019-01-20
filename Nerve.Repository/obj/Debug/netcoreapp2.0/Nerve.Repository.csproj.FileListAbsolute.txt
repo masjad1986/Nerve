@@ -1,0 +1,4 @@
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.0\Nerve.Repository.csprojResolveAssemblyReference.cache
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.0\Nerve.Repository.csproj.CoreCompileInputs.cache
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.0\Nerve.Repository.AssemblyInfoInputs.cache
+D:\Asjad\Apps\Nerve\Nerve.Repository\obj\Debug\netcoreapp2.0\Nerve.Repository.AssemblyInfo.cs

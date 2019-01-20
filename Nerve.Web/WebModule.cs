@@ -10,6 +10,7 @@ namespace Nerve.Web
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<Logger>().As<ILogger>();
             builder.RegisterAssemblyTypes(ThisAssembly)
                .Where(t => t.Name.EndsWith("Controller"))
                .AsSelf()
