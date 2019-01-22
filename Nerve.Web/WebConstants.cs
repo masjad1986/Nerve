@@ -14,7 +14,9 @@ namespace Nerve.Web
             public const string UserName = "username";
             public const string GroupId = "group";
             public const string ModuleId = "module";
-            public const string LoginType = "logintype";
+            public const string Language = "language";
+            public const string DefaultStockLocation = "location";
+            public const string DefaultDealer = "dealer";
         }
     }
 }

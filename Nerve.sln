@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Repository", "Nerve.Repository\Nerve.Repository.csproj", "{78D54AE9-B018-4685-9AEE-AB1A0C0576D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerve.Repository", "Nerve.Repository\Nerve.Repository.csproj", "{78D54AE9-B018-4685-9AEE-AB1A0C0576D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Service", "Nerve.Service\Nerve.Service.csproj", "{0360B710-87F0-4335-92C3-CDC92988BC7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerve.Service", "Nerve.Service\Nerve.Service.csproj", "{0360B710-87F0-4335-92C3-CDC92988BC7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Web", "Nerve.Web\Nerve.Web.csproj", "{95390C1D-9E81-4E68-B5DD-DF746BB55370}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerve.Web", "Nerve.Web\Nerve.Web.csproj", "{95390C1D-9E81-4E68-B5DD-DF746BB55370}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -28,8 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Interfaces\Operations\" />
     <Folder Include="Interfaces\Reports\" />
     <Folder Include="Interfaces\Transactions\" />
+    <Folder Include="Services\Operations\" />
     <Folder Include="Services\Transactions\" />
     <Folder Include="Services\Reports\" />
   </ItemGroup>

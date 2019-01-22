@@ -3,13 +3,14 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetCore.AutoRegisterDi;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -38,13 +39,37 @@ namespace Nerve.Web
 
             services.Configure<Repository.AppSettings>(Configuration.GetSection("ApplicationSettings"));
 
-            services.AddMvc();
-                //.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                //.AddControllersAsServices()
-                //.AddSessionStateTempDataProvider();
+            services.AddMvc()
+                .AddViewLocalization(
+                    LanguageViewLocationExpanderFormat.Suffix,
+                    opts => { opts.ResourcesPath = "Resources"; })
+                .AddDataAnnotationsLocalization();
+
+            services.AddLocalization(o => o.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("fa")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-US", "en-US");
+
+                // You must explicitly state which cultures your application supports.
+                // These are the cultures the app supports for formatting 
+                // numbers, dates, etc.
+
+                options.SupportedCultures = supportedCultures;
+
+                // These are the cultures the app supports for UI strings, 
+                // i.e. we have localized resources for.
+
+                options.SupportedUICultures = supportedCultures;
+            });
 
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
-            services.AddSession(state => {
+            services.AddSession(state =>
+            {
                 state.IdleTimeout = TimeSpan.FromMinutes(20);
             });
 
@@ -60,7 +85,7 @@ namespace Nerve.Web
             builder.RegisterType<Mapper>().As<IMapper>();
 
             // Register referenced assemblies for included in web api
-            var assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Where(x=>x.Name.StartsWith("Nerve.")).ToList();
+            var assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith("Nerve.")).ToList();
             var repositoryAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Repository")).ToArray();
             var serviceAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Service")).ToArray();
 
@@ -105,6 +130,21 @@ namespace Nerve.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("fr"),
+            };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-US"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
+            });
 
             // app.UseHttpsRedirection();
 

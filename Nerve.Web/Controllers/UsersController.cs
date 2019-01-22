@@ -69,6 +69,12 @@ namespace Nerve.Web.Controllers
                 HttpContext.Session.SetString(WebConstants.SessionKeys.ModuleId,
                       Convert.ToString(authenticatedUser.UserModule.Value));
 
+                // language
+                HttpContext.Session.SetInt32(WebConstants.SessionKeys.Language, user.LanguageId ?? (int)LanguageType.English);
+
+                // default laptop vendor location
+                HttpContext.Session.SetInt32(WebConstants.SessionKeys.DefaultStockLocation, authenticatedUser.LaptopVenderId.Value);
+                // HttpContext.Session.SetInt32(WebConstants.SessionKeys.DefaultDealer, authenticatedUser.D);
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
@@ -85,15 +91,10 @@ namespace Nerve.Web.Controllers
             HttpContext.Session.Remove(WebConstants.SessionKeys.UserName);
             HttpContext.Session.Remove(WebConstants.SessionKeys.GroupId);
             HttpContext.Session.Remove(WebConstants.SessionKeys.ModuleId);
-            if (HttpContext.Session.GetInt32(WebConstants.SessionKeys.LoginType) == (int)LoginType.Device)
-            {
-                HttpContext.Session.Remove(WebConstants.SessionKeys.LoginType);
-                return RedirectToAction("DeviceLogin");
-            }
-            else
-            {
-                return RedirectToAction("Login");
-            }
+            HttpContext.Session.Remove(WebConstants.SessionKeys.Language);
+            HttpContext.Session.Remove(WebConstants.SessionKeys.DefaultStockLocation);
+            HttpContext.Session.Remove(WebConstants.SessionKeys.DefaultDealer);
+            return RedirectToAction("Login");
         }
     }
 }

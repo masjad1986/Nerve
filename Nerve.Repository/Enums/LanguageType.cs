@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Nerve.Repository.Enums
 {
-    public enum LoginType
+    public enum LanguageType
     {
-        Device,
-        Web
+        English,
+        Farsi
     }
 }

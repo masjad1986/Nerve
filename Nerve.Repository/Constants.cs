@@ -15,5 +15,10 @@ namespace Nerve.Repository
         {
             public const string UserMaster = "usermaster";
         }
+
+        public class Views
+        {
+            public const string Jobs = "usermaster";
+        }
     }
 }
