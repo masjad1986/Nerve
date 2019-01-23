@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Nerve.Repository.Enums;
+using Nerve.Web.Translation;
 
 namespace Nerve.Web.Controllers
 {
@@ -16,16 +17,19 @@ namespace Nerve.Web.Controllers
         private string _controllerName;
         private readonly IUserService _userService;
         private readonly ILogger _logger;
-        public UsersController(IUserService userService, ILogger logger)
+        private readonly ILanguageTranslator _languageTranslator;
+        public UsersController(IUserService userService, ILogger logger, ILanguageTranslator languageTranslator)
         {
             _userService = userService;
             _logger = logger;
+            _languageTranslator = languageTranslator;
             _controllerName = "UsersController";
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
+            var value = await _languageTranslator.TranslateAsync(LanguageKeys.Transaction);
             var user = await Task.FromResult(new User());
             return View(user);
         }
@@ -70,7 +74,7 @@ namespace Nerve.Web.Controllers
                       Convert.ToString(authenticatedUser.UserModule.Value));
 
                 // language
-                HttpContext.Session.SetInt32(WebConstants.SessionKeys.Language, user.LanguageId ?? (int)LanguageType.English);
+                HttpContext.Session.SetInt32(WebConstants.SessionKeys.Language, user.LanguageId ?? user.LanguageId ?? 0);
 
                 // default laptop vendor location
                 HttpContext.Session.SetInt32(WebConstants.SessionKeys.DefaultStockLocation, authenticatedUser.LaptopVenderId.Value);

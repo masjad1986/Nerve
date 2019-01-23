@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nerve.Web.Translation;
 using NetCore.AutoRegisterDi;
 using System;
 using System.Collections.Generic;
@@ -38,34 +39,27 @@ namespace Nerve.Web
             //});
 
             services.Configure<Repository.AppSettings>(Configuration.GetSection("ApplicationSettings"));
+            services.AddMvc();
+            //services.Configure<RequestLocalizationOptions>(options =>
+            //{
+            //    var supportedCultures = new[]
+            //    {
+            //        new CultureInfo("en-US"),
+            //        new CultureInfo("fa")
+            //    };
+            //    options.DefaultRequestCulture = new RequestCulture("en-US", "en-US");
 
-            services.AddMvc()
-                .AddViewLocalization(
-                    LanguageViewLocationExpanderFormat.Suffix,
-                    opts => { opts.ResourcesPath = "Resources"; })
-                .AddDataAnnotationsLocalization();
+            //    // You must explicitly state which cultures your application supports.
+            //    // These are the cultures the app supports for formatting 
+            //    // numbers, dates, etc.
 
-            services.AddLocalization(o => o.ResourcesPath = "Resources");
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new[]
-                {
-                    new CultureInfo("en-US"),
-                    new CultureInfo("fa")
-                };
-                options.DefaultRequestCulture = new RequestCulture("en-US", "en-US");
+            //    options.SupportedCultures = supportedCultures;
 
-                // You must explicitly state which cultures your application supports.
-                // These are the cultures the app supports for formatting 
-                // numbers, dates, etc.
+            //    // These are the cultures the app supports for UI strings, 
+            //    // i.e. we have localized resources for.
 
-                options.SupportedCultures = supportedCultures;
-
-                // These are the cultures the app supports for UI strings, 
-                // i.e. we have localized resources for.
-
-                options.SupportedUICultures = supportedCultures;
-            });
+            //    options.SupportedUICultures = supportedCultures;
+            //});
 
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession(state =>
@@ -83,6 +77,7 @@ namespace Nerve.Web
 
             // Set the dependency resolver to be Autofac.
             builder.RegisterType<Mapper>().As<IMapper>();
+            builder.RegisterType<LanguageTranslator>().As<ILanguageTranslator>();
 
             // Register referenced assemblies for included in web api
             var assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith("Nerve.")).ToList();
@@ -131,20 +126,20 @@ namespace Nerve.Web
                 app.UseHsts();
             }
 
-            var supportedCultures = new[]
-            {
-                new CultureInfo("en-US"),
-                new CultureInfo("fr"),
-            };
+            //var supportedCultures = new[]
+            //{
+            //    new CultureInfo("en-US"),
+            //    new CultureInfo("fr"),
+            //};
 
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = new RequestCulture("en-US"),
-                // Formatting numbers, dates, etc.
-                SupportedCultures = supportedCultures,
-                // UI strings that we have localized.
-                SupportedUICultures = supportedCultures
-            });
+            //app.UseRequestLocalization(new RequestLocalizationOptions
+            //{
+            //    DefaultRequestCulture = new RequestCulture("en-US"),
+            //    // Formatting numbers, dates, etc.
+            //    SupportedCultures = supportedCultures,
+            //    // UI strings that we have localized.
+            //    SupportedUICultures = supportedCultures
+            //});
 
             // app.UseHttpsRedirection();
 

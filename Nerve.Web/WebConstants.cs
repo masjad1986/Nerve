@@ -18,5 +18,11 @@ namespace Nerve.Web
             public const string DefaultStockLocation = "location";
             public const string DefaultDealer = "dealer";
         }
+
+        public class NotifyMessage
+        {
+            public const string NoLanguageResourceFound = "No language resrouce file found";
+            public const string InvalidLanguageResourceFile = "Unable to read language resource file.";
+        }
     }
 }

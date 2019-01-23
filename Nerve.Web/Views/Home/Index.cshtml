@@ -1,6 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 @{
     ViewData["Title"] = "Home Page";
+    var languageItems = await _languageTranslator
+        .TranslateManyAsync(new List<string> {
+    LanguageKeys.Transaction,
+    LanguageKeys.Transactions
+        }, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language));
 }
 
 <div class="home-welcome-text"><h2>Welcome to Nerve Logistics</h2></div>
