@@ -138,7 +138,7 @@ namespace Nerve.Repository
 	                u.ID, u.GroupID, u.ModuleID, u.MenuID, u.ViewOption, u.SaveOption
 	                , u.UpdateOption, u.DeleteOption, u.PrintOption, u.Deleted
 	                , m.MenuId, m.MenuName, m.MenuLink, m.ParentMenuID, m.ModuleName
-	                , m.Active, m.OrderBy, m.LanguageId
+	                , m.Active, m.OrderBy, m.LanguageId, m.LanguageKey
                 FROM [dbo].[WEB_USERRIGHTS] u 
                 JOIN [dbo].[WEB_MENUMASTER] m ON u.MenuId = m.MenuId 
                 WHERE u.GroupID = @groupId
@@ -184,7 +184,8 @@ namespace Nerve.Repository
                               ModuleName = row.Field<string>("ModuleName"),
                               Active = row.Field<bool>("Active"),
                               OrderBy = row.Field<int>("OrderBy"),
-                              LanguageId = row.Field<int>("LanguageId")
+                              LanguageId = row.Field<int>("LanguageId"),
+                              LanguageKey = row.Field<string>("LanguageKey")
                           }).ToList();
 
             return output;

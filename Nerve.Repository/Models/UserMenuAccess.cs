@@ -19,5 +19,6 @@
         public bool Active { get; set; }
         public int OrderBy { get; set; }
         public int LanguageId { get; set; }
+        public string LanguageKey { get; set; }
     }
 }
