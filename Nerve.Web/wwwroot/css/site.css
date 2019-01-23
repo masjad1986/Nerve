@@ -41,9 +41,14 @@ footer {
     bottom: 0;
     width: 100%;
     text-align: center;
+    border-top: solid 1px lightgray;
 }
 
 .home-welcome-text {
     margin-top: 15%;
     text-align:center;
+}
+
+.persion-font-size {
+    font-size: 16pt !important;
 }

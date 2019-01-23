@@ -1,26 +1,32 @@
 ﻿@model List<Nerve.Repository.UserMenuAccess>
+@using Nerve.Repository.Enums
 @using Microsoft.AspNetCore.Http
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{ var persianFont = Context.Session.GetInt32(WebConstants.SessionKeys.Language).Value == (int)LanguageType.Farsi ? "persion-font-size" : "";}
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         @*<div class="navbar-header">
-            <a class="navbar-brand" href="#">Nerve Logistics</a>
-        </div>*@
+                <a class="navbar-brand" href="#">Nerve Logistics</a>
+            </div>*@
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a class="@persianFont" href="#">@await _languageTranslator.TranslateAsync(LanguageKeys.Home, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
             @if (Model != null)
             {
                 var parents = Model.Where(x => x.ParentMenuId == 0).OrderBy(x => x.OrderBy).ToList();
                 @foreach (var parent in parents)
                 {
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">@parent.MenuName <span class="caret"></span></a>
+                        <a class="dropdown-toggle @persianFont" data-toggle="dropdown" href="#">
+                            @await _languageTranslator.TranslateAsync(@parent.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))  <span class="caret"></span>
+                        </a>
                         @{var childs = @Model.Where(x => x.ParentMenuId == parent.MenuId).OrderBy(x => x.OrderBy).ToList();
                             if (childs.Any())
                             {
                                 <ul class="dropdown-menu">
                                     @foreach (var child in childs)
                                     {
-                                        <li><a href="@Url.Action(child.MenuLink)">@child.MenuName</a></li>
+                                        <li><a class="@persianFont" href="@Url.Action(child.MenuLink)">@await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
                                     }
                                 </ul>
                             }
@@ -31,7 +37,7 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#"><span class="glyphicon glyphicon-user"></span> @Context.Session.GetString(WebConstants.SessionKeys.UserName)</a></li>
-            <li><a asp-action="Logout" asp-controller="Users"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><a asp-action="Logout" asp-controller="Users"><span class="glyphicon glyphicon-log-out @persianFont"></span> @await _languageTranslator.TranslateAsync(LanguageKeys.Logout, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
         </ul>
     </div>
 </nav>

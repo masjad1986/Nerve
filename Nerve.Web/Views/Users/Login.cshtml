@@ -83,13 +83,13 @@
                                     @Html.Label("Language")
                                 </div>
                                 <div class="col-md-8">
-                                    @Html.RadioButtonFor(m => m.LanguageId, (int)LanguageType.English, new { @id="englishOption"}) @Html.Label("English")
+                                    @Html.RadioButtonFor(m => m.LanguageId, (int)LanguageType.English, new { @id = "englishOption" }) @Html.Label("English")
                                     @Html.RadioButtonFor(m => m.LanguageId, (int)LanguageType.Farsi, new { @id = "farsiOption" }) @Html.Label("Farsi")
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Log in" class="btn btn-default" />
+                                    <input type="submit" value="Log in" class="btn btn-default text-center" />
                                 </div>
                             </div>
                         }
@@ -106,7 +106,6 @@
         <div class="col-md-2"></div>
     </div>
     <footer>
-        <hr />
         <center><p>&copy; 2019 - Nerve</p></center>
     </footer>
 </div>

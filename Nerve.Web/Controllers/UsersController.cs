@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Nerve.Repository.Enums;
 using Nerve.Web.Translation;
+using Nerve.Web.Filters;
 
 namespace Nerve.Web.Controllers
-{
-    [Authorize]
+{   
     public class UsersController : Controller
     {
         private string _controllerName;
@@ -88,7 +88,8 @@ namespace Nerve.Web.Controllers
             }
         }
 
-        public IActionResult Logout()
+        //[NerveAuthorize]
+        public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Remove(WebConstants.SessionKeys.User);
             HttpContext.Session.Remove(WebConstants.SessionKeys.UserMenus);

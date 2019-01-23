@@ -3,11 +3,9 @@
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 @{
     ViewData["Title"] = "Home Page";
-    var languageItems = await _languageTranslator
-        .TranslateManyAsync(new List<string> {
-    LanguageKeys.Transaction,
-    LanguageKeys.Transactions
-        }, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language));
+    var welcome = await _languageTranslator
+        .TranslateAsync(LanguageKeys.WelcomeToNerveLogistics, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language));
 }
 
-<div class="home-welcome-text"><h2>Welcome to Nerve Logistics</h2></div>
+@{ var persianFont = Context.Session.GetInt32(WebConstants.SessionKeys.Language).Value == (int)LanguageType.Farsi ? "persion-font-size" : "";}
+<div class="home-welcome-text @persianFont"><h2>@welcome</h2></div>
