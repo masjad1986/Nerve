@@ -19,12 +19,6 @@ namespace Nerve.Repository
             _dynamicSqlBuilderHelper = dynamicSqlBuilderHelper;
             _appSettings = appSettings.Value;
         }
-        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<User> _users = new List<User>
-        {
-            new User { Id = 1, Username = "m.asjad1986@gmail.com", Password = "asjad@123", Role = nameof(UserRole.Admin) },
-            new User { Id = 2, Username = "user", Password = "user", Role = nameof(UserRole.User) }
-        };
 
         /// <summary>
         /// Authenticate user for login.
@@ -140,7 +134,7 @@ namespace Nerve.Repository
 	                , m.MenuId, m.MenuName, m.MenuLink, m.ParentMenuID, m.ModuleName
 	                , m.Active, m.OrderBy, m.LanguageId, m.LanguageKey
                 FROM [dbo].[WEB_USERRIGHTS] u 
-                JOIN [dbo].[WEB_MENUMASTER] m ON u.MenuId = m.MenuId 
+                JOIN [dbo].[WEB_MENUMASTER] m ON u.MenuId = m.MenuId AND u.ModuleID = m.ModuleID
                 WHERE u.GroupID = @groupId
                 AND u.ModuleID = @moduleId
                 AND u.ViewOption = @status

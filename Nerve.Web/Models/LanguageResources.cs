@@ -21,6 +21,7 @@ namespace Nerve.Web
         public const string FrontDesk = "front-desk";
         public const string Grn = "grn";
         public const string Home = "home";
+
         public const string Inventory = "inventory";
         public const string JobAllocation = "job-allocation";
         public const string JobClosing = "job-closing";
@@ -60,6 +61,7 @@ namespace Nerve.Web
         public const string SpCreditLimit = "sp-credit-limit";
         public const string StatusHistory = "status-history";
         public const string StatusRegister = "status-register";
+        public const string SearchCriteria = "search-criteria";
         public const string Transaction = "transaction";
         public const string Transactions = "transactions";
         public const string VendorRmaUpdation = "vendor-rma-updation";

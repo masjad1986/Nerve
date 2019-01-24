@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Http
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 
-@{ var persianFont = Context.Session.GetInt32(WebConstants.SessionKeys.Language).Value == (int)LanguageType.Farsi ? "persion-font-size" : "";}
+@{ var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);}
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         @*<div class="navbar-header">
@@ -20,13 +20,13 @@
                         <a class="dropdown-toggle @persianFont" data-toggle="dropdown" href="#">
                             @await _languageTranslator.TranslateAsync(@parent.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))  <span class="caret"></span>
                         </a>
-                        @{var childs = @Model.Where(x => x.ParentMenuId == parent.MenuId).OrderBy(x => x.OrderBy).ToList();
+                        @{var childs = @Model.Where(x => x.ParentMenuId == parent.MenuId).OrderBy(x => x.MenuName).ToList();
                             if (childs.Any())
                             {
                                 <ul class="dropdown-menu">
                                     @foreach (var child in childs)
                                     {
-                                        <li><a class="@persianFont" href="@Url.Action(child.MenuLink)">@await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
+                                        <li><a class="@persianFont" href="@child.MenuLink">@await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
                                     }
                                 </ul>
                             }

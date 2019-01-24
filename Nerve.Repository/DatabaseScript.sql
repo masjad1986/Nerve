@@ -1,2 +1,0 @@
-﻿ALTER TABLE [HAMI_SCP].dbo.WEB_MENUMASTER ADD LanguageKey VARCHAR(250) NOT NULL DEFAULT ('no-key-avaialble')
-UPDATE [HAMI_SCP].dbo.WEB_MENUMASTER SET LanguageKey = LOWER(REPLACE(MenuName,' ','-'))

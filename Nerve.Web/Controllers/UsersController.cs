@@ -11,7 +11,7 @@ using Nerve.Web.Translation;
 using Nerve.Web.Filters;
 
 namespace Nerve.Web.Controllers
-{   
+{
     public class UsersController : Controller
     {
         private string _controllerName;
@@ -28,14 +28,6 @@ namespace Nerve.Web.Controllers
 
         [AllowAnonymous]
         public async Task<IActionResult> Login()
-        {
-            var value = await _languageTranslator.TranslateAsync(LanguageKeys.Transaction);
-            var user = await Task.FromResult(new User());
-            return View(user);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> DeviceLogin()
         {
             var user = await Task.FromResult(new User());
             return View(user);
@@ -74,10 +66,13 @@ namespace Nerve.Web.Controllers
                       Convert.ToString(authenticatedUser.UserModule.Value));
 
                 // language
-                HttpContext.Session.SetInt32(WebConstants.SessionKeys.Language, user.LanguageId ?? user.LanguageId ?? 0);
+                HttpContext.Session.SetInt32(WebConstants.SessionKeys.Language, user.LanguageId ?? 0);
 
                 // default laptop vendor location
                 HttpContext.Session.SetInt32(WebConstants.SessionKeys.DefaultStockLocation, authenticatedUser.LaptopVenderId.Value);
+
+                HttpContext.Session.SetString(WebConstants.SessionKeys.PersianFont, (user.LanguageId == (int)LanguageType.Farsi ? "persian-font-size" : ""));
+
                 // HttpContext.Session.SetInt32(WebConstants.SessionKeys.DefaultDealer, authenticatedUser.D);
                 return RedirectToAction("Index", "Home");
             }

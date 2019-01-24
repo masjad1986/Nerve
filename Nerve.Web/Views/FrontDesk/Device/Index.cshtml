@@ -1,0 +1,40 @@
+﻿@model Nerve.Web.ViewModels.DeviceViewModel
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{ var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);}
+
+<div class="row">
+    <div class="col-sm-12">
+        @await _languageTranslator.TranslateAsync(LanguageKeys.SearchCriteria, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        @await _languageTranslator.TranslateAsync(LanguageKeys.SearchCriteria, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))
+    </div>
+    <div class="col-sm-3">
+        @Html.TextBoxFor(model => model.Device.IMEINumber)
+    </div>
+    <div class="col-sm-3">
+        
+    </div>
+    <div class="col-sm-3">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+
+    </div>
+    <div class="col-sm-3">
+
+    </div>
+    <div class="col-sm-3">
+
+    </div>
+    <div class="col-sm-3">
+
+    </div>
+</div>
