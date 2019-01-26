@@ -9,5 +9,7 @@ namespace Nerve.Web.ViewModels
     public class DeviceViewModel
     {
         public DeviceDto Device { get; set; }
+        public StandByUnitDto StandByUnit { get; set; }
+        public PopUploadDto PopUpload { get; set; }
     }
 }

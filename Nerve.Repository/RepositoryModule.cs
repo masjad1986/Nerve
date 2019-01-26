@@ -8,20 +8,6 @@ using System.Text;
 
 namespace Nerve.Repository
 {
-    //
-    //
-    //
-    //IDeviceRepository
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-
     public class RepositoryModule : Autofac.Module
     {
         protected override void Load(ContainerBuilder builder)

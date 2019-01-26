@@ -1,0 +1,74 @@
+﻿@using Nerve.Repository
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@model int
+@{
+
+    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var menus = Newtonsoft.Json.JsonConvert
+            .DeserializeObject<List<UserMenuAccess>>(Context.Session.GetString(WebConstants.SessionKeys.UserMenus));
+
+    var actionPermission = new UserMenuAccess();
+
+    if (menus != null)
+    {
+        actionPermission = menus.SingleOrDefault(x => x.MenuId == Model);
+    }
+
+    var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+{
+LanguageKeys.Save,
+LanguageKeys.Undo,
+LanguageKeys.Delete,
+LanguageKeys.Print,
+LanguageKeys.Exit
+}, langugeId);
+}
+
+@if (actionPermission != null)
+{
+    <div class="bs-glyphicons">
+        <ul class="bs-glyphicons-list">
+            @if (actionPermission.SaveOption == "1")
+            {
+                <li>
+                    <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Save]</label>
+                    </span>
+                </li>
+            }
+
+            @if (actionPermission.UpdateOption == "1")
+            {
+                <li>
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Undo]</label>
+                    </span>
+                </li>
+            }
+            @if (actionPermission.DeleteOption == "1")
+            {
+                <li>
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Delete]</label>
+                    </span>
+                </li>
+            }
+            @if (actionPermission.PrintOption == "1")
+            {
+                <li>
+                    <span class="glyphicon glyphicon-print" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Print]</label>
+                    </span>
+                </li>
+            }
+            <li>
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span> <span class="glyphicon-class">
+                    <label class="@persianFont cursor">@translateItems[LanguageKeys.Exit]</label>
+                </span>
+            </li>
+        </ul>
+    </div>
+}

@@ -4,13 +4,11 @@
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 
 @{ var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);}
+
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
-        @*<div class="navbar-header">
-                <a class="navbar-brand" href="#">Nerve Logistics</a>
-            </div>*@
         <ul class="nav navbar-nav">
-            <li class="active"><a class="@persianFont" href="#">@await _languageTranslator.TranslateAsync(LanguageKeys.Home, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
+            <li><a class="@persianFont" href="#">@await _languageTranslator.TranslateAsync(LanguageKeys.Home, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
             @if (Model != null)
             {
                 var parents = Model.Where(x => x.ParentMenuId == 0).OrderBy(x => x.OrderBy).ToList();
@@ -26,7 +24,7 @@
                                 <ul class="dropdown-menu">
                                     @foreach (var child in childs)
                                     {
-                                        <li><a class="@persianFont" href="@child.MenuLink">@await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
+                                        <li class="menu-link-click"><a class="@persianFont" href="@child.MenuLink?id=@child.MenuId">@await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
                                     }
                                 </ul>
                             }

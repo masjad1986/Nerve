@@ -1,0 +1,31 @@
+﻿@page
+@model Nerve.Repository.Dtos.PopUploadDto
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{
+    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+}
+
+
+
+<div class="panel panel-default top-margin-10">
+    <div class="panel-body">
+        <div class="row row-space">
+            <div class="col-sm-1 text-right @persianFont">
+                @await _languageTranslator.TranslateAsync(LanguageKeys.PopPath, langugeId)
+            </div>
+            <div class="col-sm-4">
+                <input type="file" class="form-control" />
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4">
+            </div>
+        </div>
+    </div>
+</div>

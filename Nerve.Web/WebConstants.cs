@@ -7,6 +7,7 @@ namespace Nerve.Web
 {
     public class WebConstants
     {
+        
         public class SessionKeys
         {
             public const string User = "user";
@@ -18,6 +19,9 @@ namespace Nerve.Web
             public const string DefaultStockLocation = "location";
             public const string DefaultDealer = "dealer";
             public const string PersianFont = "css";
+
+            //View Data
+            public const string BreadCrumb = "bread-crumb";
         }
 
         public class NotifyMessage
@@ -29,6 +33,19 @@ namespace Nerve.Web
         public class ViewPages
         {
             public const string DeviceLogin = "Views/FrontDesk/Device/Index.cshtml";
+            public class Partial
+            {
+                public const string Actions = "_Actions";
+                public const string DeviceLoginDetails = "~/Views/FrontDesk/Device/_LoginDetails.cshtml";
+                public const string DeviceFaultAccessoryDetails = "~/Views/FrontDesk/Device/_FaultAccessoryDetails.cshtml";
+                public const string DeviceStandByUnits = "~/Views/FrontDesk/Device/_StandByUnits.cshtml";
+                public const string DevicePopUpload = "~/Views/FrontDesk/Device/_PopUpload.cshtml";
+            }
+        }
+
+        public class PageTitle
+        {
+            public const string DeviceLogin = "Device Login";
         }
     }
 }

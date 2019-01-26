@@ -1,54 +1,145 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
 body {
-    height: 100%;
-    padding-bottom: 20px;
 }
 
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.panel {
+    margin-bottom: 15px !important;
 }
 
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}
-
-/* QR code generator */
-#qrCode {
-    margin: 15px;
-}
-
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
-}
-
-footer {
-    position: absolute;
+.footer {
+    border-top: solid 1px lightgray;
     bottom: 0;
     width: 100%;
     text-align: center;
-    border-top: solid 1px lightgray;
 }
+
+    .footer p {
+        padding-top: 5px;
+    }
 
 .home-welcome-text {
-    margin-top: 15%;
-    text-align:center;
+    padding-top: 15%;
+    text-align: center;
 }
 
-.persion-font-size {
-    font-size: 16pt !important;
+.persian-font-size {
+    font-size: 14pt !important;
 }
+
+.form-control, .panel-default, .btn {
+    border-radius: 0 !important;
+}
+
+.checkbox-inline {
+    padding-left: 0px !important;
+}
+
+.text-area {
+    min-height: 100px;
+}
+
+.btn-primary {
+    background-color: #d3a337 !important;
+    border-color: #d3a337 !important;
+}
+
+.form-control-feedback {
+    right: 15px !important;
+}
+
+.main-container {
+    width: 100%;
+}
+
+.panel-body {
+    padding: 5px !important;
+}
+
+.navbar {
+    margin-bottom: 0 !important;
+    border-radius: 0 !important;
+}
+
+.row-space {
+    padding-top: 5px;
+}
+
+.inner-row {
+    padding-right: -15px;
+    padding-left: -15px;
+}
+
+.right-space-10 {
+    padding-right: 10px;
+}
+
+.top-margin-10 {
+    margin-top: 10px;
+}
+
+.no-left-padding {
+    padding-left: 0 !important;
+}
+
+#device-login .nav-pills > li > a {
+    border-radius: 4px 4px 0 0;
+}
+
+#device-login .tab-content {
+    background-color: #f5f5f5;
+    padding: 5px 15px;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.bs-glyphicons {
+    margin: 0 0px 20px;
+    overflow: hidden;
+}
+
+    .bs-glyphicons .glyphicon {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+
+    .bs-glyphicons .glyphicon-class {
+        display: block;
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+.glyphicon {
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    font-style: normal;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.bs-glyphicons-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.bs-glyphicons li {
+    float: left;
+    width: 104px;
+    height: 104px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: center;
+    background-color: #e7f0f4;
+    border: 1px solid #fff;
+}
+
+    .bs-glyphicons li:hover {
+        cursor: pointer;
+        color: #fff;
+        background-color: #0C6D2C;
+    }

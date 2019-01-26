@@ -1,0 +1,77 @@
+﻿@model Nerve.Repository.Dtos.StandByUnitDto
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{
+    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+}
+
+
+<div class="panel panel-default top-margin-10">
+    <div class="panel-body">
+        <div class="row row-space">
+            <div class="col-sm-1 text-right @persianFont">
+                @await _languageTranslator.TranslateAsync(LanguageKeys.Brand, langugeId)
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Brand, new { @class = "form-control", })
+                <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-1 text-right @persianFont">
+                @await _languageTranslator.TranslateAsync(LanguageKeys.Model, langugeId)
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Model, new { @class = "form-control", })
+                <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-1 text-right @persianFont">
+                @await _languageTranslator.TranslateAsync(LanguageKeys.ImeiNumber, langugeId)
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.IMEINumber, new { @class = "form-control", })
+                <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-1 text-right @persianFont">
+            </div>
+            <div class="col-sm-4">
+                @Html.CheckBoxFor(model => model.IsReturned)
+                @await _languageTranslator.TranslateAsync(LanguageKeys.Returned, langugeId)
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-1 text-right @persianFont">
+                @await _languageTranslator.TranslateAsync(LanguageKeys.Returned, langugeId)
+            </div>
+            <div class="col-sm-4">
+                <label class="checkbox-inline">
+                    @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Battery)
+                    @await _languageTranslator.TranslateAsync(LanguageKeys.Battery, langugeId)
+                </label>
+                <label class="checkbox-inline">
+                    @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Charger)
+                    @await _languageTranslator.TranslateAsync(LanguageKeys.Charger, langugeId)
+                </label>
+                <label class="checkbox-inline">
+                    @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Other)
+                    @await _languageTranslator.TranslateAsync(LanguageKeys.Other, langugeId)
+                </label>
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4">
+                @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control text-area", })
+            </div>
+        </div>
+    </div>
+</div>

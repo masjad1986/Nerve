@@ -4,11 +4,13 @@
     Layout = null;
 }
 <environment include="Development">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
 </environment>
 <environment exclude="Development">
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
@@ -36,6 +38,10 @@
 </style>
 <script>
     $(document).ready(function () {
+        let height = screen.height;
+        console.log(screen.height);
+        let layoutHeight = height ? height - 154 : 700;
+        $(".body-container").innerHeight(layoutHeight);
         $('input[value="0"]').attr('checked', 'checked');
     });
 </script>
@@ -105,7 +111,8 @@
         </div>
         <div class="col-md-2"></div>
     </div>
-    <footer>
-        <center><p>&copy; 2019 - Nerve</p></center>
-    </footer>
 </div>
+
+<footer>
+    <center><p class="footer">&copy; 2019 - Nerve</p></center>
+</footer>

@@ -1,0 +1,95 @@
+﻿@page
+@model Nerve.Repository.Dtos.DeviceDto
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{
+    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+}
+
+<div class="panel panel-default top-margin-10">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="row row-space">
+                    <div class="col-sm-4 text-right">
+                        @await _languageTranslator.TranslateAsync(LanguageKeys.FaultCode, langugeId)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(model => model.IMEINumber, new { @class = "form-control", })
+                        <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-4 text-right">
+                        @await _languageTranslator.TranslateAsync(LanguageKeys.FaultDetails, langugeId)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(model => model.IMEINumber, new { @class = "form-control text-area", })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-4 text-right">
+                        @await _languageTranslator.TranslateAsync(LanguageKeys.Remarks, langugeId)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(model => model.IMEINumber, new { @class = "form-control text-area", })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                @await _languageTranslator.TranslateAsync(LanguageKeys.Accessories, langugeId)
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>mdo</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>fat</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>twitter</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>mdo</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>fat</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>twitter</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

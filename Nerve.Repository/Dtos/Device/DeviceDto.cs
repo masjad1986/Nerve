@@ -7,9 +7,12 @@ namespace Nerve.Repository.Dtos
     public class DeviceDto
     {
         public string IMEINumber { get; set; }
+        public bool DoA { get; set; }
         public int CollectionPoint { get; set; }
         public int TrackingNumber { get; set; }
+        public DateTime? TrackingDate { get; set; }
         public int CrnNumber { get; set; }
+        public bool AutoCrn { get; set; }
         public int Product { get; set; }
         public int Brand { get; set; }
         public int TransferTo { get; set; }
@@ -21,6 +24,7 @@ namespace Nerve.Repository.Dtos
         public string MobileNumber { get; set; }
         public string SmsLanguage { get; set; }
         public string JobNumber { get; set; }
+        public string JobNumber2 { get; set; }
         public string FarsiCustomerName { get; set; }
 
         public string AdditionalSerialNumber { get; set; }
@@ -39,7 +43,7 @@ namespace Nerve.Repository.Dtos
         public DateTime? CollectionDate { get; set; }
         public string TelephoneNumber { get; set; }
         public string Email { get; set; }
-        public string RmaVendorNumber { get; set; }
+        public string VendorRmaNumber { get; set; }
         public string NationalId { get; set; }
         public string EcoCode { get; set; }
         public string PostalCode { get; set; }

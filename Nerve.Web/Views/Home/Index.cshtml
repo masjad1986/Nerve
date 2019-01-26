@@ -4,7 +4,8 @@
 @{
     ViewData["Title"] = "Home Page";
     var welcome = await _languageTranslator
-        .TranslateAsync(LanguageKeys.WelcomeToNerveLogistics, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language));
+                .TranslateAsync(LanguageKeys.WelcomeToNerveLogistics,
+                (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language));
 }
 
 @{ var persianFont = Context.Session.GetInt32(WebConstants.SessionKeys.Language).Value == (int)LanguageType.Farsi ? "persion-font-size" : "";}

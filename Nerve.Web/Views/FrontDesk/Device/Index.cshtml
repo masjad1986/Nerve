@@ -3,38 +3,64 @@
 @using Nerve.Repository.Enums
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 
-@{ var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);}
+@{
 
-<div class="row">
-    <div class="col-sm-12">
-        @await _languageTranslator.TranslateAsync(LanguageKeys.SearchCriteria, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-        @await _languageTranslator.TranslateAsync(LanguageKeys.SearchCriteria, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))
-    </div>
-    <div class="col-sm-3">
-        @Html.TextBoxFor(model => model.Device.IMEINumber)
-    </div>
-    <div class="col-sm-3">
-        
-    </div>
-    <div class="col-sm-3">
+    ViewData["Title"] = WebConstants.PageTitle.DeviceLogin;
+    var menuId = Convert.ToInt32(Context.Request.Query["id"]);
+    var langugeId = (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);
+}
 
+<form asp-action="Index" asp-controller="Device"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-mode="replace"
+      data-ajax-update="#ajaxpanel">
+    <div class="main-container">
+        <partial name="@WebConstants.ViewPages.Partial.Actions" model="@menuId" />
     </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-
+    <div id="device-login" class="main-container">
+        <ul class="nav nav-pills">
+            <li>
+                <a href="#login-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.LoginDetails, langugeId)</a>
+            </li>
+            <li>
+                <a href="#fault-accessory-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.FaultAndAccessoryDetails, langugeId)</a>
+            </li>
+            <li class="active">
+                <a href="#stand-by-units" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.StandByUnits, langugeId)</a>
+            </li>
+            <li>
+                <a href="#pop-upload" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.PopUpload, langugeId)</a>
+            </li>
+            <li>
+                <a href="#imei-history" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.ImeiHistory, langugeId)</a>
+            </li>
+        </ul>
+        <div class="tab-content clearfix">
+            <div class="tab-pane" id="login-details">
+                @{
+                    Html.RenderPartial(WebConstants.ViewPages.Partial.DeviceLoginDetails, Model.Device);
+                }
+            </div>
+            <div class="tab-pane" id="fault-accessory-details">
+                @{
+                    Html.RenderPartial(WebConstants.ViewPages.Partial.DeviceFaultAccessoryDetails, Model.Device);
+                }
+            </div>
+            <div class="tab-pane active" id="stand-by-units">
+                @{
+                    Html.RenderPartial(WebConstants.ViewPages.Partial.DeviceStandByUnits, Model.StandByUnit);
+                }
+            </div>
+            <div class="tab-pane" id="pop-upload">
+                @{
+                    Html.RenderPartial(WebConstants.ViewPages.Partial.DevicePopUpload, Model.StandByUnit);
+                }
+            </div>
+            <div class="tab-pane" id="imei-history">
+                <h3>We use css to change the background color of the content to be equal to the tab</h3>
+            </div>
+        </div>
     </div>
-    <div class="col-sm-3">
-
-    </div>
-    <div class="col-sm-3">
-
-    </div>
-    <div class="col-sm-3">
-
-    </div>
-</div>
+</form>
