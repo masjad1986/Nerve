@@ -117,5 +117,10 @@
   "warranty-change": "Warranty Change",
   "warranty-invoice": "Warranty Invoice",
   "warranty-type": "Warranty Type",
-  "welcome-to-nerve-logistics": "Welcome to Nerve Logistics"
+  "welcome-to-nerve-logistics": "Welcome to Nerve Logistics",
+  "dispatch-date": "Dispatch Date",
+  "customer-name": "Customer Name",
+  "collection-point-code": "Collection Point Code",
+  "collection-point-name": "Collection Point Name",
+  "log-date": "Log Date"
 }

@@ -4,8 +4,18 @@
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 
 @{
-    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
     var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+{
+LanguageKeys.Brand,
+LanguageKeys.Model,
+LanguageKeys.ImeiNumber,
+LanguageKeys.Returned,
+LanguageKeys.Battery,
+LanguageKeys.Charger,
+LanguageKeys.Other
+}, languageId);
 }
 
 
@@ -13,7 +23,7 @@
     <div class="panel-body">
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @await _languageTranslator.TranslateAsync(LanguageKeys.Brand, langugeId)
+                @translateItems[LanguageKeys.Brand]
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Brand, new { @class = "form-control", })
@@ -22,7 +32,7 @@
         </div>
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @await _languageTranslator.TranslateAsync(LanguageKeys.Model, langugeId)
+                @translateItems[LanguageKeys.Model]
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Model, new { @class = "form-control", })
@@ -31,7 +41,7 @@
         </div>
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @await _languageTranslator.TranslateAsync(LanguageKeys.ImeiNumber, langugeId)
+                @translateItems[LanguageKeys.ImeiNumber]
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.IMEINumber, new { @class = "form-control", })
@@ -44,25 +54,25 @@
             </div>
             <div class="col-sm-4">
                 @Html.CheckBoxFor(model => model.IsReturned)
-                @await _languageTranslator.TranslateAsync(LanguageKeys.Returned, langugeId)
+                @translateItems[LanguageKeys.Returned]
             </div>
         </div>
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @await _languageTranslator.TranslateAsync(LanguageKeys.Returned, langugeId)
+                @translateItems[LanguageKeys.Returned]
             </div>
             <div class="col-sm-4">
                 <label class="checkbox-inline">
                     @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Battery)
-                    @await _languageTranslator.TranslateAsync(LanguageKeys.Battery, langugeId)
+                    @translateItems[LanguageKeys.Battery]
                 </label>
                 <label class="checkbox-inline">
                     @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Charger)
-                    @await _languageTranslator.TranslateAsync(LanguageKeys.Charger, langugeId)
+                    @translateItems[LanguageKeys.Charger]
                 </label>
                 <label class="checkbox-inline">
                     @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Other)
-                    @await _languageTranslator.TranslateAsync(LanguageKeys.Other, langugeId)
+                    @translateItems[LanguageKeys.Other]
                 </label>
             </div>
         </div>

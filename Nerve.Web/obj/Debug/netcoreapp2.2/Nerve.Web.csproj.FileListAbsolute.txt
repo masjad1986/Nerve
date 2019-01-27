@@ -42,3 +42,4 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Devi
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_StandByUnits.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_Actions.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_PopUpload.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_ImeiHistory.g.cshtml.cs

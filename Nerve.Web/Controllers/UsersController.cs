@@ -12,6 +12,7 @@ using Nerve.Web.Filters;
 
 namespace Nerve.Web.Controllers
 {
+    [Route("[controller]")]
     public class UsersController : Controller
     {
         private string _controllerName;
@@ -27,6 +28,7 @@ namespace Nerve.Web.Controllers
         }
 
         [AllowAnonymous]
+        [Route("Login")]
         public async Task<IActionResult> Login()
         {
             var user = await Task.FromResult(new User());
@@ -35,6 +37,7 @@ namespace Nerve.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [Route("Login")]
         public async Task<IActionResult> Login(User user)
         {
             try
@@ -84,7 +87,7 @@ namespace Nerve.Web.Controllers
         }
 
         //[NerveAuthorize]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             HttpContext.Session.Remove(WebConstants.SessionKeys.User);
             HttpContext.Session.Remove(WebConstants.SessionKeys.UserMenus);

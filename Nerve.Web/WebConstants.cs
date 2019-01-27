@@ -7,7 +7,7 @@ namespace Nerve.Web
 {
     public class WebConstants
     {
-        
+
         public class SessionKeys
         {
             public const string User = "user";
@@ -28,9 +28,11 @@ namespace Nerve.Web
         {
             public const string NoLanguageResourceFound = "No language resrouce file found";
             public const string InvalidLanguageResourceFile = "Unable to read language resource file.";
+            public const string JobAlreadyOpenForImeiNumber = "Job already open for given IMEI number";
+            public const string ContactAdministrator = "An error has occurred while processing your request. Please try again or contact to administrator.";
         }
 
-        public class ViewPages
+        public class ViewPage
         {
             public const string DeviceLogin = "Views/FrontDesk/Device/Index.cshtml";
             public class Partial
@@ -40,12 +42,18 @@ namespace Nerve.Web
                 public const string DeviceFaultAccessoryDetails = "~/Views/FrontDesk/Device/_FaultAccessoryDetails.cshtml";
                 public const string DeviceStandByUnits = "~/Views/FrontDesk/Device/_StandByUnits.cshtml";
                 public const string DevicePopUpload = "~/Views/FrontDesk/Device/_PopUpload.cshtml";
+                public const string DeviceImeiHistory = "~/Views/FrontDesk/Device/_ImeiHistory.cshtml";
             }
         }
 
         public class PageTitle
         {
             public const string DeviceLogin = "Device Login";
+        }
+
+        public class PageRoute
+        {
+            public const string DeviceAuthenticate = "Authenticate";
         }
     }
 }

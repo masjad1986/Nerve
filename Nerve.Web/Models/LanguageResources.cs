@@ -21,14 +21,18 @@ namespace Nerve.Web
         public const string Clear = "clear";
         public const string CollectedDate = "collected-date";
         public const string CollectionPoint = "collection-point";
+        public const string CollectionPointCode = "collection-point-code";
+        public const string CollectionPointName = "collection-point-name";
         public const string CreditLimtRecouncillationReport = "credit-limt-recouncillation-report";
         public const string CrnSlashRmaNumber = "crn-slash-rma-number";
+        public const string CustomerName = "customer-name";
         public const string CustomerAddress = "customer-address";
         public const string CustomerFirstName = "customer-first-name";
         public const string CustomerLastName = "customer-last-name";
         public const string DebitNoteEntry = "debit-note-entry";
         public const string Delete = "delete";
         public const string DeviceLogin = "device-login";
+        public const string DispatchDate = "dispatch-date";
         public const string DispatchNote = "dispatch-note";
         public const string DoA = "doa";
         public const string EcoCode = "eco-code";
@@ -59,6 +63,7 @@ namespace Nerve.Web
         public const string JobNumber = "job-number";
         public const string LoginDetails = "login-details";
         public const string Logout = "logout";
+        public const string LogDate = "log-date";
         public const string MobileNumber = "mobile-number";
         public const string Model = "model";
         public const string NationalId = "national-id";

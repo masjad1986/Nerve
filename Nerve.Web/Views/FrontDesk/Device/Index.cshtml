@@ -17,17 +17,17 @@
       data-ajax-mode="replace"
       data-ajax-update="#ajaxpanel">
     <div class="main-container">
-        <partial name="@WebConstants.ViewPages.Partial.Actions" model="@menuId" />
+        <partial name="@WebConstants.ViewPage.Partial.Actions" model="@menuId" />
     </div>
     <div id="device-login" class="main-container">
         <ul class="nav nav-pills">
-            <li>
+            <li class="active">
                 <a href="#login-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.LoginDetails, langugeId)</a>
             </li>
             <li>
                 <a href="#fault-accessory-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.FaultAndAccessoryDetails, langugeId)</a>
             </li>
-            <li class="active">
+            <li>
                 <a href="#stand-by-units" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.StandByUnits, langugeId)</a>
             </li>
             <li>
@@ -38,28 +38,30 @@
             </li>
         </ul>
         <div class="tab-content clearfix">
-            <div class="tab-pane" id="login-details">
+            <div class="tab-pane active" id="login-details">
                 @{
-                    Html.RenderPartial(WebConstants.ViewPages.Partial.DeviceLoginDetails, Model.Device);
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceLoginDetails, Model.LoginDetail);
                 }
             </div>
             <div class="tab-pane" id="fault-accessory-details">
                 @{
-                    Html.RenderPartial(WebConstants.ViewPages.Partial.DeviceFaultAccessoryDetails, Model.Device);
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceFaultAccessoryDetails, Model.FaultAccessory);
                 }
             </div>
-            <div class="tab-pane active" id="stand-by-units">
+            <div class="tab-pane" id="stand-by-units">
                 @{
-                    Html.RenderPartial(WebConstants.ViewPages.Partial.DeviceStandByUnits, Model.StandByUnit);
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceStandByUnits, Model.StandByUnit);
                 }
             </div>
             <div class="tab-pane" id="pop-upload">
                 @{
-                    Html.RenderPartial(WebConstants.ViewPages.Partial.DevicePopUpload, Model.StandByUnit);
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DevicePopUpload, Model.PopUpload);
                 }
             </div>
             <div class="tab-pane" id="imei-history">
-                <h3>We use css to change the background color of the content to be equal to the tab</h3>
+                @{
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceImeiHistory, Model.HistoryItems);
+                }
             </div>
         </div>
     </div>

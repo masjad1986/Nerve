@@ -1,0 +1,90 @@
+﻿@page
+@model List<Nerve.Repository.Dtos.ImeiHistoryDto>
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{
+    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var resouceKeys = new List<string>
+{
+LanguageKeys.Brand,
+LanguageKeys.CustomerName,
+LanguageKeys.CollectionPointCode,
+LanguageKeys.CollectionPointName,
+LanguageKeys.TrackingNumber,
+LanguageKeys.LogDate,
+LanguageKeys.DispatchDate
+};
+    var translateItems = await _languageTranslator.TranslateManyAsync(resouceKeys, langugeId);
+}
+
+<div class="panel panel-default top-margin-10">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">@translateItems[LanguageKeys.CollectionPointCode]</th>
+                            <th scope="col">@translateItems[LanguageKeys.CollectionPointName]</th>
+                            <th scope="col">@translateItems[LanguageKeys.TrackingNumber]</th>
+                            <th scope="col">@translateItems[LanguageKeys.LogDate]</th>
+                            <th scope="col">@translateItems[LanguageKeys.DispatchDate]</th>
+                            <th scope="col">@translateItems[LanguageKeys.CustomerName]</th>
+                            <th scope="col">@translateItems[LanguageKeys.Brand]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Collection Point 1</td>
+                            <td>Collection Name 1</td>
+                            <td>1234567890</td>
+                            <td>26-Jan-2019</td>
+                            <td>Demo Customer 1</td>
+                            <td>Samsung</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Collection Point 1</td>
+                            <td>Collection Name 1</td>
+                            <td>1234567890</td>
+                            <td>26-Jan-2019</td>
+                            <td>Demo Customer 1</td>
+                            <td>Samsung</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Collection Point 1</td>
+                            <td>Collection Name 1</td>
+                            <td>1234567890</td>
+                            <td>26-Jan-2019</td>
+                            <td>Demo Customer 1</td>
+                            <td>Samsung</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Collection Point 1</td>
+                            <td>Collection Name 1</td>
+                            <td>1234567890</td>
+                            <td>26-Jan-2019</td>
+                            <td>Demo Customer 1</td>
+                            <td>Samsung</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Collection Point 1</td>
+                            <td>Collection Name 1</td>
+                            <td>1234567890</td>
+                            <td>26-Jan-2019</td>
+                            <td>Demo Customer 1</td>
+                            <td>Samsung</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

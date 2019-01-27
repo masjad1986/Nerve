@@ -117,5 +117,10 @@
   "warranty-change": "تغییر گارانتی",
   "warranty-invoice": "صورتحساب گارانتی",
   "warranty-type": "نوع گارانتی",
-  "welcome-to-nerve-logistics": "خوش آمدید به لجستیک عصبی"
+  "welcome-to-nerve-logistics": "خوش آمدید به لجستیک عصبی",
+  "dispatch-date": "Dispatch Date",
+  "customer-name": "Customer Name",
+  "collection-point-code": "Collection Point Code",
+  "collection-point-name": "Collection Point Name",
+  "log-date": "Log Date"
 }

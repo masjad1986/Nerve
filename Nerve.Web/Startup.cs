@@ -40,27 +40,6 @@ namespace Nerve.Web
 
             services.Configure<Repository.AppSettings>(Configuration.GetSection("ApplicationSettings"));
             services.AddMvc();
-            //services.Configure<RequestLocalizationOptions>(options =>
-            //{
-            //    var supportedCultures = new[]
-            //    {
-            //        new CultureInfo("en-US"),
-            //        new CultureInfo("fa")
-            //    };
-            //    options.DefaultRequestCulture = new RequestCulture("en-US", "en-US");
-
-            //    // You must explicitly state which cultures your application supports.
-            //    // These are the cultures the app supports for formatting 
-            //    // numbers, dates, etc.
-
-            //    options.SupportedCultures = supportedCultures;
-
-            //    // These are the cultures the app supports for UI strings, 
-            //    // i.e. we have localized resources for.
-
-            //    options.SupportedUICultures = supportedCultures;
-            //});
-
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession(state =>
             {
@@ -126,27 +105,10 @@ namespace Nerve.Web
                 app.UseHsts();
             }
 
-            //var supportedCultures = new[]
-            //{
-            //    new CultureInfo("en-US"),
-            //    new CultureInfo("fr"),
-            //};
-
-            //app.UseRequestLocalization(new RequestLocalizationOptions
-            //{
-            //    DefaultRequestCulture = new RequestCulture("en-US"),
-            //    // Formatting numbers, dates, etc.
-            //    SupportedCultures = supportedCultures,
-            //    // UI strings that we have localized.
-            //    SupportedUICultures = supportedCultures
-            //});
-
             // app.UseHttpsRedirection();
-
             app.UseSession();
             app.UseStaticFiles();
             //app.UseCookiePolicy();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

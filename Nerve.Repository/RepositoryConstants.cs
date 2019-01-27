@@ -11,9 +11,11 @@ namespace Nerve.Repository
 
     public class SCP
     {
-        public class Tables
+        public class MasterTables
         {
             public const string UserMaster = "usermaster";
+            public const string WarrantyType = "M_WarrantyType";
+            public const string DeliveryAgent = "M_DeliveryAgent";
         }
 
         public class Views

@@ -1,12 +1,20 @@
 ﻿@page
-@model Nerve.Repository.Dtos.DeviceDto
+@model Nerve.Repository.Dtos.FaultAccessoryDto
 @using Microsoft.AspNetCore.Http
 @using Nerve.Repository.Enums
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 
 @{
-    var langugeId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
     var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+
+    var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+    {
+        LanguageKeys.FaultCode,
+        LanguageKeys.FaultDetails,
+        LanguageKeys.Remarks,
+        LanguageKeys.Accessories
+    }, languageId);
 }
 
 <div class="panel panel-default top-margin-10">
@@ -15,32 +23,32 @@
             <div class="col-sm-4">
                 <div class="row row-space">
                     <div class="col-sm-4 text-right">
-                        @await _languageTranslator.TranslateAsync(LanguageKeys.FaultCode, langugeId)
+                        @translateItems[LanguageKeys.FaultCode]
                     </div>
                     <div class="col-sm-8">
-                        @Html.TextBoxFor(model => model.IMEINumber, new { @class = "form-control", })
+                        @Html.TextBoxFor(model => model.FaultCode, new { @class = "form-control", })
                         <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
                     </div>
                 </div>
                 <div class="row row-space">
                     <div class="col-sm-4 text-right">
-                        @await _languageTranslator.TranslateAsync(LanguageKeys.FaultDetails, langugeId)
+                        @translateItems[LanguageKeys.FaultDetails]
                     </div>
                     <div class="col-sm-8">
-                        @Html.TextAreaFor(model => model.IMEINumber, new { @class = "form-control text-area", })
+                        @Html.TextAreaFor(model => model.FaultDetail, new { @class = "form-control text-area", })
                     </div>
                 </div>
                 <div class="row row-space">
                     <div class="col-sm-4 text-right">
-                        @await _languageTranslator.TranslateAsync(LanguageKeys.Remarks, langugeId)
+                        @translateItems[LanguageKeys.Remarks]
                     </div>
                     <div class="col-sm-8">
-                        @Html.TextAreaFor(model => model.IMEINumber, new { @class = "form-control text-area", })
+                        @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control text-area", })
                     </div>
                 </div>
             </div>
             <div class="col-sm-8">
-                @await _languageTranslator.TranslateAsync(LanguageKeys.Accessories, langugeId)
+                @translateItems[LanguageKeys.Accessories]
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
