@@ -9,9 +9,12 @@ using System.Collections.Generic;
 using Nerve.Repository.Enums;
 using Nerve.Web.Translation;
 using Nerve.Web.Filters;
+using Nerve.Web.Helpers;
+using Nerve.Web.Enums;
 
 namespace Nerve.Web.Controllers
 {
+    [Route("")]
     [Route("[controller]")]
     public class UsersController : Controller
     {
@@ -45,7 +48,15 @@ namespace Nerve.Web.Controllers
                 var authenticatedUser = await _userService.AuthenticateAsync(user.Username, user.Password);
                 if (authenticatedUser == null)
                 {
-                    ViewBag.Error = "Invalid user credentials. Please try again.";
+                    var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.LoginError,
+                        LanguageKeys.LoginErrorInvalidCredential
+                    });
+
+                    TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.LoginError],
+                        translateItems[LanguageKeys.LoginErrorInvalidCredential],
+                        NotificationType.Error);
                     return View();
                 }
 
@@ -58,7 +69,11 @@ namespace Nerve.Web.Controllers
 
                 // session username
                 HttpContext.Session.SetString(WebConstants.SessionKeys.UserName,
-                       authenticatedUser.Username);
+                       authenticatedUser.Username.Trim());
+
+                // session user id
+                HttpContext.Session.SetString(WebConstants.SessionKeys.UserId,
+                      Convert.ToString(authenticatedUser.UserId).Trim());
 
                 // session group id
                 HttpContext.Session.SetString(WebConstants.SessionKeys.GroupId,
@@ -82,7 +97,17 @@ namespace Nerve.Web.Controllers
             catch (Exception ex)
             {
                 _logger.Log(controller: _controllerName, action: "Login", exception: ex);
-                return Unauthorized(user.UserId);
+                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.LoginError,
+                        LanguageKeys.ContactAdministrator
+                    });
+
+                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.LoginError],
+                    translateItems[LanguageKeys.ContactAdministrator],
+                    NotificationType.Error);
+
+                return View();
             }
         }
 

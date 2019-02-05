@@ -23,7 +23,8 @@ LanguageKeys.Other
     <div class="panel-body">
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @translateItems[LanguageKeys.Brand]
+                @Html.Raw(translateItems[LanguageKeys.Brand])
+
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Brand, new { @class = "form-control", })
@@ -32,7 +33,8 @@ LanguageKeys.Other
         </div>
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @translateItems[LanguageKeys.Model]
+                @Html.Raw(translateItems[LanguageKeys.Model])
+
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Model, new { @class = "form-control", })
@@ -41,7 +43,7 @@ LanguageKeys.Other
         </div>
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @translateItems[LanguageKeys.ImeiNumber]
+                @Html.Raw(translateItems[LanguageKeys.ImeiNumber])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.IMEINumber, new { @class = "form-control", })
@@ -54,25 +56,27 @@ LanguageKeys.Other
             </div>
             <div class="col-sm-4">
                 @Html.CheckBoxFor(model => model.IsReturned)
-                @translateItems[LanguageKeys.Returned]
+                @Html.Raw(translateItems[LanguageKeys.Returned])
+
             </div>
         </div>
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @translateItems[LanguageKeys.Returned]
+                @Html.Raw(translateItems[LanguageKeys.Returned])
             </div>
             <div class="col-sm-4">
                 <label class="checkbox-inline">
                     @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Battery)
-                    @translateItems[LanguageKeys.Battery]
+                    @Html.Raw(translateItems[LanguageKeys.Battery])
                 </label>
                 <label class="checkbox-inline">
                     @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Charger)
-                    @translateItems[LanguageKeys.Charger]
+                    @Html.Raw(translateItems[LanguageKeys.Charger])
                 </label>
                 <label class="checkbox-inline">
                     @Html.RadioButtonFor(model => model.IssueReturned, ReturnedType.Other)
-                    @translateItems[LanguageKeys.Other]
+                    @Html.Raw(translateItems[LanguageKeys.Other])
+
                 </label>
             </div>
         </div>

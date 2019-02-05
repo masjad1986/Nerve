@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nerve.Web.Translation;
 using NetCore.AutoRegisterDi;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -39,7 +40,10 @@ namespace Nerve.Web
             //});
 
             services.Configure<Repository.AppSettings>(Configuration.GetSection("ApplicationSettings"));
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(option =>
+            {
+                option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession(state =>
             {
@@ -76,7 +80,6 @@ namespace Nerve.Web
                 var repositoryAssembly = Assembly.Load(repositoryAssemblies[0]);
                 RegisterRepository(builder, repositoryAssembly);
             }
-
 
             // Register auto mapper
             RegisterAutoMapper(builder);
@@ -132,10 +135,6 @@ namespace Nerve.Web
         private static void RegisterRepository(ContainerBuilder builder, Assembly repositoryAssembly)
         {
             builder.RegisterAssemblyModules(repositoryAssembly);
-            //builder.RegisterType<GGLContext>()
-            //    .As<GGLContext>()
-            //    .InstancePerLifetimeScope();
-
             builder.RegisterAssemblyTypes(repositoryAssembly).AssignableTo(typeof(Profile)).As<Profile>();
             builder.RegisterAssemblyTypes(repositoryAssembly).Where(x => x.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces();

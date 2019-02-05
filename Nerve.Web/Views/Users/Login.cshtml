@@ -1,5 +1,6 @@
 ﻿@model Nerve.Repository.User
 @using Nerve.Repository.Enums
+@using Nerve.Web.Enums
 @{
     Layout = null;
 }
@@ -11,26 +12,39 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/color.css" rel="stylesheet" />
 </environment>
-<environment exclude="Development">
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-            asp-fallback-test="window.jQuery"
-            crossorigin="anonymous"
-            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-    </script>
-    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-            crossorigin="anonymous"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-    </script>
-    <script src="~/js/site.min.js" asp-append-version="true"></script>
-    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-          asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-          asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-</environment>
+@*<environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="~/lib/jquery-toaster/jquery.toaster.js"></script>
+
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>*@
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<!--[if !IE]>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<script src="~/lib/jquery-toaster/jquery.toaster.js"></script>
+
 <style>
     .clearfix {
         margin-top: 100px;
@@ -43,7 +57,45 @@
         let layoutHeight = height ? height - 154 : 700;
         $(".body-container").innerHeight(layoutHeight);
         $('input[value="0"]').attr('checked', 'checked');
+        notify();
     });
+
+    function notify() {
+        var notification = '@Html.Raw(TempData[WebConstants.TempDataKeys.Notification])';
+            if (notification != null && notification != undefined) {
+                var notifyJson = JSON.parse(notification);
+                let iconCss = '';
+                if (notifyJson) {
+                    $("#notifyModalTitle").text('');
+                    $("#notifyModalMessage").text('');
+                    $("#notifyModalIcon").attr('class','');
+
+                    switch (notifyJson.type) {
+                        case @Convert.ToInt32(NotificationType.Error):
+                            iconCss = 'glyphicon glyphicon-remove-circle red'
+                            break;
+                        case @Convert.ToInt32(NotificationType.Information):
+                            iconCss = 'glyphicon glyphicon-info-sign-circle lightblue'
+                            break;
+                        case @Convert.ToInt32(NotificationType.Success):
+                            iconCss = 'glyphicon glyphicon-ok-circle green'
+                            break;
+                        case @Convert.ToInt32(NotificationType.Warning):
+                            iconCss = 'glyphicon glyphicon-warning-sign bg-yellow';
+                            break;
+                        default:
+                            break;
+                    }
+
+                    iconCss = iconCss + " notification-icon";
+
+                    $("#notifyModalTitle").text(notifyJson.title);
+                    $("#notifyModalMessage").text(notifyJson.message);
+                    $("#notifyModalIcon").addClass(iconCss);
+                    $("#notifyModel").modal();
+                }
+            }
+    }
 </script>
 <div class="body-container">
     <div class="row">
@@ -110,6 +162,25 @@
             </div>
         </div>
         <div class="col-md-2"></div>
+        <div class="modal fade" id="notifyModel" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <div>
+                            <span class="modal-title model-title-header" id="notifyModalTitle">Modal Header</span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="notifyModalIcon"></div>
+                        <div id="notifyModalMessage" class="notification-message"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

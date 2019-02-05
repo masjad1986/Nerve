@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Nerve.Repository
+@using Nerve.Web.Enums
+@using System.Web
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,12 +9,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nerve : @ViewData["Title"]</title>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-theme.css" />*@
+    <link href="~/lib/bootstrap/dist/css/datepicker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/color.css" rel="stylesheet" />
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
     <script>
         $(document).ready(function () {
             let height = screen.height;
@@ -21,7 +28,53 @@
             $("li.menu-link-click").click(function () {
                 let list = $(this).children("a").text();
             });
+            raiseNotification('@Html.Raw(TempData[WebConstants.TempDataKeys.Notification])');
         })
+
+        function showSpinner() {
+            $("#pageLoader").removeClass('hide');
+        }
+
+        function hideSpinner() {
+            $("#pageLoader").addClass('hide');
+        }
+
+        function raiseNotification(notification, isConversionRequired) {
+            if (!!notification) {
+                var notifyJson = !!isConversionRequired ? JSON.parse(notification) : notification;
+                let iconCss = '';
+                if (notifyJson) {
+                    $("#notifyModalTitle").text('');
+                    $("#notifyModalMessage").text('');
+                    $("#notifyModalIcon").attr('class','');
+
+                    switch (notifyJson.type) {
+                        case @Convert.ToInt32(NotificationType.Error):
+                            iconCss = 'glyphicon glyphicon-remove-circle red'
+                            break;
+                        case @Convert.ToInt32(NotificationType.Information):
+                            iconCss = 'glyphicon glyphicon-info-sign-circle lightblue'
+                            break;
+                        case @Convert.ToInt32(NotificationType.Success):
+                            iconCss = 'glyphicon glyphicon-ok-circle green'
+                            break;
+                        case @Convert.ToInt32(NotificationType.Warning):
+                            iconCss = 'glyphicon glyphicon-warning-sign bg-yellow';
+                            break;
+                        default:
+                            iconCss = 'glyphicon glyphicon-ok-circle green';
+                            break;
+                    }
+
+                    iconCss = iconCss + " notification-icon";
+
+                    $("#notifyModalTitle").text(notifyJson.title);
+                    $("#notifyModalMessage").text(notifyJson.message);
+                    $("#notifyModalIcon").addClass(iconCss);
+                    $("#notifyModel").modal();
+                }
+            }
+        }
     </script>
 </head>
 <body>
@@ -33,6 +86,31 @@
             .DeserializeObject<List<UserMenuAccess>>(Context.Session.GetString(WebConstants.SessionKeys.UserMenus));
     }
     <div class="main-container">
+        <div class="modal fade" id="notifyModel" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <div>
+                            <span class="modal-title model-title-header" id="notifyModalTitle">Modal Header</span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <p id="notifyModalIcon"></p>
+                        <div id="notifyModalMessage" class="notification-message"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="spinner hide" id="pageLoader">
+            <div class="spinner-content">
+                <img src="~/images/loading.gif" /> Loading...
+            </div>
+        </div>
+        
         <img style="width:100%;height:100px;" src="~/images/banner.jpg" />
         <partial name="_Menus" for="@menus" />
         <nav aria-label="breadcrumb">

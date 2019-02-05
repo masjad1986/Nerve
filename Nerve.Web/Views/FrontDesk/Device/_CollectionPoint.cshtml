@@ -1,0 +1,57 @@
+﻿@model List<Nerve.Repository.Dtos.CollectionPointDto>
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@using Nerve.Web.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@{
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var resourceKeys = new List<string>()
+{
+LanguageKeys.Code,
+LanguageKeys.Name,
+LanguageKeys.NoRecodsAvaiable
+};
+
+    var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
+}
+
+@if (Model != null && Model.Any())
+{
+    <script>
+        $("#select-collection-point").show();
+    </script>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">@Html.Raw(@translateItems[LanguageKeys.Code])</th>
+                <th scope="col">@Html.Raw(@translateItems[LanguageKeys.Name])</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input type="radio" id="collection-check-@item.Id" name="collection-point-radio" class="collection-point-click" value="@item.Id" /></td>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+
+    <script>
+        $("#select-collection-point").hide();
+    </script>
+
+    <div class="no-records-message">
+        <span class="@persianFont">
+            @Html.Raw(translateItems[LanguageKeys.NoRecodsAvaiable])
+        </span>
+    </div>
+}

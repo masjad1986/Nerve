@@ -7,10 +7,13 @@ namespace Nerve.Web
 {
     public class WebConstants
     {
-
+        public const string HasDeleteActionOptionAccess = "0";
+        public const string HasActionOptionAccess = "1";
+        public const string LoginType = "RETAIL";
         public class SessionKeys
         {
             public const string User = "user";
+            public const string UserId = "userid";
             public const string UserMenus = "menus";
             public const string UserName = "username";
             public const string GroupId = "group";
@@ -24,12 +27,16 @@ namespace Nerve.Web
             public const string BreadCrumb = "bread-crumb";
         }
 
+        public class TempDataKeys
+        {
+            public const string Notification = "notification";
+        }
+
         public class NotifyMessage
         {
             public const string NoLanguageResourceFound = "No language resrouce file found";
             public const string InvalidLanguageResourceFile = "Unable to read language resource file.";
             public const string JobAlreadyOpenForImeiNumber = "Job already open for given IMEI number";
-            public const string ContactAdministrator = "An error has occurred while processing your request. Please try again or contact to administrator.";
         }
 
         public class ViewPage
@@ -38,7 +45,8 @@ namespace Nerve.Web
             public class Partial
             {
                 public const string Actions = "_Actions";
-                public const string DeviceLoginDetails = "~/Views/FrontDesk/Device/_LoginDetails.cshtml";
+                public const string DeviceCollectionPointView = "~/Views/FrontDesk/Device/_CollectionPoint.cshtml";
+                public const string DeviceLoginDetails = "~/Views/FrontDesk/Device/_LoginDetail.cshtml";
                 public const string DeviceFaultAccessoryDetails = "~/Views/FrontDesk/Device/_FaultAccessoryDetails.cshtml";
                 public const string DeviceStandByUnits = "~/Views/FrontDesk/Device/_StandByUnits.cshtml";
                 public const string DevicePopUpload = "~/Views/FrontDesk/Device/_PopUpload.cshtml";
@@ -54,6 +62,10 @@ namespace Nerve.Web
         public class PageRoute
         {
             public const string DeviceAuthenticate = "Authenticate";
+            public const string DeviceCollectionPoint = "CollectionPoint";
+            public const string GetBrandByProductName = "Product";
+            public const string GetOptionByBrandAndProductAndCollectionPoint = "Option";
+            public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "ServiceCentre";
         }
     }
 }

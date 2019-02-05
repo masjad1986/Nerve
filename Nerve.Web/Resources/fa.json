@@ -10,8 +10,8 @@
   "collected-date": "تاریخ جمع آوری شده",
   "collection-point": "نقطه جمع آوری",
   "customer-address": "آدرس مشتری",
-  "customer-first-name": "نام مشتری",
-  "customer-last-name": "نام خانوادگی مشتری",
+  "customer-name": "نام مشتری",
+  "last-name": "نام خانوادگی مشتری",
   "crn-slash-rma-number": "شماره CRN / RMA",
   "credit-limt-recouncillation-report": "گزارش تحریم اعتباری",
   "delete": "حذف",
@@ -119,8 +119,12 @@
   "warranty-type": "نوع گارانتی",
   "welcome-to-nerve-logistics": "خوش آمدید به لجستیک عصبی",
   "dispatch-date": "Dispatch Date",
-  "customer-name": "Customer Name",
   "collection-point-code": "Collection Point Code",
   "collection-point-name": "Collection Point Name",
-  "log-date": "Log Date"
+  "log-date": "Log Date",
+  "login-error": "Login Error",
+  "invalid-user-credential": "The username or password you entered is incorrect.",
+  "contact-administrator": "An error has occurred while processing. Please contact administrator or try again after some time.",
+  "job-already-open": "Job already open for given IMEI number",
+  "error-field-required-imei-number": "IMEI number is required."
 }

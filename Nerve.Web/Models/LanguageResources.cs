@@ -27,8 +27,7 @@ namespace Nerve.Web
         public const string CrnSlashRmaNumber = "crn-slash-rma-number";
         public const string CustomerName = "customer-name";
         public const string CustomerAddress = "customer-address";
-        public const string CustomerFirstName = "customer-first-name";
-        public const string CustomerLastName = "customer-last-name";
+        public const string LastName = "last-name";
         public const string DebitNoteEntry = "debit-note-entry";
         public const string Delete = "delete";
         public const string DeviceLogin = "device-login";
@@ -134,5 +133,23 @@ namespace Nerve.Web
         public const string WarrantyType = "warranty-type";
         public const string WelcomeToNerveLogistics = "welcome-to-nerve-logistics";
         public const string ImeiSlashSerialNumber = "imei-slash-serial-no";
+        public const string LoginError = "login-error";
+        public const string LoginErrorInvalidCredential = "invalid-user-credential";
+        public const string ContactAdministrator = "contact-administrator";
+        public const string JobAlreadyOpenForImeiNumber = "job-already-open";
+        public const string Date = "date";
+        public const string FarsiName = "farsi-name";
+        public const string PostalCode = "postal-code";
+        public const string Notes = "notes";
+        public const string DropDownSelectOption = "drop-down-select";
+        public const string NoRecodsAvaiable = "no-records-available";
+        public const string Name = "name";
+        public const string Code = "code";
+        public const string NoCollectionPointSelected = "no-collection-point-selected";
+        public const string ExitConfirmation = "exit-confirmation";
+        public const string ExitConfirmationMessage = "exit-confirmation-message";
+        //all validation keys 
+        public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
+        public const string ErrorFieldRequiredCollectionPoint = "error-field-required-collection-point";
     }
 }

@@ -1,7 +1,7 @@
-﻿@page
-@model Nerve.Web.ViewModels.DeviceLoginDetailViewModel
+﻿@model Nerve.Web.ViewModels.DeviceViewModel
 @using Microsoft.AspNetCore.Http
 @using Nerve.Repository.Enums
+@using Nerve.Web.Enums
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
 
 @{
@@ -34,9 +34,9 @@ LanguageKeys.ServiceCentre,
 LanguageKeys.Type,
 LanguageKeys.Model,
 LanguageKeys.UnitDroppedDate,
-LanguageKeys.CustomerFirstName,
+LanguageKeys.CustomerName,
 LanguageKeys.CollectedDate,
-LanguageKeys.CustomerLastName,
+LanguageKeys.LastName,
 LanguageKeys.TelephoneNumber,
 LanguageKeys.MobileNumber,
 LanguageKeys.Email,
@@ -47,7 +47,11 @@ LanguageKeys.VendorRmaNumber,
 LanguageKeys.JobNumber,
 LanguageKeys.CustomerAddress,
 LanguageKeys.NationalId,
-LanguageKeys.EcoCode
+LanguageKeys.EcoCode,
+LanguageKeys.DeviceLogin,
+LanguageKeys.ErrorFieldRequiredImeiNumber,
+LanguageKeys.JobAlreadyOpenForImeiNumber
+
 };
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
@@ -56,55 +60,62 @@ LanguageKeys.EcoCode
     $(document).ready(function () {
         let ENTER_KEYCODE = 13;
         $("#imei-search").click(function () {
-            debugger;
             searchImeiNumber();
         });
 
-        $("#text-imei-number").on('keyup', function (e) {
+        $("#search-imei-number").on('keyup', function (e) {
             if (e.keyCode == ENTER_KEYCODE) {
-                debugger;
                 searchImeiNumber();
             }
         });
 
         function searchImeiNumber() {
-            let number = $("#text-imei-number").val();
+            let _title = '@Html.Raw(translateItems[LanguageKeys.DeviceLogin])';
+            let _message = '';
+            let number = $("#search-imei-number").val();
             if (number == undefined || number == '') {
-                return alert('Please enter IMEI number.')
+                _message = '@Html.Raw(translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber])';
+                showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false, false);
+                return;
             }
-
             let url = '@WebConstants.PageRoute.DeviceAuthenticate/';
             $.ajax({
                 'url': url + number,
                 'type': 'GET',
-                'async': true,
+                'async': false,
                 'data': number,
                 'dataType': 'application/json',
-                'success': function (value) {
-                    alert(value);
-                },
-                'error': function (error) {
-                    alert(JSON.stringify(error));
+                complete: function (value) {
+                    if (!!value && value.responseText == "false") {
+                        $("#text-imei-number").val(number);
+                    } else {
+                        _message = '@Html.Raw(translateItems[LanguageKeys.JobAlreadyOpenForImeiNumber])';
+                        showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false, false);
+                    }
                 }
             });
+        }
+
+        function showNotification(title, message, type, timout, conversionRequired) {
+            raiseNotification({ 'autoDismissed': timout, 'title': title, 'message': message, 'type': type }, conversionRequired);
         }
     });
 </script>
 <div class="panel panel-default top-margin-10">
     <div class="panel-body">
-        <b>@translateItems[LanguageKeys.SearchCriteria]</b>
+        <b>@Html.Raw(translateItems[LanguageKeys.SearchCriteria])</b>
     </div>
     <div class="panel-body">
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.ImeiSlashSerialNumber]
+                @Html.Raw(translateItems[LanguageKeys.ImeiSlashSerialNumber])
             </div>
             <div class="col-sm-3">
-                @Html.TextBoxFor(model => model.Device.IMEINumber, new { @class = "form-control", @id = "text-imei-number" })
+                @Html.TextBoxFor(model => model.ImeiNumber, new { @class = "form-control", @id = "search-imei-number" })
                 <span id="imei-search" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
             </div>
-            <button type="button" id="device-clear-button" class="btn btn-pr">@translateItems[LanguageKeys.Clear] </button>
-            @Html.CheckBoxFor(model => model.Device.DoA) @translateItems[LanguageKeys.DoA]
+            <button type="button" id="device-clear-button" class="btn btn-pr">@Html.Raw(translateItems[LanguageKeys.Clear]) </button>
+            @Html.CheckBoxFor(model => model.Device.DoA) @Html.Raw(translateItems[LanguageKeys.DoA])
         </div>
     </div>
 </div>
@@ -112,22 +123,22 @@ LanguageKeys.EcoCode
     <div id="ajaxpanel" class="panel-body">
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.CollectionPoint]
+                @Html.Raw(translateItems[LanguageKeys.CollectionPoint])
             </div>
             <div class="col-sm-4 has-feedback">
                 @Html.TextBoxFor(model => model.Device.CollectionPoint, new { @class = "form-control disabled", })
                 <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.ImeiSlashSerialNumber]
+                @Html.Raw(translateItems[LanguageKeys.ImeiSlashSerialNumber])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.IMEINumber, new { @class = "form-control disabled", })
+                @Html.TextBoxFor(model => model.Device.IMEINumber, new { @class = "form-control disabled", @id = "text-imei-number" })
             </div>
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.TrackingNumber]
+                @Html.Raw(translateItems[LanguageKeys.TrackingNumber])
             </div>
             <div class="col-sm-3 has-feedback">
                 @Html.TextBoxFor(model => model.Device.CollectionPoint, new { @class = "form-control disabled", })
@@ -137,41 +148,47 @@ LanguageKeys.EcoCode
                 @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.AdditionalSerialNumber]
+                @Html.Raw(translateItems[LanguageKeys.PopDate])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.AdditionalSerialNumber, new { @class = "form-control", })
+                @Html.TextBoxFor(model => model.Device.PopDate, new { @class = "form-control", })
             </div>
+            @*<div class="col-sm-2 text-right @persianFont">
+                    Html.Raw(translateItems[LanguageKeys.AdditionalSerialNumber])
+                </div>
+                <div class="col-sm-4">
+                    Html.TextBoxFor(model => model.Device.AdditionalSerialNumber, new { @class = "form-control", })
+                </div>*@
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.CrnSlashRmaNumber]
+                @Html.Raw(translateItems[LanguageKeys.Date])
             </div>
             <div class="col-sm-3">
-                @Html.TextBoxFor(model => model.Device.CrnNumber, new { @class = "form-control disabled", })
+                @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-1 checkbox">
-                @Html.CheckBoxFor(model => model.Device.AutoCrn)
-                @translateItems[LanguageKeys.AutoCrn]
+                @*@Html.CheckBoxFor(model => model.Device.AutoCrn)
+                    @Html.Raw(translateItems[LanguageKeys.AutoCrn])*@
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.PhysicalCondition]
+                @Html.Raw(translateItems[LanguageKeys.PhysicalCondition])
             </div>
             <div class="col-sm-4  has-feedback">
                 @Html.TextBoxFor(model => model.Device.PhysicalCondition, new { @class = "form-control disabled", })
-                <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Product]
+                @Html.Raw(translateItems[LanguageKeys.Product])
             </div>
             <div class="col-sm-4  has-feedback">
-                @Html.TextBoxFor(model => model.Device.Product, new { @class = "form-control disabled", })
-                <span class="glyphicon glyphicon-search cursor form-control-feedback"></span>
+                @Html.DropDownListFor(model => model.Device.Product,
+                                     new SelectList(Model.ProductItems, "Value", "Text"), "Select...",
+                                     new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Password]
+                @Html.Raw(translateItems[LanguageKeys.Password])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.Password, new { @class = "form-control disabled", })
@@ -179,41 +196,41 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Brand]
+                @Html.Raw(translateItems[LanguageKeys.Brand])
             </div>
             <div class="col-sm-4  has-feedback">
-                @Html.TextBoxFor(model => model.Device.Brand, new { @class = "form-control disabled", })
-                <span class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+                @Html.DropDownListFor(model => model.Device.Brand,
+                                     new SelectList(Model.BrandItems, "Value", "Text"), "Select...",
+                                     new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
             </div>
             <div class="col-sm-4">
                 <label class="radio-inline">
                     @Html.RadioButtonFor(model => model.Device.PasswordType, PasswordType.Hami)
-                    @translateItems[LanguageKeys.Hami]
+                    @Html.Raw(translateItems[LanguageKeys.Hami])
                 </label>
                 <label class="radio-inline">
                     @Html.RadioButtonFor(model => model.Device.PasswordType, PasswordType.NonHami)
-                    @translateItems[LanguageKeys.NonHami]
+                    @Html.Raw(translateItems[LanguageKeys.NonHami])
                 </label>
             </div>
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.PopDate]
+                @Html.Raw(translateItems[LanguageKeys.PopDate])
             </div>
             <div class="col-sm-3">
-                @Html.TextBoxFor(model => model.Device.PopFromDate, new { @class = "form-control", })
-
+                @Html.TextBoxFor(model => model.Device.PopDate, new { @class = "form-control", })
             </div>
             <div class="col-sm-1 no-left-padding">
-                @Html.TextBoxFor(model => model.Device.PopToDate, new { @class = "form-control", })
+                @Html.TextBoxFor(model => model.Device.Date, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.ExpireDate]
+                @Html.Raw(translateItems[LanguageKeys.ExpireDate])
             </div>
             <div class="col-sm-3">
-                @Html.TextBoxFor(model => model.Device.ExpiryFromDate, new { @class = "form-control", })
+                @Html.TextBoxFor(model => model.Device.ExpiryDate, new { @class = "form-control", })
             </div>
 
             <div class="col-sm-1 no-left-padding">
@@ -222,15 +239,15 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Forwarder]
+                @Html.Raw(translateItems[LanguageKeys.Forwarder])
             </div>
             <div class="col-sm-4">
                 @Html.DropDownListFor(model => model.Device.Forwarder,
-                              new SelectList(ViewBag.DeliveryAgentItems, "Value", "Text"), "Select...",
-                              new { @class = "form-control disabled", })
+                                             new SelectList(Model.DeliveryAgentItems, "Value", "Text"), "Select...",
+                                             new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.AirwayBillNumber]
+                @Html.Raw(translateItems[LanguageKeys.AirwayBillNumber])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.AirwayBillNumber, new { @class = "form-control", })
@@ -238,29 +255,33 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.TransferTo]
+                @Html.Raw(translateItems[LanguageKeys.TransferTo])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.TransferTo, new { @class = "form-control", })
+                @Html.DropDownListFor(model => model.Device.TransferTo,
+                                     new SelectList(Model.TransferItems, "Value", "Text"), "Select...",
+                                     new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.WarrantyType]
+                @Html.Raw(translateItems[LanguageKeys.WarrantyType])
             </div>
             <div class="col-sm-4">
                 @Html.DropDownListFor(model => model.Device.WarrantyType,
-                                        new SelectList(ViewBag.WarrantyTypeItems, "Value", "Text"), "Select...",
-                                        new { @class = "form-control disabled", })
+                                     new SelectList(Model.WarrantyTypeItems, "Value", "Text"), "Select...",
+                                     new { @class = "form-control disabled", })
             </div>
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.ServiceCentre]
+                @Html.Raw(translateItems[LanguageKeys.ServiceCentre])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.ServiceCentre, new { @class = "form-control", })
+                @Html.DropDownListFor(model => model.Device.ServiceCentre,
+                                     new SelectList(Model.ServiceCentreItems, "Value", "Text"), "Select...",
+                                     new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Type]
+                @Html.Raw(translateItems[LanguageKeys.Type])
             </div>
             <div class="col-sm-4">
                 @Html.DropDownListFor(model => model.Device.Type, new SelectList(new List<SelectListItem>() { new SelectListItem { Text = "Select...", Value = "-1" } }), new { @class = "form-control disabled", })
@@ -268,13 +289,15 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Model]
+                @Html.Raw(translateItems[LanguageKeys.Model])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.Model, new { @class = "form-control disabled", })
+                @Html.DropDownListFor(model => model.Device.Model,
+                                     new SelectList(Model.ModelItems, "Value", "Text"), "Select...",
+                                     new { @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.UnitDroppedDate]
+                @Html.Raw(translateItems[LanguageKeys.UnitDroppedDate])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.UnitDroppedDate, new { @class = "form-control", })
@@ -282,13 +305,13 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.CustomerFirstName]
+                @Html.Raw(translateItems[LanguageKeys.CustomerName])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.CustomerFirstName, new { @class = "form-control", })
+                @Html.TextBoxFor(model => model.Device.CustomerName, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.CollectedDate]
+                @Html.Raw(translateItems[LanguageKeys.CollectedDate])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.CollectionDate, new { @class = "form-control", })
@@ -296,13 +319,13 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.CustomerLastName]
+                @Html.Raw(translateItems[LanguageKeys.LastName])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.CustomerLastName, new { @class = "form-control", })
+                @Html.TextBoxFor(model => model.Device.LastName, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.TelephoneNumber]
+                @Html.Raw(translateItems[LanguageKeys.TelephoneNumber])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.TelephoneNumber, new { @class = "form-control", })
@@ -310,13 +333,13 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.MobileNumber]
+                @Html.Raw(translateItems[LanguageKeys.MobileNumber])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.MobileNumber, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.Email]
+                @Html.Raw(translateItems[LanguageKeys.Email])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.Email, new { @class = "form-control", })
@@ -324,21 +347,21 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.SmsLanguage]
+                @Html.Raw(translateItems[LanguageKeys.SmsLanguage])
             </div>
             <div class="col-sm-4">
                 <label class="radio-inline">
                     @Html.RadioButtonFor(model => model.Device.SmsLanguage, LanguageType.Farsi)
-                    @translateItems[LanguageKeys.English]
+                    @Html.Raw(translateItems[LanguageKeys.English])
                 </label>
                 <label class="radio-inline">
                     @Html.RadioButtonFor(model => model.Device.SmsLanguage, LanguageType.Farsi)
-                    @translateItems[LanguageKeys.Farsi]
+                    @Html.Raw(translateItems[LanguageKeys.Farsi])
                 </label>
 
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.VendorRmaNumber]
+                @Html.Raw(translateItems[LanguageKeys.VendorRmaNumber])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.VendorRmaNumber, new { @class = "form-control", })
@@ -346,7 +369,7 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.JobNumber]
+                @Html.Raw(translateItems[LanguageKeys.JobNumber])
             </div>
             <div class="col-sm-2">
                 @Html.TextBoxFor(model => model.Device.JobNumber, new { @class = "form-control", })
@@ -355,7 +378,7 @@ LanguageKeys.EcoCode
                 @Html.TextBoxFor(model => model.Device.JobNumber2, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.CustomerAddress]
+                @Html.Raw(translateItems[LanguageKeys.CustomerAddress])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.CustomerAddress, new { @class = "form-control", })
@@ -363,13 +386,13 @@ LanguageKeys.EcoCode
         </div>
         <div class="row row-space">
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.NationalId]
+                @Html.Raw(translateItems[LanguageKeys.NationalId])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.NationalId, new { @class = "form-control", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
-                @translateItems[LanguageKeys.EcoCode]
+                @Html.Raw(translateItems[LanguageKeys.EcoCode])
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Device.EcoCode, new { @class = "form-control", })

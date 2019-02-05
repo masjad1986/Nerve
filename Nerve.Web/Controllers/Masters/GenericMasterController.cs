@@ -1,0 +1,139 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Nerve.Service;
+using Nerve.Web.Enums;
+using Nerve.Web.Helpers;
+using Nerve.Web.Translation;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using static Nerve.Web.WebConstants;
+
+namespace Nerve.Web.Controllers
+{
+    [Route("[controller]")]
+    public class GenericMasterController : Controller
+    {
+        private const string _controller = "GenericMaster";
+        private readonly ILogger _logger;
+        private readonly ILanguageTranslator _languageTranslator;
+        private readonly IGenericMasterService _genericMasterService;
+        private readonly IServiceCentreLocationService _serviceCentreLocationService;
+        public GenericMasterController(ILogger logger,
+            ILanguageTranslator languageTranslator,
+            IGenericMasterService genericMasterService,
+            IServiceCentreLocationService serviceCentreLocationService)
+        {
+            _logger = logger;
+            _languageTranslator = languageTranslator;
+            _genericMasterService = genericMasterService;
+            _serviceCentreLocationService = serviceCentreLocationService;
+        }
+
+        #region Product Model Route
+
+        /// <summary>
+        /// Get list of model by product and brand
+        /// </summary>
+        /// <param name="brandName">Name of the brand.</param>
+        /// <param name="productName">Name of the product.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint + "/{brandName}/{productName}")]
+        public async Task<IActionResult> GetModelByBrandAndProductAsync(string brandName, string productName)
+        {
+            try
+            {
+                var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(productName, brandName);
+                return Ok(models);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(_controller, WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, ex);
+                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.Model,
+                        LanguageKeys.ContactAdministrator
+                    });
+
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    NotificationHelper.GetNotification(translateItems[LanguageKeys.Model],
+                    translateItems[LanguageKeys.ContactAdministrator],
+                    NotificationType.Error));
+            }
+        }
+
+        #endregion
+
+        #region Service Centre Route
+
+        /// <summary>
+        /// Get list of service centre by their colleciton point,product and brand
+        /// </summary>
+        /// <param name="collectionPoint"></param>
+        /// <param name="brandName"></param>
+        /// <param name="productName"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(WebConstants.PageRoute.GetServiceCentreByCollectionPointAndBrandAndProduct + "/{collectionPoint}/{brandName}/{productName}")]
+        public async Task<IActionResult> GetServiceCentreByCollectionPointAndBrandAndProductAsync(int collectionPoint, string brandName, string productName)
+        {
+            try
+            {
+                var centres = await _serviceCentreLocationService.GetByIdAndBrandAndProductAsync(collectionPoint, productName, brandName);
+                return Ok(centres);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(_controller, WebConstants.PageRoute.GetServiceCentreByCollectionPointAndBrandAndProduct, ex);
+                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.Model,
+                        LanguageKeys.ContactAdministrator
+                    });
+
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    NotificationHelper.GetNotification(translateItems[LanguageKeys.ServiceCentre],
+                    translateItems[LanguageKeys.ContactAdministrator],
+                    NotificationType.Error));
+            }
+        }
+
+        #endregion
+
+        #region Fault Code Route
+
+        #endregion
+        #region Collection Points Route
+        //[HttpGet]
+        //[Route(WebConstants.PageRoute.GetCollectionPointByUser + "/{search}")]
+        //public async Task<IActionResult> GetCollectionPointByUserAsync(string search)
+        //{
+        //    try
+        //    {
+        //        var userId = HttpContext.Session.GetString(SessionKeys.UserId);
+        //        var collections = await _genericMasterService.GetCollectionPointByUserIdAsync(userId, search);
+        //        return Ok(collections);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.Log(_controller, WebConstants.PageRoute.GetCollectionPointByUser, ex);
+        //        var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+        //            {
+        //                LanguageKeys.CollectionPoint,
+        //                LanguageKeys.ContactAdministrator
+        //            });
+
+        //        return StatusCode(StatusCodes.Status500InternalServerError,
+        //            NotificationHelper.GetNotification(translateItems[LanguageKeys.CollectionPoint],
+        //            translateItems[LanguageKeys.ContactAdministrator],
+        //            NotificationType.Error));
+        //    }
+        //}
+
+        #endregion
+
+
+    }
+}

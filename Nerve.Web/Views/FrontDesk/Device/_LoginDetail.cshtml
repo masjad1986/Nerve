@@ -1,0 +1,547 @@
+﻿@model Nerve.Web.ViewModels.DeviceViewModel
+@using Microsoft.AspNetCore.Http
+@using Nerve.Repository.Enums
+@using Nerve.Web.Enums
+@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+
+@{
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var resourceKeys = new List<string>
+{
+LanguageKeys.SearchCriteria,
+LanguageKeys.ImeiNumber,
+LanguageKeys.Date,
+LanguageKeys.Clear,
+LanguageKeys.CollectionPoint,
+LanguageKeys.TrackingNumber,
+LanguageKeys.FaultCode,
+LanguageKeys.FaultDetails,
+LanguageKeys.Notes,
+LanguageKeys.PhysicalCondition,
+LanguageKeys.Product,
+LanguageKeys.PopUpload,
+LanguageKeys.FarsiName,
+LanguageKeys.Brand,
+LanguageKeys.Accessories,
+LanguageKeys.PopDate,
+LanguageKeys.ExpireDate,
+LanguageKeys.Forwarder,
+LanguageKeys.TransferTo,
+LanguageKeys.WarrantyType,
+LanguageKeys.ServiceCentre,
+LanguageKeys.Type,
+LanguageKeys.Model,
+LanguageKeys.CustomerName,
+LanguageKeys.CollectedDate,
+LanguageKeys.LastName,
+LanguageKeys.TelephoneNumber,
+LanguageKeys.MobileNumber,
+LanguageKeys.Email,
+LanguageKeys.VendorRmaNumber,
+LanguageKeys.PostalCode,
+LanguageKeys.CustomerAddress,
+LanguageKeys.NationalId,
+LanguageKeys.EcoCode,
+LanguageKeys.DeviceLogin,
+LanguageKeys.ErrorFieldRequiredImeiNumber,
+LanguageKeys.JobAlreadyOpenForImeiNumber,
+LanguageKeys.DropDownSelectOption,
+LanguageKeys.NoCollectionPointSelected
+
+};
+    var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
+}
+
+<script>
+    $(document).ready(function () {
+        let ENTER_KEYCODE = 13;
+        $("#imei-search").click(function () {
+            searchImeiNumber();
+        });
+
+        $("#search-imei-number").on('keyup', function (e) {
+            if (e.keyCode == ENTER_KEYCODE) {
+                searchImeiNumber();
+            }
+        });
+
+        $("#dropdown-product").on('change', function () {
+            showSpinner();
+            let url = '@Url.Action(WebConstants.PageRoute.GetBrandByProductName, "Brand")';
+            let productName = $(this).find("option:selected").text();
+
+            let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
+            $("#dropdown-brand").empty();
+            $("#dropdown-model").empty();
+            $("#dropdown-transfer-to").empty();
+            $("#dropdown-service-centre").empty();
+            $("#dropdown-fault-code").empty();
+            $("#dropdown-model").append($("<option     />").val("-1").text(select));
+            $("#dropdown-transfer-to").append($("<option     />").val("-1").text(select));
+            $("#dropdown-service-centre").append($("<option     />").val("-1").text(select));
+            $("#dropdown-fault-code").append($("<option     />").val("-1").text(select));
+            $.ajax({
+                'url': url + '/' + productName,
+                'type': 'GET',
+                'async': false,
+                'dataType': 'application/json',
+                complete: function (response) {
+                    $("#dropdown-brand").append($("<option     />").val("-1").text(select));
+                    if (!!response && response.status == @StatusCodes.Status200OK) {
+                        let items = JSON.parse(response.responseText);
+                        if (items && items.length > 0) {
+                            bindDropDown("#dropdown-brand", items, "code", "name");
+                        }
+                    } else {
+                        raiseNotification(response.responseText, true);
+                    }
+                    hideSpinner();
+                }
+            });
+        });
+
+        $("#dropdown-brand").on('change', function () {
+            bindOption();
+        });
+
+        $("#dropdown-brand").on('change', function () {
+            bindOption();
+        });
+
+        $("#search-collection-point").click(function () {
+            bindCollectionPoint();
+        });
+
+        $("#text-collection-point").on('keyup', function (e) {
+            if (e.keyCode == ENTER_KEYCODE) {
+                bindCollectionPoint();
+            }
+        });
+
+        $("#select-collection-point").click(function () {
+            debugger;
+            let point = $('input[name=collection-point-radio]:checked');
+            if (point && point.length > 0) {
+                let text = point.parent().parent().find("td:eq(2)").html();
+                $("#collection-point-id").val(point.val());
+                $("#text-collection-point").val(text);
+                $("#collection-point-modal").modal('hide');
+            } else {
+                $("#collection-point-error").removeClass('hide');
+            }
+        });
+
+        $("#close-collection-point-error").click(function() {
+            $("#collection-point-error").addClass('hide');
+        })
+
+        $("#collection-point-modal").on('hidden.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+
+        $("#tracking-date").datepicker()
+            .on('changeDate', function (ev) {
+                //if (ev.date.valueOf() < startDate.valueOf()) {
+                //}
+            });
+
+        function searchImeiNumber() {
+            showSpinner();
+            let _title = '@Html.Raw(translateItems[LanguageKeys.DeviceLogin])';
+            let _message = '';
+            let number = $("#search-imei-number").val();
+            if (number == undefined || number == '') {
+                _message = '@Html.Raw(translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber])';
+                hideSpinner();
+                showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
+                return;
+            }
+
+            let url = '@WebConstants.PageRoute.DeviceAuthenticate/';
+            $.ajax({
+                'url': url + number,
+                'type': 'GET',
+                'async': false,
+                'data': number,
+                'dataType': 'application/json',
+                complete: function (value) {
+                    if (!!value && value.responseText == "false") {
+                        $("#text-imei-number").val(number);
+                    } else {
+                        _message = '@Html.Raw(translateItems[LanguageKeys.JobAlreadyOpenForImeiNumber])';
+                        showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
+                    }
+
+                    hideSpinner();
+                }
+            });
+        }
+
+        function bindDropDown(selector, data, textColumn, valueColumn) {
+            $.each(data, function (index) {
+                let item = data[index];
+                let value = item[valueColumn];
+                let text = item[textColumn];
+                $(selector).append($("<option     />").val(value).text(text));
+            });
+        }
+
+        function showNotification(title, message, type, timout) {
+            raiseNotification({ 'autoDismissed': timout, 'title': title, 'message': message, 'type': type }, false);
+        }
+
+        function bindCollectionPoint() {
+            showSpinner();
+            let search = $("#text-collection-point").val();
+            let url = `@Url.Action(WebConstants.PageRoute.DeviceCollectionPoint, "Device")`;
+            if (!!search)
+                url = `${url}/?search=${search}`;
+
+            $('#collection-point-partial').empty();
+            $('#collection-point-partial').load(url, function () {
+                $('#collection-point-partial').removeData('bs.modal');
+                $("#collection-point-modal").modal('show');
+                $("#collection-point-error").addClass('hide');
+                hideSpinner();
+            });
+        }
+
+        function bindOption() {
+            showSpinner();
+            let url = '@Url.Action(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, "Brand")';
+            let collectionPoint = $("#collection-point-id").val();
+            let brandName = $("#dropdown-brand").find("option:selected").text();
+            let productName = $("#dropdown-product").find("option:selected").text();
+            let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
+            $("#dropdown-model").empty();
+            $("#dropdown-transfer-to").empty();
+            $("#dropdown-service-centre").empty();
+            $("#dropdown-fault-code").empty()
+            $("#dropdown-model").append($("<option     />").val("-1").text(select));
+            $("#dropdown-transfer-to").append($("<option     />").val("-1").text(select));
+            $("#dropdown-service-centre").append($("<option     />").val("-1").text(select));
+            $("#dropdown-fault-code").append($("<option     />").val("-1").text(select));
+            $.ajax({
+                'url': `${url}/${brandName}/${productName}/${!!collectionPoint ? collectionPoint : 0}`,
+                'type': 'GET',
+                'async': false,
+                'dataType': 'application/json',
+                complete: function (response) {
+                    if (!!response && response.status == @StatusCodes.Status200OK) {
+                        let item = JSON.parse(response.responseText);
+                        if (item) {
+                            if (item.models && item.models.length > 0)
+                                bindDropDown("#dropdown-model", item.models, "code", "name");
+
+                            if (item.faultCodes && item.faultCodes.length > 0)
+                                bindDropDown("#dropdown-fault-code", item.faultCodes, "code", "name");
+
+                            if (item.accessories && item.accessories.length > 0)
+                                bindDropDown("#multi-select-accessories", item.accessories, "id", "description");
+
+                            if (item.centres && item.centres.length > 0) {
+                                bindDropDown("#dropdown-service-centre", item.centres, "id", "name");
+                                bindDropDown("#dropdown-transfer-to", item.centres, "id", "name");
+                            }
+                        }
+                    } else {
+                        raiseNotification(response.responseText, true);
+                    }
+                    hideSpinner();
+                }
+            });
+        }
+    });
+</script>
+<div class="panel panel-default top-margin-10">
+    <div class="panel-body">
+        <b>@Html.Raw(translateItems[LanguageKeys.SearchCriteria])</b>
+    </div>
+    <div class="panel-body">
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.ImeiNumber])
+            </div>
+            <div class="col-sm-3">
+                @Html.TextBoxFor(model => model.ImeiNumber, new { @class = "form-control", @id = "search-imei-number" })
+                <span id="imei-search" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+            </div>
+            <button type="button" id="device-clear-button" class="btn btn-pr">@Html.Raw(translateItems[LanguageKeys.Clear]) </button>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div id="ajaxpanel" class="panel-body">
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.CollectionPoint])
+            </div>
+            <div class="col-sm-4 has-feedback">
+                @Html.HiddenFor(model => model.Device.CollectionPoint, new { @id = "collection-point-id" })
+                @Html.TextBoxFor(model => model.Device.CollectionPointName, new { @class = "form-control", @id = "text-collection-point" })
+                <span id="search-collection-point" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.ImeiNumber])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.IMEINumber, new { @class = "form-control disabled", @id = "text-imei-number" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.PopDate])
+            </div>
+            <div class="col-sm-4">
+                <div class='input-group date'>
+                    @Html.TextBoxFor(model => model.Device.PopDate, new { @class = "form-control", @id = "pop-date" })
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.ExpireDate])
+            </div>
+            <div class="col-sm-4">
+                <div class='input-group date'>
+                    @Html.TextBoxFor(model => model.Device.ExpiryDate, new { @class = "form-control", @id = "expiry-date" })
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.TrackingNumber])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.TrackingNumber, new { @class = "form-control disabled", })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Date])
+            </div>
+            <div class="col-sm-4">
+                <div class='input-group date'>
+                    @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control", @id = "tracking-date" })
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Forwarder])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.Forwarder, new SelectList(Model.DeliveryAgentItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.WarrantyType])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.WarrantyType, new SelectList(Model.WarrantyTypeItems, "Value", "Text"), "Select...", new { @class = "form-control", })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Product])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.Product, new SelectList(Model.ProductItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", @id = "dropdown-product" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Type])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.Type, new SelectList(Model.TypeItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Brand])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.Brand, new SelectList(Model.BrandItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-brand" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.VendorRmaNumber])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.VendorRmaNumber, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Model])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.Model, new SelectList(Model.ModelItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-model" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.PhysicalCondition])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.PhysicalCondition, new SelectList(Model.PhysicalConditionItems, "Value", "Text"), "Select...", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.TransferTo])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.TransferTo, new SelectList(Model.TransferItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-transfer-to" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.FaultCode])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.FaultCode, new SelectList(Model.FaultCodeItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-fault-code" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.ServiceCentre])
+            </div>
+            <div class="col-sm-4">
+                @Html.DropDownListFor(model => model.Device.ServiceCentre, new SelectList(Model.ServiceCentreItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-service-centre" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.FaultDetails])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.FaultDetail, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.CustomerName])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.CustomerName, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.FarsiName])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.FarsiName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.LastName])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.LastName, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Accessories])
+            </div>
+            <div class="col-sm-4">
+                @Html.ListBoxFor(model => model.Device.Accessories, new SelectList(Model.AccessoryItems, "Value", "Text"), new { @class = "form-control", @id = "multi-select-accessories" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.MobileNumber])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.MobileNumber, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Email])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.TelephoneNumber])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.TelephoneNumber, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.EcoCode])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.EcoCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.NationalId])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.NationalId, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.Notes])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.Notes, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.PostalCode])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.NationalId, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-2 text-right @persianFont">
+                <span class="hidden">@Html.Raw(translateItems[LanguageKeys.PopUpload])</span>
+            </div>
+            <div class="col-sm-4">
+                @Html.TextBoxFor(model => model.Device.PopUploadPath, new { @class = "form-control hidden" })
+            </div>
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-2 text-right @persianFont">
+                @Html.Raw(translateItems[LanguageKeys.CustomerAddress])
+            </div>
+            <div class="col-sm-4">
+                @Html.TextAreaFor(model => model.Device.CustomerAddress, new { @class = "form-control" })
+            </div>
+            @*<div class="col-sm-2 text-right @persianFont">
+                    <span class="hidden">@Html.Raw(translateItems[LanguageKeys.PopUpload])</span>
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.Device.PopUploadPath, new { @class = "form-control hidden" })
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="collection-point-modal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.CollectionPoint])</span>
+            </div>
+            <div class="modal-body popup-grid-container">
+                <div id="collection-point-error" class="alert alert-danger hide">
+                    <button type="button" id="close-collection-point-error" class="close" aria-hidden="true">
+                        &times;
+                    </button>
+                    <span class="glyphicon glyphicon-remove-circle red">
+                    </span>
+                    <span class="@persianFont">
+                        @translateItems[LanguageKeys.NoCollectionPointSelected]
+                    </span>
+                </div>
+                <div id="collection-point-partial"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="select-collection-point">Select</button>
+            </div>
+        </div>
+    </div>
+</div>

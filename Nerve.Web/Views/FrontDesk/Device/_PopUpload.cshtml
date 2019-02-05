@@ -1,5 +1,4 @@
-﻿@page
-@model Nerve.Repository.Dtos.PopUploadDto
+﻿@model Nerve.Repository.Dtos.PopUploadDto
 @using Microsoft.AspNetCore.Http
 @using Nerve.Repository.Enums
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
@@ -15,7 +14,7 @@
     <div class="panel-body">
         <div class="row row-space">
             <div class="col-sm-1 text-right @persianFont">
-                @await _languageTranslator.TranslateAsync(LanguageKeys.PopPath, languageId)
+                @Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.PopPath, languageId))
             </div>
             <div class="col-sm-4">
                 <input type="file" class="form-control" />

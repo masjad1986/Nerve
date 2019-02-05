@@ -1,5 +1,4 @@
-﻿@page
-@model List<Nerve.Repository.Dtos.ImeiHistoryDto>
+﻿@model List<Nerve.Repository.Dtos.ImeiHistoryDto>
 @using Microsoft.AspNetCore.Http
 @using Nerve.Repository.Enums
 @inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
@@ -27,13 +26,13 @@ LanguageKeys.DispatchDate
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col">@translateItems[LanguageKeys.CollectionPointCode]</th>
-                            <th scope="col">@translateItems[LanguageKeys.CollectionPointName]</th>
-                            <th scope="col">@translateItems[LanguageKeys.TrackingNumber]</th>
-                            <th scope="col">@translateItems[LanguageKeys.LogDate]</th>
-                            <th scope="col">@translateItems[LanguageKeys.DispatchDate]</th>
-                            <th scope="col">@translateItems[LanguageKeys.CustomerName]</th>
-                            <th scope="col">@translateItems[LanguageKeys.Brand]</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.CollectionPointCode])</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.CollectionPointName])</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.TrackingNumber])</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.LogDate])</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.DispatchDate])</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.CustomerName])</th>
+                            <th scope="col">@Html.Raw(@translateItems[LanguageKeys.Brand])</th>
                         </tr>
                     </thead>
                     <tbody>

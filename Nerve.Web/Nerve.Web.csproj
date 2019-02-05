@@ -5,6 +5,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\FrontDesk\Device\_FaultAccessoryDetails.cshtml.cs" />
+    <Compile Remove="Views\FrontDesk\Device\_ImeiHistory.cshtml.cs" />
+    <Compile Remove="Views\FrontDesk\Device\_LoginDetails.cshtml.cs" />
+    <Compile Remove="Views\FrontDesk\Device\_PopUpload.cshtml.cs" />
+    <Compile Remove="Views\FrontDesk\Device\_StandByUnits.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\FrontDesk\Device\_FaultAccessoryDetails.cshtml" />
+    <Content Remove="Views\FrontDesk\Device\_ImeiHistory.cshtml" />
+    <Content Remove="Views\FrontDesk\Device\_LoginDetails.cshtml" />
+    <Content Remove="Views\FrontDesk\Device\_PopUpload.cshtml" />
+    <Content Remove="Views\FrontDesk\Device\_StandByUnits.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -21,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Masters\" />
     <Folder Include="Controllers\Reports\" />
     <Folder Include="Views\Operations\" />
     <Folder Include="Views\Reports\" />

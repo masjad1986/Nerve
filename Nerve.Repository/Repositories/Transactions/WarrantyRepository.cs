@@ -21,7 +21,7 @@ namespace Nerve.Repository
         /// Get list of warranty type stored in system
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<WarrantyTypeDto>> GetWarrantyTypesAsync()
+        public async Task<IEnumerable<TypeDto>> GetTypesAsync()
         {
             var query = $@"SELECT WarrantyTypeID AS [Id], WarrantyType AS [Name], PriorityLevel AS [Priority] FROM 
                             { SCP.MasterTables.WarrantyType } ORDER BY WarrantyType";
@@ -30,14 +30,14 @@ namespace Nerve.Repository
             var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query);
             if (!reader.HasRows)
             {
-                return new List<WarrantyTypeDto>();
+                return new List<TypeDto>();
             }
 
             var table = new DataTable();
             table.Load(reader);
 
             var items = (from row in table.AsEnumerable()
-                         select new WarrantyTypeDto
+                         select new TypeDto
                          {
                              Id = row.Field<int>("Id"),
                              Name = row.Field<string>("Name"),

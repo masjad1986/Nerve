@@ -9,5 +9,6 @@ namespace Nerve.Repository
     public interface IDeviceRepository
     {
         Task<bool> DeviceAuthenticationAsync(string imeiNumber);
+        Task<bool> SaveAsync(string userId, DeviceDto deviceDto);
     }
 }

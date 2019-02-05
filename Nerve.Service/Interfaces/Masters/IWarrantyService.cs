@@ -8,6 +8,6 @@ namespace Nerve.Service
 {
     public interface IWarrantyService
     {
-        Task<IEnumerable<WarrantyTypeDto>> GetWarrantyTypesAsync();
+        Task<IEnumerable<TypeDto>> GetTypesAsync();
     }
 }

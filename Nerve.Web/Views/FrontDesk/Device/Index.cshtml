@@ -9,6 +9,14 @@
     var menuId = Convert.ToInt32(Context.Request.Query["id"]);
     var langugeId = (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language);
     var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var actionBarModel = new PageActionBarModel
+    {
+        ActionPrefix = "device",
+        HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
+        MenuId = menuId,
+        ActionName = "",
+        ControllerName = ""
+    };
 }
 
 <form asp-action="Index" asp-controller="Device"
@@ -17,52 +25,52 @@
       data-ajax-mode="replace"
       data-ajax-update="#ajaxpanel">
     <div class="main-container">
-        <partial name="@WebConstants.ViewPage.Partial.Actions" model="@menuId" />
+        <partial name="@WebConstants.ViewPage.Partial.Actions" model="@actionBarModel" />
     </div>
     <div id="device-login" class="main-container">
-        <ul class="nav nav-pills">
-            <li class="active">
-                <a href="#login-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.LoginDetails, langugeId)</a>
-            </li>
-            <li>
-                <a href="#fault-accessory-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.FaultAndAccessoryDetails, langugeId)</a>
-            </li>
-            <li>
-                <a href="#stand-by-units" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.StandByUnits, langugeId)</a>
-            </li>
-            <li>
-                <a href="#pop-upload" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.PopUpload, langugeId)</a>
-            </li>
-            <li>
-                <a href="#imei-history" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.ImeiHistory, langugeId)</a>
-            </li>
-        </ul>
+        @*<ul class="nav nav-pills">
+                <li class="active">
+                    <a href="#login-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.LoginDetails, langugeId)</a>
+                </li>
+                <li>
+                    <a href="#fault-accessory-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.FaultAndAccessoryDetails, langugeId)</a>
+                </li>
+                <li>
+                    <a href="#stand-by-units" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.StandByUnits, langugeId)</a>
+                </li>
+                <li>
+                    <a href="#pop-upload" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.PopUpload, langugeId)</a>
+                </li>
+                <li>
+                    <a href="#imei-history" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.ImeiHistory, langugeId)</a>
+                </li>
+            </ul>*@
         <div class="tab-content clearfix">
             <div class="tab-pane active" id="login-details">
                 @{
-                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceLoginDetails, Model.LoginDetail);
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceLoginDetails, Model);
                 }
             </div>
-            <div class="tab-pane" id="fault-accessory-details">
-                @{
+            @*<div class="tab-pane" id="fault-accessory-details">
+                    @{
                     Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceFaultAccessoryDetails, Model.FaultAccessory);
-                }
-            </div>
-            <div class="tab-pane" id="stand-by-units">
-                @{
+                    }
+                </div>
+                <div class="tab-pane" id="stand-by-units">
+                    @{
                     Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceStandByUnits, Model.StandByUnit);
-                }
-            </div>
-            <div class="tab-pane" id="pop-upload">
-                @{
-                    Html.RenderPartial(WebConstants.ViewPage.Partial.DevicePopUpload, Model.PopUpload);
-                }
-            </div>
-            <div class="tab-pane" id="imei-history">
-                @{
-                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceImeiHistory, Model.HistoryItems);
-                }
-            </div>
+                    }
+                </div>*@
+            @*<div class="tab-pane" id="pop-upload">
+                    @{
+                        Html.RenderPartial(WebConstants.ViewPage.Partial.DevicePopUpload, Model.PopUpload);
+                    }
+                </div>*@
+            @*<div class="tab-pane" id="imei-history">
+                    @{
+                        Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceImeiHistory, Model.HistoryItems);
+                    }
+                </div>*@
         </div>
     </div>
 </form>

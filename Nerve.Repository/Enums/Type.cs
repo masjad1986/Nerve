@@ -5,9 +5,9 @@ using System.Text;
 namespace Nerve.Repository.Enums
 {
     /// <summary>
-    /// Warranty type enum.
+    /// type enum.
     /// </summary>
-    public enum WarrantyType
+    public enum Type
     {
         Bounce = 1,
         Normal = 3

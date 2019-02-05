@@ -19,11 +19,8 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.TagHelpers.input
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.TagHelpers.output.cache
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.RazorCoreGenerate.cache
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\Index.g.cshtml.cs
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_FaultAccessoryDetails.g.cshtml.cs
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_ImeiHistory.g.cshtml.cs
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_LoginDetails.g.cshtml.cs
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_PopUpload.g.cshtml.cs
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_StandByUnits.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_CollectionPoint.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\Device\_LoginDetail.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Home\About.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Home\Contact.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Home\Index.g.cshtml.cs

@@ -35,7 +35,7 @@ namespace Nerve.Translator
 
                 var service = new TranslateService(new BaseClientService.Initializer()
                 {
-                    ApiKey = key,
+                    ApiKey = "api key",
                     ApplicationName = "Translate API Sample"
                 });
 

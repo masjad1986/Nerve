@@ -12,11 +12,17 @@ namespace Nerve.Web.ViewModels
         public string ImeiNumber { get; set; }
         public bool IsValid { get; set; }
         public string ErrorMessage { get; set; }
-        public DeviceLoginDetailViewModel LoginDetail { get; set; }
-        public FaultAccessoryDto FaultAccessory { get; set; }
-        public StandByUnitDto StandByUnit { get; set; }
-        public PopUploadDto PopUpload { get; set; }
-        public List<ImeiHistoryDto> HistoryItems { get; set; }
-
+        public DeviceDto Device { get; set; }
+        public List<SelectListItem> WarrantyTypeItems { get; set; }
+        public List<SelectListItem> DeliveryAgentItems { get; set; }
+        public List<SelectListItem> BrandItems { get; set; }
+        public List<SelectListItem> ModelItems { get; set; }
+        public List<SelectListItem> ProductItems { get; set; }
+        public List<SelectListItem> TransferItems { get; set; }
+        public List<SelectListItem> ServiceCentreItems { get; set; }
+        public List<SelectListItem> TypeItems { get; set; }
+        public List<SelectListItem> PhysicalConditionItems { get; set; }
+        public List<SelectListItem> FaultCodeItems { get; set; }
+        public List<SelectListItem> AccessoryItems { get; set; }
     }
 }

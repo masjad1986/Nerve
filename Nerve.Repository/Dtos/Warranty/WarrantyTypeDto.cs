@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Nerve.Repository.Dtos
 {
-    public class WarrantyTypeDto
+    public class TypeDto
     {
         public int Id { get; set; }
         public string Name { get; set; }

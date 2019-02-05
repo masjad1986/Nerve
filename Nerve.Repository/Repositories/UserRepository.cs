@@ -34,7 +34,7 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName = "@password", Value = password },
                 new SqlParameter { ParameterName = "@module", Value = moduleId}
             };
-            var query = $"SELECT * FROM [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.UserMaster}] WHERE TRIM(USERID) = @username AND PASSWORD = @password AND USER_MODULE = @module";
+            var query = $"SELECT * FROM [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.UserMaster}] WHERE TRIM(USERNAME) = @username AND PASSWORD = @password AND USER_MODULE = @module";
             var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query, parameters);
