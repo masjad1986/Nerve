@@ -8,6 +8,6 @@ namespace Nerve.Repository
 { 
     public interface IWarrantyRepository
     {
-        Task<IEnumerable<TypeDto>> GetTypesAsync();
+        Task<List<TypeDto>> GetTypesAsync();
     }
 }

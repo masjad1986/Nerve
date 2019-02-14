@@ -8,6 +8,6 @@ namespace Nerve.Service
 {
     public interface IDeliveryService
     {
-        Task<IEnumerable<DeliveryAgentDto>> GetDeliveryAgentsAsync();
+        Task<List<DeliveryAgentDto>> GetDeliveryAgentsAsync();
     }
 }

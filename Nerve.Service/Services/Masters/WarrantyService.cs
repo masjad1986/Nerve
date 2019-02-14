@@ -19,7 +19,7 @@ namespace Nerve.Service
         /// Get list of warranty type.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<TypeDto>> GetTypesAsync()
+        public async Task<List<TypeDto>> GetTypesAsync()
         {
             return await _warrantyRepository.GetTypesAsync();
         }

@@ -137,5 +137,8 @@
   "no-collection-point-selected": "Please select collection point from the list.",
   "exit-confirmation": "Exit Confirmation",
   "exit-confirmation-message": "Unsaved changes will be lost. Are you sure want to exit from the this page?",
-  "error-field-required-imei-number": "IMEI number is required."
+  "exception-title": "Exception Occurred",
+  "error-field-required-imei-number": "IMEI number is required.",
+  "error-invalid-imei-number-length": "IMEI number length should be 16 charactor.",
+  "error-pop-date-should-less-than":  "Pop date should be less than expiry date."
 }

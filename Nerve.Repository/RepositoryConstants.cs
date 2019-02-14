@@ -36,11 +36,16 @@ namespace Nerve.Repository
             public const string AccessoriesDetail= "T_Accessories_Detail";
             public const string DealerLogMain = "T_DealerLog_Main";
             public const string DealerLog = "DealerLog";
+            public const string ReceiptDetail = "T_ReceiptTCDetail";
         }
 
+        public class TemporaryTables
+        {
+            public const string TempLocationPrefix = "tmplocprefix";
+        }
         public class Views
         {
-            public const string Jobs = "usermaster";
+            public const string Jobs = "vwnrv_jobs";
         }
     }
 

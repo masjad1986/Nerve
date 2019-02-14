@@ -3,17 +3,17 @@
 namespace Nerve.Repository.Enums
 {
     ////select WarrantyTypeid,WarrantyType from m_WarrantyType
-    //public enum WarrantyType
-    //{
-    //    [Description("Warranty")]
-    //    Warranty = 1,
+    public enum WarrantyType
+    {
+        [Description("Warranty")]
+        Warranty = 1,
 
-    //    [Description("Non Warranty")]
-    //    NonWarranty = 2,
+        [Description("Non Warranty")]
+        NonWarranty = 2
 
-    //    [Description("Service Warranty")]
-    //    ServiceWarranty = 3
-    //}
+        //[Description("Service Warranty")]
+        //ServiceWarranty = 3
+    }
 
     ///// <summary>
     ///// Warranty type enum.

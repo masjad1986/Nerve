@@ -20,7 +20,7 @@ namespace Nerve.Repository
         /// Get list of delivery agent.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<DeliveryAgentDto>> GetDeliveryAgentsAsync()
+        public async Task<List<DeliveryAgentDto>> GetDeliveryAgentsAsync()
         {
             var query = $@"SELECT Agent_Code AS [Code], Agent_Name AS [Name], Description, Country, MobileNo AS [Mobile],
                             Biker, Status, Target, Email, CC, Type 

@@ -18,7 +18,7 @@ namespace Nerve.Repository
             _settings = settings;
         }
 
-        public async Task<IEnumerable<BrandDto>> GetAllByProductNameAsync(string productName)
+        public async Task<List<BrandDto>> GetAllByProductNameAsync(string productName)
         {
             var query = $@"SELECT BrandCode AS [Code], BrandCode AS [Name], ProductName FROM 
                             {RepositoryConstants.SchemaName}.{SCP.MasterTables.Brand} WHERE ProductName = @product_name 
@@ -54,7 +54,7 @@ namespace Nerve.Repository
             return brands;
         }
 
-        public async Task<IEnumerable<BrandDto>> GetAllAsync()
+        public async Task<List<BrandDto>> GetAllAsync()
         {
             var query = $@"SELECT BrandCode AS [Code], BrandCode AS [Name], ProductName FROM 
                             {RepositoryConstants.SchemaName}.{SCP.MasterTables.Brand} 

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Nerve.Repository.Dtos;
 using Nerve.Service;
-using Nerve.Service.Services.Masters;
 using Nerve.Web.Enums;
 using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
@@ -26,17 +25,21 @@ namespace Nerve.Web.Controllers
         private readonly IBrandService _brandService;
         private readonly IGenericMasterService _genericMasterService;
         private readonly IServiceCentreLocationService _serviceCentreLocationService;
+        private readonly IAccessoryDetailService _accessoryDetailService;
+
         public BrandController(ILogger logger,
             ILanguageTranslator languageTranslator,
             IBrandService brandService,
             IGenericMasterService genericMasterService,
-            IServiceCentreLocationService serviceCentreLocationService)
+            IServiceCentreLocationService serviceCentreLocationService,
+            IAccessoryDetailService accessoryDetailService)
         {
             _logger = logger;
             _languageTranslator = languageTranslator;
             _brandService = brandService;
             _genericMasterService = genericMasterService;
             _serviceCentreLocationService = serviceCentreLocationService;
+            _accessoryDetailService = accessoryDetailService;
         }
 
         /// <summary>
@@ -84,15 +87,15 @@ namespace Nerve.Web.Controllers
             try
             {
                 var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(productName, brandName);
-                var centres = new List<ServiceCentreDto>();
+                var centres = new List<ServiceCentreLocationDto>();
                 if (collectionPoint.HasValue && collectionPoint.Value > 0)
                 {
-                    centres = (List<ServiceCentreDto>)await _serviceCentreLocationService
+                    centres = await _serviceCentreLocationService
                         .GetByIdAndBrandAndProductAsync(collectionPoint.Value, productName, brandName);
                 }
 
                 var faultCodes = await _genericMasterService.GetFaultCodesByBrandAsync(brandName);
-                var accessories = await _genericMasterService.GetAccessoriesByProductAndBrandAsync(productName, brandName);
+                var accessories = await _accessoryDetailService.GetByProductAndBrandAsync(productName, brandName);
                 var option = new
                 {
                     Models = models,

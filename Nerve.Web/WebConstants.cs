@@ -10,6 +10,11 @@ namespace Nerve.Web
         public const string HasDeleteActionOptionAccess = "0";
         public const string HasActionOptionAccess = "1";
         public const string LoginType = "RETAIL";
+        public const string ProductMobilePhone = "MOBILE PHONES";
+        public const string BrandHuawei = "HUAWEI";
+        public const int ImeiLength = 16;
+        public const string StdCodePrefix = "+98";
+        public const int WarrantyBounceDays = 15;
         public class SessionKeys
         {
             public const string User = "user";
@@ -63,9 +68,11 @@ namespace Nerve.Web
         {
             public const string DeviceAuthenticate = "Authenticate";
             public const string DeviceCollectionPoint = "CollectionPoint";
+            public const string SaveDevice = "Save";
             public const string GetBrandByProductName = "Product";
             public const string GetOptionByBrandAndProductAndCollectionPoint = "Option";
             public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "ServiceCentre";
+            public const string GetTrackingPrefix = "TrackingPrefix";
         }
     }
 }

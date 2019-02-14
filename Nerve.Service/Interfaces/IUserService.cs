@@ -10,6 +10,7 @@ namespace Nerve.Service
     public interface IUserService
     {
         Task<User> AuthenticateAsync(string username, string password);
-        Task<IEnumerable<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId);
+        Task<List<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId);
+        Task<string> GetTrackingPrefixByUserIdAsync(string userId);
     }
 }

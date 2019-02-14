@@ -12,12 +12,12 @@ namespace Nerve.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly AppSettings _appSettings;
+        private readonly IOptions<AppSettings> _appSettings;
         private readonly IDynamicSqlBuilderHelper _dynamicSqlBuilderHelper;
         public UserRepository(IOptions<AppSettings> appSettings, IDynamicSqlBuilderHelper dynamicSqlBuilderHelper)
         {
             _dynamicSqlBuilderHelper = dynamicSqlBuilderHelper;
-            _appSettings = appSettings.Value;
+            _appSettings = appSettings;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName = "@module", Value = moduleId}
             };
             var query = $"SELECT * FROM [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.UserMaster}] WHERE TRIM(USERNAME) = @username AND PASSWORD = @password AND USER_MODULE = @module";
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.HAMI_SCP_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query, parameters);
 
@@ -125,7 +125,7 @@ namespace Nerve.Repository
         /// <param name="groupId"></param>
         /// <param name="moduleId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId)
+        public async Task<List<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId)
         {
             var query = @"
                 SELECT 
@@ -148,7 +148,7 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName = "@status", Value = StatusType.Active }
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.HAMI_SCP_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);
@@ -185,107 +185,36 @@ namespace Nerve.Repository
             return output;
         }
 
-        /// <summary>
-        /// Authenticate user for login.
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public async Task<User> DeviceAuthenticateAsync(string imeiNo, int moduleId)
+        public async Task<TempLocationPrefixDto> GetTrackingPrefixByUserIdAsync(string userId)
         {
+            var query = $@"SELECT USERID AS [UserId], USERNAME AS [UserName], LOCPREFIX AS [LocationPrefix], BRTRACKING_PREFIX AS [TrackingPrefix]
+                        FROM [{RepositoryConstants.SchemaName}].[{SCP.TemporaryTables.TempLocationPrefix}] 
+                        WHERE userid=@user_id";
             var parameters = new SqlParameter[]
             {
-                new SqlParameter { ParameterName = "@imeino", Value = imeiNo },
-                new SqlParameter { ParameterName = "@module", Value = moduleId}
+                new SqlParameter { ParameterName ="@user_id", Value = userId }
             };
 
-            //SELECT dealerref FROM vwnrv_jobs j
-            //WHERE IMEINO = @imeino OR msnno = @imeino
-            //AND(ISNULL(dispatched, 0) = 0 OR ISNULL(jbcompleted, 0) = 0 OR ISNULL(repair_status, 0) = 0)
-
-            var query = $"SELECT * FROM [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.UserMaster}] WHERE TRIM(USERID) = @username AND PASSWORD = @password AND USER_MODULE = @module";
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.HAMI_SCP_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
-                query, parameters);
+                query,
+                parameters);
 
             if (!reader.HasRows)
-                return null;
+                return new TempLocationPrefixDto();
 
             var table = new DataTable();
             table.Load(reader);
 
-            var user = (from row in table.AsEnumerable()
-                        select new User
-                        {
-                            Id = row.Field<int>("T"),
-                            UserId = row.Field<string>("USERID"),
-                            Username = row.Field<string>("USERNAME"),
-                            CustomerId = row.Field<string>("CUSTOMERID"),
-                            LocPrefix = row.Field<string>("LOCPREFIX"),
-                            Email = row.Field<string>("EMAIL"),
-                            EmailCc = row.Field<string>("EmailCC"),
-                            EmailTo = row.Field<string>("ToEmail"),
-                            TCLoc = row.Field<string>("TCLOC"),
-                            Brand = row.Field<string>("BRAND"),
-                            Location = row.Field<string>("Location"),
-                            Emirate = row.Field<string>("Emirate"),
-                            Country = row.Field<string>("Country"),
-                            CollectedBy = row.Field<string>("CollectedBy"),
-                            CustomerType = row.Field<string>("CustomerType"),
-                            DeliveryAgent = row.Field<string>("DeliveryAgent"),
-                            Backenduser = row.Field<int?>("Backenduser"),
-                            UserType = row.Field<int?>("UserType"),
-                            FsUserType = row.Field<int?>("FS_UserType"),
-                            BBOffer = row.Field<int?>("BBOffer"),
-                            HTCOffer = row.Field<int?>("HTCOffer"),
-                            NOKIAOffer = row.Field<int?>("NOKIAOffer"),
-                            SiemensOffer = row.Field<int?>("SiemensOffer"),
-                            MotorolaOffer = row.Field<int?>("MotorolaOffer"),
-                            GenericOffer = row.Field<int?>("GenericOffer"),
-                            AppleOffer = row.Field<int?>("AppleOffer"),
-                            LaptopOffer = row.Field<int?>("LaptopOffer"),
-                            IPadOffer = row.Field<int?>("IPADOffer"),
-                            ThoshibaOffer = row.Field<int?>("ThoshibaOffer"),
-                            SonyOffer = row.Field<int?>("SonyOffer"),
-                            Camera = row.Field<int?>("Camera"),
-                            Mp3Player = row.Field<int?>("MP3Player"),
-                            GameConsole = row.Field<int?>("GameConsole"),
-                            MainPartnerCode = row.Field<string>("MainPartnercode"),
-                            MainSPartnerCode = row.Field<string>("MainSPartnercode"),
-                            SubPartner = row.Field<int?>("SubPartner"),
-                            LastLabelId = row.Field<string>("LastLabelID"),
-                            CurrencyCode = row.Field<string>("CurrCode"),
-                            ExchangeRate = row.Field<decimal?>("ExchRate"),
-                            LaptopLocationName = row.Field<string>("Laptop_LocationName"),
-                            CFLocationCode = row.Field<string>("CF_LocationCode"),
-                            LaptopMasterLocation = row.Field<string>("Laptop_MasterLocation"),
-                            CFPrefix = row.Field<string>("CF_Prefix"),
-                            Region = row.Field<string>("Region"),
-                            MainPartnerCode1 = row.Field<string>("MainPartnerCode1"),
-                            LoginType = row.Field<string>("LoginType"),
-                            CosmosUserId = row.Field<string>("COSMOSUSERID"),
-                            SendEmail = row.Field<byte?>("SendEmail"),
-                            Branch = row.Field<string>("Branch"),
-                            LanguageId = row.Field<int?>("Language_ID"),
-                            MultipleLocation = row.Field<string>("MultipleLocation"),
-                            Inactive = row.Field<int?>("Inactive"),
-                            Loc = row.Field<string>("LOC"),
-                            LaptopVenderId = row.Field<int?>("Laptop_VenderID"),
-                            GroupId = row.Field<int?>("GroupID"),
-                            IsCollectionRequired = row.Field<bool?>("CollectionRequired"),
-                            DiscountPercent = row.Field<decimal?>("DiscPer"),
-                            DefaultPageMenuId = row.Field<int?>("DefaultFormMenuID"),
-                            Type = row.Field<string>("Type"),
-                            MenuType = row.Field<int?>("MenuType"),
-                            EngineerCode = row.Field<string>("EnggCode"),
-                            DefaultCollectionPoint = row.Field<string>("DefaultCollectionPoint"),
-                            DefaultLocationCode = row.Field<string>("DefaultLocationCode"),
-                            CashPercent = row.Field<decimal?>("CashPer"),
-                            CPIncharge = row.Field<decimal?>("CP_INCHARGE"),
-                            UserModule = row.Field<int?>("USER_MODULE")
-                        }).FirstOrDefault();
-
-            return user;
+            var prefix = (from row in table.AsEnumerable()
+                               select new TempLocationPrefixDto
+                               {
+                                   UserId = row.Field<string>("UserId"),
+                                   UserName = row.Field<string>("UserName"),
+                                   LocationPrefix = row.Field<string>("LocationPrefix"),
+                                   TrackingPrefix = row.Field<string>("TrackingPrefix"),
+                               }).FirstOrDefault();
+            return prefix;
         }
     }
 }

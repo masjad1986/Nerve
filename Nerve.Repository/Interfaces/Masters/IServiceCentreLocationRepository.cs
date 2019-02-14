@@ -8,7 +8,8 @@ namespace Nerve.Repository
 {
     public interface IServiceCentreLocationRepository
     {
-        Task<IEnumerable<ServiceCentreLocationDto>> GetByIdAsync(int serviceCentreId);
-        Task<IEnumerable<ServiceCentreLocationDto>> GetByIdAndBrandAndProductAsync(int serviceCentreId, int productId, string brandCode);
+        Task<List<ServiceCentreLocationDto>> GetByIdAsync(int serviceCentreId);
+        Task<List<ServiceCentreLocationDto>> GetByIdAndBrandAndProductAsync(int serviceCentreId, string productName, string brandCode);
+        Task<List<ItemDto>> GetByUserIdAsync(string userId, string searchAccount);
     }
 }

@@ -76,7 +76,13 @@ namespace Nerve.Web.Translation
             var resourceDictionary = await ReadJsonLanguageResource(languageType);
             if (resourceDictionary.Any())
             {
-                return resourceDictionary.Where(x => resourceKeys.Contains(x.Key)).ToDictionary(x => x.Key, y => y.Value);
+                var translatedItems = resourceDictionary.Where(x => resourceKeys.Contains(x.Key)).ToDictionary(x => x.Key, y => y.Value);
+                if (translatedItems != null && translatedItems.Count != resourceKeys.Count)
+                {
+                    var missingItems = resourceKeys.Except(translatedItems.Select(x => x.Key).ToList()).ToDictionary(x => x, y => y);
+                    translatedItems = translatedItems.Concat(missingItems).ToDictionary(x => x.Key, y => y.Value);
+                }
+                return translatedItems;
             }
 
 

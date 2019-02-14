@@ -47,8 +47,8 @@ LanguageKeys.DeviceLogin,
 LanguageKeys.ErrorFieldRequiredImeiNumber,
 LanguageKeys.JobAlreadyOpenForImeiNumber,
 LanguageKeys.DropDownSelectOption,
-LanguageKeys.NoCollectionPointSelected
-
+LanguageKeys.NoCollectionPointSelected,
+LanguageKeys.ExceptionTitle
 };
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
@@ -70,17 +70,26 @@ LanguageKeys.NoCollectionPointSelected
             showSpinner();
             let url = '@Url.Action(WebConstants.PageRoute.GetBrandByProductName, "Brand")';
             let productName = $(this).find("option:selected").text();
-
+            let productId = $(this).find("option:selected").val();
+            $("#product-name").val(productName);
             let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
             $("#dropdown-brand").empty();
+            $("#brand-name").val('');
             $("#dropdown-model").empty();
             $("#dropdown-transfer-to").empty();
             $("#dropdown-service-centre").empty();
             $("#dropdown-fault-code").empty();
+            $("#multi-select-accessories").empty();
             $("#dropdown-model").append($("<option     />").val("-1").text(select));
             $("#dropdown-transfer-to").append($("<option     />").val("-1").text(select));
             $("#dropdown-service-centre").append($("<option     />").val("-1").text(select));
             $("#dropdown-fault-code").append($("<option     />").val("-1").text(select));
+
+            if (!productId || productId < 0) {
+                hideSpinner();
+                return;
+            }
+
             $.ajax({
                 'url': url + '/' + productName,
                 'type': 'GET',
@@ -94,7 +103,8 @@ LanguageKeys.NoCollectionPointSelected
                             bindDropDown("#dropdown-brand", items, "code", "name");
                         }
                     } else {
-                        raiseNotification(response.responseText, true);
+                        var title = '@Html.Raw(translateItems[LanguageKeys.ExceptionTitle])';
+                        showNotification(title, response.statusText,@Convert.ToInt32(NotificationType.Error), false);
                     }
                     hideSpinner();
                 }
@@ -119,14 +129,28 @@ LanguageKeys.NoCollectionPointSelected
             }
         });
 
-        $("#select-collection-point").click(function () {
-            debugger;
+        $("button[name=select-collection-point]").click(function () {
             let point = $('input[name=collection-point-radio]:checked');
             if (point && point.length > 0) {
-                let text = point.parent().parent().find("td:eq(2)").html();
                 $("#collection-point-id").val(point.val());
-                $("#text-collection-point").val(text);
+                $("#text-collection-point").val(point.attr('title').trim());
                 $("#collection-point-modal").modal('hide');
+                let url = '@Url.Action(WebConstants.PageRoute.GetTrackingPrefix, "Device")';
+                $.ajax({
+                'url': url,
+                'type': 'GET',
+                'async': false,
+                'dataType': 'application/json',
+                complete: function (response) {
+                    if (!!response && response.status == @StatusCodes.Status200OK) {
+                        $("#tracking-number").val(response.responseText);
+                    } else {
+                        var title = '@Html.Raw(translateItems[LanguageKeys.ExceptionTitle])';
+                        showNotification(title, response.statusText,@Convert.ToInt32(NotificationType.Error), false);
+                    }
+                    hideSpinner();
+                }
+            });
             } else {
                 $("#collection-point-error").removeClass('hide');
             }
@@ -136,15 +160,20 @@ LanguageKeys.NoCollectionPointSelected
             $("#collection-point-error").addClass('hide');
         })
 
-        $("#collection-point-modal").on('hidden.bs.modal', function () {
-            $(this).removeData('bs.modal');
-        });
+        //$('body').on('hidden.bs.modal', '.modal', function () {
+        //    debugger
+        //    console.log($('#collection-point-partial').html());
+        //    $("#collection-point-modal").removeData('bs.modal');
 
-        $("#tracking-date").datepicker()
-            .on('changeDate', function (ev) {
-                //if (ev.date.valueOf() < startDate.valueOf()) {
-                //}
-            });
+        //    console.log($("#collection-point-partial").html());
+        //});
+
+
+        //$("#tracking-date").datepicker()
+        //    .on('changeDate', function (ev) {
+        //        //if (ev.date.valueOf() < startDate.valueOf()) {
+        //        //}
+        //    });
 
         function searchImeiNumber() {
             showSpinner();
@@ -199,8 +228,20 @@ LanguageKeys.NoCollectionPointSelected
                 url = `${url}/?search=${search}`;
 
             $('#collection-point-partial').empty();
+            //$.ajax({
+            //    'url': url,
+            //    'type': 'GET',
+            //    'async': false,
+            //    'dataType': 'application/json',
+            //    complete: function (value) {
+            //        debugger;
+            //        if (!!value && !!value.responseText) {
+            //            $('#collection-point-partial').html(value);
+            //        }
+            //        hideSpinner();
+            //    }
+            //});
             $('#collection-point-partial').load(url, function () {
-                $('#collection-point-partial').removeData('bs.modal');
                 $("#collection-point-modal").modal('show');
                 $("#collection-point-error").addClass('hide');
                 hideSpinner();
@@ -214,10 +255,14 @@ LanguageKeys.NoCollectionPointSelected
             let brandName = $("#dropdown-brand").find("option:selected").text();
             let productName = $("#dropdown-product").find("option:selected").text();
             let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
+            
+            $("#brand-name").val(brandName);
             $("#dropdown-model").empty();
             $("#dropdown-transfer-to").empty();
             $("#dropdown-service-centre").empty();
-            $("#dropdown-fault-code").empty()
+            $("#dropdown-fault-code").empty();
+            $("#multi-select-accessories").empty();
+
             $("#dropdown-model").append($("<option     />").val("-1").text(select));
             $("#dropdown-transfer-to").append($("<option     />").val("-1").text(select));
             $("#dropdown-service-centre").append($("<option     />").val("-1").text(select));
@@ -232,17 +277,17 @@ LanguageKeys.NoCollectionPointSelected
                         let item = JSON.parse(response.responseText);
                         if (item) {
                             if (item.models && item.models.length > 0)
-                                bindDropDown("#dropdown-model", item.models, "code", "name");
+                                bindDropDown("#dropdown-model", item.models, "name", "code");
 
                             if (item.faultCodes && item.faultCodes.length > 0)
-                                bindDropDown("#dropdown-fault-code", item.faultCodes, "code", "name");
+                                bindDropDown("#dropdown-fault-code", item.faultCodes, "name", "code");
 
                             if (item.accessories && item.accessories.length > 0)
-                                bindDropDown("#multi-select-accessories", item.accessories, "id", "description");
+                                bindDropDown("#multi-select-accessories", item.accessories, "description", "id");
 
                             if (item.centres && item.centres.length > 0) {
-                                bindDropDown("#dropdown-service-centre", item.centres, "id", "name");
-                                bindDropDown("#dropdown-transfer-to", item.centres, "id", "name");
+                                bindDropDown("#dropdown-service-centre", item.centres, "locationName", "id");
+                                bindDropDown("#dropdown-transfer-to", item.centres, "locationName", "id");
                             }
                         }
                     } else {
@@ -319,7 +364,7 @@ LanguageKeys.NoCollectionPointSelected
                 @Html.Raw(translateItems[LanguageKeys.TrackingNumber])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.TrackingNumber, new { @class = "form-control disabled", })
+                @Html.TextBoxFor(model => model.Device.TrackingNumber, new { @class = "form-control", @id = "tracking-number", @readonly = "readonly" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.Date])
@@ -352,6 +397,7 @@ LanguageKeys.NoCollectionPointSelected
                 @Html.Raw(translateItems[LanguageKeys.Product])
             </div>
             <div class="col-sm-4">
+                @Html.HiddenFor(model => model.Device.ProductName, new { @id = "product-name" })
                 @Html.DropDownListFor(model => model.Device.Product, new SelectList(Model.ProductItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", @id = "dropdown-product" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
@@ -366,7 +412,8 @@ LanguageKeys.NoCollectionPointSelected
                 @Html.Raw(translateItems[LanguageKeys.Brand])
             </div>
             <div class="col-sm-4">
-                @Html.DropDownListFor(model => model.Device.Brand, new SelectList(Model.BrandItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-brand" })
+                @Html.HiddenFor(model => model.Device.BrandName, new { @id = "brand-name" })
+                @Html.DropDownListFor(model => model.Device.BrandCode, new SelectList(Model.BrandItems, "Value", "Text"), "Select...", new { @class = "form-control", @id = "dropdown-brand" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.VendorRmaNumber])
@@ -442,7 +489,7 @@ LanguageKeys.NoCollectionPointSelected
                 @Html.Raw(translateItems[LanguageKeys.Accessories])
             </div>
             <div class="col-sm-4">
-                @Html.ListBoxFor(model => model.Device.Accessories, new SelectList(Model.AccessoryItems, "Value", "Text"), new { @class = "form-control", @id = "multi-select-accessories" })
+                @Html.ListBoxFor(model => model.Device.AccessoriesIds, new SelectList(Model.AccessoryItems, "Value", "Text"), new { @class = "form-control", @id = "multi-select-accessories" })
             </div>
         </div>
         <div class="row row-space">
@@ -492,7 +539,7 @@ LanguageKeys.NoCollectionPointSelected
                 @Html.Raw(translateItems[LanguageKeys.PostalCode])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.NationalId, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.PostalCode, new { @class = "form-control" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 <span class="hidden">@Html.Raw(translateItems[LanguageKeys.PopUpload])</span>
@@ -519,7 +566,7 @@ LanguageKeys.NoCollectionPointSelected
 </div>
 
 <div class="modal fade" id="collection-point-modal" role="dialog">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -540,7 +587,7 @@ LanguageKeys.NoCollectionPointSelected
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="select-collection-point">Select</button>
+                <button type="button" class="btn btn-primary" name="select-collection-point" id="select-collection-point">Select</button>
             </div>
         </div>
     </div>

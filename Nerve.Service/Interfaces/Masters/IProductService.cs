@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nerve.Service.Services.Masters
+namespace Nerve.Service
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllAsync();
+        Task<List<ProductDto>> GetAllAsync();
         Task<ProductDto> GetByIdAsync(int productId);
     }
 }

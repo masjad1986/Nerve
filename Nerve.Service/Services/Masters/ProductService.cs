@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nerve.Service.Services.Masters
+namespace Nerve.Service
 {
     public class ProductService: IProductService
     {
@@ -16,7 +16,7 @@ namespace Nerve.Service.Services.Masters
             _productRepository = productRepository;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllAsync()
+        public async Task<List<ProductDto>> GetAllAsync()
         {
             return await _productRepository.GetAllAsync();
         }

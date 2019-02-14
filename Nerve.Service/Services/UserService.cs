@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -53,9 +54,15 @@ namespace Nerve.Service
             return await Task.FromResult(user);
         }
 
-        public async Task<IEnumerable<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId)
+        public async Task<List<UserMenuAccess>> GetUserAccessPermissionsAsync(int groupId, int moduleId)
         {
             return await _userRepository.GetUserAccessPermissionsAsync(groupId, moduleId);
+        }
+
+        public async Task<string> GetTrackingPrefixByUserIdAsync(string userId)
+        {
+            var prefix =  await _userRepository.GetTrackingPrefixByUserIdAsync(userId);
+            return prefix.TrackingPrefix;
         }
     }
 }

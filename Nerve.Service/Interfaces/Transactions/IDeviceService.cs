@@ -9,6 +9,6 @@ namespace Nerve.Service
     public interface IDeviceService
     {
         Task<bool> DeviceAuthenticateAsync(string imeiNumber);
-        Task<bool> SaveAsync(DeviceDto deviceDto);
+        Task<bool> SaveAsync(string userId, DeviceDto deviceDto);
     }
 }

@@ -8,8 +8,8 @@ namespace Nerve.Repository
 {
     public interface IBrandRepository
     {
-        Task<IEnumerable<BrandDto>> GetAllAsync();
+        Task<List<BrandDto>> GetAllAsync();
         Task<BrandDto> GetByIdAsync();
-        Task<IEnumerable<BrandDto>> GetAllByProductNameAsync(string productName);
+        Task<List<BrandDto>> GetAllByProductNameAsync(string productName);
     }
 }

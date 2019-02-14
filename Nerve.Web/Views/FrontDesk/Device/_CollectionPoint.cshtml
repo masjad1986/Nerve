@@ -1,4 +1,4 @@
-﻿@model List<Nerve.Repository.Dtos.CollectionPointDto>
+﻿@model List<Nerve.Repository.Dtos.ItemDto>
 @using Microsoft.AspNetCore.Http
 @using Nerve.Repository.Enums
 @using Nerve.Web.Enums
@@ -26,7 +26,7 @@ LanguageKeys.NoRecodsAvaiable
         <thead class="thead-dark">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">@Html.Raw(@translateItems[LanguageKeys.Code])</th>
+                @*<th scope="col">@Html.Raw(@translateItems[LanguageKeys.Code])</th>*@
                 <th scope="col">@Html.Raw(@translateItems[LanguageKeys.Name])</th>
             </tr>
         </thead>
@@ -34,8 +34,8 @@ LanguageKeys.NoRecodsAvaiable
             @foreach (var item in Model)
             {
                 <tr>
-                    <td><input type="radio" id="collection-check-@item.Id" name="collection-point-radio" class="collection-point-click" value="@item.Id" /></td>
-                    <td>@item.Id</td>
+                    <td><input type="radio" id="collection-check-@item.Id" checked="@item.Selected" title="@item.Name" name="collection-point-radio" class="collection-point-click" value="@item.Id" /></td>
+                    @*<td>@item.Id</td>*@
                     <td>@item.Name</td>
                 </tr>
             }

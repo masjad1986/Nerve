@@ -76,7 +76,7 @@ namespace Nerve.Web.Controllers
         /// <param name="productName"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(WebConstants.PageRoute.GetServiceCentreByCollectionPointAndBrandAndProduct + "/{collectionPoint}/{brandName}/{productName}")]
+        [Route(WebConstants.PageRoute.GetServiceCentreByCollectionPointAndBrandAndProduct + "/{collectionPoint}/{brandName}/{productId}")]
         public async Task<IActionResult> GetServiceCentreByCollectionPointAndBrandAndProductAsync(int collectionPoint, string brandName, string productName)
         {
             try

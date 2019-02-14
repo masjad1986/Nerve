@@ -18,7 +18,7 @@ namespace Nerve.Repository
             _settings = settings;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllAsync()
+        public async Task<List<ProductDto>> GetAllAsync()
         {
             var query = $@"SELECT ProductID AS [Id], ProductName AS [Name] FROM 
                             {RepositoryConstants.SchemaName}.{SCP.MasterTables.Product} 

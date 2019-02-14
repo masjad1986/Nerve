@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
 using Nerve.Repository.Dtos;
+using Nerve.Repository.Enums;
+using Nerve.Repository.Helpers;
 using Nerve.Service;
-using Nerve.Service.Services.Masters;
 using Nerve.Web.Enums;
-using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
 using Nerve.Web.Translation;
 using Nerve.Web.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using static Nerve.Web.WebConstants;
 
 namespace Nerve.Web.Controllers
@@ -27,28 +29,37 @@ namespace Nerve.Web.Controllers
         private readonly ILanguageTranslator _languageTranslator;
         private readonly IDeviceService _deviceService;
         private readonly IDeliveryService _deliveryService;
+        private readonly IJobService _jobService;
         private readonly IWarrantyService _warrantyService;
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
         private readonly IGenericMasterService _genericMasterService;
+        private readonly IServiceCentreLocationService _serviceCentreLocationService;
+        private readonly IUserService _userService;
         public DeviceController(
             ILanguageTranslator languageTranslator,
             ILogger logger,
             IDeviceService deviceService,
             IDeliveryService deliveryService,
+            IJobService jobService,
             IWarrantyService warrantyService,
             IProductService productService,
             IBrandService brandService,
-            IGenericMasterService genericMasterService)
+            IGenericMasterService genericMasterService,
+            IServiceCentreLocationService serviceCentreLocationService,
+            IUserService userService)
         {
             _logger = logger;
             _languageTranslator = languageTranslator;
             _deviceService = deviceService;
             _deliveryService = deliveryService;
+            _jobService = jobService;
             _warrantyService = warrantyService;
             _productService = productService;
             _brandService = brandService;
             _genericMasterService = genericMasterService;
+            _serviceCentreLocationService = serviceCentreLocationService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -63,6 +74,8 @@ namespace Nerve.Web.Controllers
             };
             try
             {
+                //remove after testing
+                model.Device = LoadDevice();
                 // get types
                 var typeItems = await _warrantyService.GetTypesAsync();
                 if (typeItems != null && typeItems.Any())
@@ -106,13 +119,13 @@ namespace Nerve.Web.Controllers
                 }
                 //get list of warranty type
                 model.WarrantyTypeItems = new List<SelectListItem>() {
-                    new SelectListItem("Warranty", "W"),
-                    new SelectListItem("Non-Warranty", "N")
+                    new SelectListItem("Warranty", Convert.ToString((int)WarrantyType.Warranty)),
+                    new SelectListItem("Non-Warranty", Convert.ToString((int)WarrantyType.NonWarranty))
                 };
                 //get list of physical condition
                 var conditions = await _genericMasterService.GetPhysicalConditionsAsync();
                 model.PhysicalConditionItems = new List<SelectListItem>();
-                if (conditions!=null && conditions.Any())
+                if (conditions != null && conditions.Any())
                 {
                     model.PhysicalConditionItems = conditions.Select(x => new SelectListItem
                     {
@@ -173,7 +186,7 @@ namespace Nerve.Web.Controllers
             try
             {
                 var userId = HttpContext.Session.GetString(SessionKeys.UserId);
-                var collections = await _genericMasterService.GetCollectionPointByUserIdAsync(userId, search);
+                var collections = await _serviceCentreLocationService.GetByUserIdAsync(userId, search);
                 return PartialView(WebConstants.ViewPage.Partial.DeviceCollectionPointView, collections);
             }
             catch (Exception ex)
@@ -194,15 +207,149 @@ namespace Nerve.Web.Controllers
         }
 
         /// <summary>
+        /// Generate tacking prefix based on service centre or collection point.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(WebConstants.PageRoute.GetTrackingPrefix)]
+        public async Task<IActionResult> GetTrackingNumberAsync()
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetString(SessionKeys.UserId);
+                var prefix = await _userService.GetTrackingPrefixByUserIdAsync(userId);
+                if (string.IsNullOrEmpty(prefix))
+                {
+                    throw new InvalidOperationException();
+                }
+                //get tracking number 
+                var trackingNumber = await _genericMasterService.GetAutoGeneratedTrackingNumberAsync(DateTime.Now.Year, prefix);
+                if (string.IsNullOrEmpty(trackingNumber))
+                {
+                    throw new InvalidOperationException();
+                }
+
+
+                return Ok(trackingNumber);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(_controller, WebConstants.PageRoute.GetTrackingPrefix, ex);
+                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.DeviceLogin,
+                        LanguageKeys.ContactAdministrator
+                    });
+
+                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
+                    translateItems[LanguageKeys.ContactAdministrator],
+                    NotificationType.Error);
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, string.Empty);
+            }
+        }
+
+        /// <summary>
         /// Save device information.
         /// </summary>
         /// <param name="deviceDto"></param>
         /// <returns></returns>
-        public async Task<IActionResult> SaveAsync([FromBody] DeviceDto deviceDto)
+        [HttpPost]
+        [Route(WebConstants.PageRoute.SaveDevice)]
+        public async Task<IActionResult> SaveAsync(DeviceViewModel deviceViewModel)
         {
-            deviceDto.LoginType = WebConstants.LoginType;
-            var result = await _deviceService.SaveAsync(deviceDto);
-            return Ok(result);
+            var deviceDto = deviceViewModel.Device;
+            try
+            {
+                //If product=MOBILE PHONES and brand= HUAWEI then imeino should be 16 Characters 
+                if (deviceDto.ProductName.ToUpper().Equals(WebConstants.ProductMobilePhone)
+                        && deviceDto.BrandName.ToUpper().Equals(WebConstants.BrandHuawei)
+                        && deviceDto.IMEINumber.Length != WebConstants.ImeiLength)
+                {
+                    throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorInvalidImeiLength));
+                }
+
+                //POP Date: Not Null, Previous Date, Less than expiry date
+                if (!DateHelper.CompareDate(deviceDto.PopDate, deviceDto.ExpiryDate, CompareType.LessThan))
+                {
+                    throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorPopDateShouldLessThan));
+                }
+
+                //Set warranty type = warranty if expiry date greater than current date else set as non-warranty
+                if (DateHelper.CompareDate(DateTime.Now, deviceDto.ExpiryDate, CompareType.GreaterThan))
+                {
+                    deviceDto.WarrantyType = (int)WarrantyType.NonWarranty;
+                }
+
+                //Set Type as Bounce if last job date [max dispatchdate in DEALERLOG for the same imeino] is within last 15 days
+                var lastJob = await _jobService.GetLastJobByImeiNumberAsync(deviceDto.IMEINumber);
+                if (lastJob != null && DateTime.Now.Subtract(lastJob.Value).Days <= WebConstants.WarrantyBounceDays)
+                {
+                    deviceDto.Type = (int)Repository.Enums.Type.Bounce;
+                }
+
+                deviceDto.CollectionDate = deviceDto.TrackingDate = DateTime.Now;
+
+                //Persian Calender
+                var persianCalender = new PersianCalendar();
+                deviceDto.FarsiDate = persianCalender.ToDateTime(deviceDto.TrackingDate.Value.Year, deviceDto.TrackingDate.Value.Month, deviceDto.TrackingDate.Value.Day,
+                    deviceDto.TrackingDate.Value.Hour, deviceDto.TrackingDate.Value.Minute, deviceDto.TrackingDate.Value.Second, deviceDto.TrackingDate.Value.Millisecond);
+
+                
+                deviceDto.LoginType = WebConstants.LoginType;
+                var userId = HttpContext.Session.GetString(SessionKeys.UserId);
+                var result = await _deviceService.SaveAsync(userId, deviceDto);
+            }
+            catch (InvalidOperationException iex)
+            {
+                var title = await _languageTranslator.TranslateAsync(LanguageKeys.ValidationFailureSummary);
+                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(title, iex.Message, NotificationType.Error);
+
+                return View(WebConstants.ViewPage.DeviceLogin, deviceDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(_controller, WebConstants.PageRoute.SaveDevice, ex);
+                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.DeviceLogin,
+                        LanguageKeys.ContactAdministrator
+                    });
+
+                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
+                    translateItems[LanguageKeys.ContactAdministrator],
+                    NotificationType.Error);
+            }
+
+            return Ok(deviceDto);
+        }
+
+        [NonAction]
+        private DeviceDto LoadDevice()
+        {
+            return new DeviceDto
+            {
+                CustomerAddress = "Delhi",
+                FaultDetail = "Color Issue",
+                VendorRmaNumber = "RMA00001",
+                PostalCode = "100012",
+                PopDate = DateTime.Parse("01/01/2019"),
+                TrackingDate = DateTime.Now,
+                CustomerName = "Asjad",
+                LastName = "Idrisi",
+                FarsiName = "Asjad",
+                TelephoneNumber = "",
+                MobileNumber = "+9898912009827",
+                Email = "test@gmail.com",
+                NationalId = "91",
+                Notes = "Device",
+                ExpiryDate = DateTime.Parse("01/11/2019"),
+                Date = DateTime.Parse("01/01/2019"),
+                EcoCode = "91",
+                IMEINumber = "IMEI000000000001",
+
+            };
         }
     }
+
 }

@@ -8,7 +8,7 @@ namespace Nerve.Repository
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<ProductDto>> GetAllAsync();
+        Task<List<ProductDto>> GetAllAsync();
         Task<ProductDto> GetByIdAsync(int productId);
     }
 }

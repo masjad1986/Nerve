@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nerve.Repository
+namespace Nerve.Service
 {
-    public interface IJobRepository
+    public interface IJobService
     {
-        Task<KeyValuePair<string, string>> GetJobReferenceNumberAsync(string locationCode);
-
         Task<DateTime?> GetLastJobByImeiNumberAsync(string imeiNumber);
     }
 }

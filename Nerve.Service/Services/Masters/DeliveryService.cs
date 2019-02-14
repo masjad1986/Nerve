@@ -19,7 +19,7 @@ namespace Nerve.Service
         /// Get list of delivery agents.
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<DeliveryAgentDto>> GetDeliveryAgentsAsync()
+        public async Task<List<DeliveryAgentDto>> GetDeliveryAgentsAsync()
         {
             return await _deliveryRepository.GetDeliveryAgentsAsync();
         }

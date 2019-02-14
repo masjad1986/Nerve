@@ -21,7 +21,7 @@ namespace Nerve.Repository
         /// Get list of warranty type stored in system
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<TypeDto>> GetTypesAsync()
+        public async Task<List<TypeDto>> GetTypesAsync()
         {
             var query = $@"SELECT WarrantyTypeID AS [Id], WarrantyType AS [Name], PriorityLevel AS [Priority] FROM 
                             { SCP.MasterTables.WarrantyType } ORDER BY WarrantyType";

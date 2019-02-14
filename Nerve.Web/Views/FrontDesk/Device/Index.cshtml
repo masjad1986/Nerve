@@ -19,11 +19,20 @@
     };
 }
 
-<form asp-action="Index" asp-controller="Device"
+<script>
+    $(document).ready(function () {
+        $("#device-save-click").on("click", function () {
+            $("#device-form").submit();
+        });
+    });
+</script>
+
+<form asp-action="Save" asp-controller="Device"
       data-ajax="true"
       data-ajax-method="POST"
       data-ajax-mode="replace"
-      data-ajax-update="#ajaxpanel">
+      data-ajax-update="#ajaxpanel"
+      id="device-form">
     <div class="main-container">
         <partial name="@WebConstants.ViewPage.Partial.Actions" model="@actionBarModel" />
     </div>
@@ -73,4 +82,5 @@
                 </div>*@
         </div>
     </div>
+    <button type="submit" name="save-device" class="hidden"></button>
 </form>

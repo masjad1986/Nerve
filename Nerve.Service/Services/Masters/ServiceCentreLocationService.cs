@@ -20,7 +20,7 @@ namespace Nerve.Service
         /// </summary>
         /// <param name="serviceCentreId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ServiceCentreLocationDto>> GetByIdAsync(int serviceCentreId)
+        public async Task<List<ServiceCentreLocationDto>> GetByIdAsync(int serviceCentreId)
         {
             return await _serviceCentreLocationRepository.GetByIdAsync(serviceCentreId);
         }
@@ -32,10 +32,14 @@ namespace Nerve.Service
         /// <param name="productName"></param>
         /// <param name="brandCode"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<ServiceCentreLocationDto>> GetByIdAndBrandAndProductAsync(int serviceCentreId, int productId, string brandCode)
+        public async Task<List<ServiceCentreLocationDto>> GetByIdAndBrandAndProductAsync(int serviceCentreId, string productName, string brandCode)
         {
-            return await _serviceCentreLocationRepository.GetByIdAndBrandAndProductAsync(serviceCentreId, productId, brandCode);
+            return await _serviceCentreLocationRepository.GetByIdAndBrandAndProductAsync(serviceCentreId, productName, brandCode);
         }
 
+        public async Task<List<ItemDto>> GetByUserIdAsync(string userId, string searchAccount)
+        {
+            return await _serviceCentreLocationRepository.GetByUserIdAsync(userId, searchAccount);
+        }
     }
 }

@@ -148,8 +148,12 @@ namespace Nerve.Web
         public const string NoCollectionPointSelected = "no-collection-point-selected";
         public const string ExitConfirmation = "exit-confirmation";
         public const string ExitConfirmationMessage = "exit-confirmation-message";
+        public const string ValidationFailureSummary = "validation-failure-summary";
+        public const string ExceptionTitle = "exception-title";
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
         public const string ErrorFieldRequiredCollectionPoint = "error-field-required-collection-point";
+        public const string ErrorInvalidImeiLength = "error-invalid-imei-number-length";
+        public const string ErrorPopDateShouldLessThan = "error-pop-date-should-less-than";
     }
 }
