@@ -12,5 +12,6 @@ namespace Nerve.Web
         public string HasDeleteActionAccess { get; set; }
         public string ActionName { get; set; }
         public string ControllerName { get; set; }
-}
+        public string UndoActionUrl { get; set; }
+    }
 }

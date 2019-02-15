@@ -248,14 +248,15 @@ LanguageKeys.ExceptionTitle
             });
         }
 
-        function bindOption() {
+        function bindOption()
+        {
             showSpinner();
             let url = '@Url.Action(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, "Brand")';
             let collectionPoint = $("#collection-point-id").val();
             let brandName = $("#dropdown-brand").find("option:selected").text();
             let productName = $("#dropdown-product").find("option:selected").text();
             let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
-            
+
             $("#brand-name").val(brandName);
             $("#dropdown-model").empty();
             $("#dropdown-transfer-to").empty();
@@ -286,8 +287,8 @@ LanguageKeys.ExceptionTitle
                                 bindDropDown("#multi-select-accessories", item.accessories, "description", "id");
 
                             if (item.centres && item.centres.length > 0) {
-                                bindDropDown("#dropdown-service-centre", item.centres, "locationName", "id");
-                                bindDropDown("#dropdown-transfer-to", item.centres, "locationName", "id");
+                                bindDropDown("#dropdown-service-centre", item.centres, "locationName", "serviceCenterId");
+                                bindDropDown("#dropdown-transfer-to", item.centres, "locationName", "serviceCenterId");
                             }
                         }
                     } else {
@@ -300,6 +301,11 @@ LanguageKeys.ExceptionTitle
     });
 </script>
 <div class="panel panel-default top-margin-10">
+    @*<div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert">×</a>
+            <h4>Validation Errors</h4>
+            @Html.ValidationSummary()
+        </div>*@
     <div class="panel-body">
         <b>@Html.Raw(translateItems[LanguageKeys.SearchCriteria])</b>
     </div>
@@ -324,6 +330,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.CollectionPoint])
             </div>
             <div class="col-sm-4 has-feedback">
+                @Html.ValidationMessageFor(model => model.Device.CollectionPoint, "", new { @class = "text-danger" })
                 @Html.HiddenFor(model => model.Device.CollectionPoint, new { @id = "collection-point-id" })
                 @Html.TextBoxFor(model => model.Device.CollectionPointName, new { @class = "form-control", @id = "text-collection-point" })
                 <span id="search-collection-point" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
@@ -332,7 +339,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.ImeiNumber])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.IMEINumber, new { @class = "form-control disabled", @id = "text-imei-number" })
+                @Html.TextBoxFor(model => model.Device.ImeiNumber, new { @class = "form-control disabled", @id = "text-imei-number" })
             </div>
         </div>
         <div class="row row-space">
@@ -383,13 +390,13 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.Forwarder])
             </div>
             <div class="col-sm-4">
-                @Html.DropDownListFor(model => model.Device.Forwarder, new SelectList(Model.DeliveryAgentItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", })
+                @Html.DropDownListFor(model => model.Device.Forwarder, new SelectList(Model.DeliveryAgentItems, "Value", "Text"), "Select...", new { @id="dropdown-delivery-agent", @class = "form-control disabled", })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.WarrantyType])
             </div>
             <div class="col-sm-4">
-                @Html.DropDownListFor(model => model.Device.WarrantyType, new SelectList(Model.WarrantyTypeItems, "Value", "Text"), "Select...", new { @class = "form-control", })
+                @Html.DropDownListFor(model => model.Device.WarrantyType, new SelectList(Model.WarrantyTypeItems, "Value", "Text"), "Select...", new { @class = "form-control", @id= "dropdown-warranty-type" })
             </div>
         </div>
         <div class="row row-space">
@@ -404,7 +411,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.Type])
             </div>
             <div class="col-sm-4">
-                @Html.DropDownListFor(model => model.Device.Type, new SelectList(Model.TypeItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", })
+                @Html.DropDownListFor(model => model.Device.Type, new SelectList(Model.TypeItems, "Value", "Text"), "Select...", new { @class = "form-control disabled", @id="dropdown-type" })
             </div>
         </div>
         <div class="row row-space">
@@ -419,7 +426,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.VendorRmaNumber])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.VendorRmaNumber, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.VendorRmaNumber, new { @class = "form-control", @id="text-vendor-rma-number" })
             </div>
         </div>
         <div class="row row-space">
@@ -433,7 +440,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.PhysicalCondition])
             </div>
             <div class="col-sm-4">
-                @Html.DropDownListFor(model => model.Device.PhysicalCondition, new SelectList(Model.PhysicalConditionItems, "Value", "Text"), "Select...", new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.Device.PhysicalCondition, new SelectList(Model.PhysicalConditionItems, "Value", "Text"), "Select...", new { @class = "form-control", @id="dropdown-physical-condition" })
             </div>
         </div>
         <div class="row row-space">
@@ -461,7 +468,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.FaultDetails])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.FaultDetail, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.FaultDetail, new { @class = "form-control", @id="text-fault-detail" })
             </div>
         </div>
         <div class="row row-space">
@@ -469,13 +476,13 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.CustomerName])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.CustomerName, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.CustomerName, new { @class = "form-control", @id="text-customer-name" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.FarsiName])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.FarsiName, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.FarsiName, new { @class = "form-control", @id="text-farsi-name" })
             </div>
         </div>
         <div class="row row-space">
@@ -483,7 +490,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.LastName])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.LastName, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.LastName, new { @class = "form-control", @id="text-last-name" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.Accessories])
@@ -497,13 +504,13 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.MobileNumber])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.MobileNumber, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.MobileNumber, new { @class = "form-control", @id="text-mobile-number", maxlength = "13" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.Email])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.Email, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.Email, new { @class = "form-control", @id="text-email" })
             </div>
         </div>
         <div class="row row-space">
@@ -511,13 +518,13 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.TelephoneNumber])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.TelephoneNumber, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.TelephoneNumber, new { @class = "form-control", @id="text-telephone" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.EcoCode])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.EcoCode, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.EcoCode, new { @class = "form-control", @id="text-ecocode" })
             </div>
         </div>
         <div class="row row-space">
@@ -525,13 +532,13 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.NationalId])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.NationalId, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.NationalId, new { @class = "form-control", @id="text-national-id" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 @Html.Raw(translateItems[LanguageKeys.Notes])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.Notes, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.Notes, new { @class = "form-control", @id="text-notes" })
             </div>
         </div>
         <div class="row row-space">
@@ -539,7 +546,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.PostalCode])
             </div>
             <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.Device.PostalCode, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Device.PostalCode, new { @class = "form-control", @id="text-postal-code" })
             </div>
             <div class="col-sm-2 text-right @persianFont">
                 <span class="hidden">@Html.Raw(translateItems[LanguageKeys.PopUpload])</span>
@@ -553,7 +560,7 @@ LanguageKeys.ExceptionTitle
                 @Html.Raw(translateItems[LanguageKeys.CustomerAddress])
             </div>
             <div class="col-sm-4">
-                @Html.TextAreaFor(model => model.Device.CustomerAddress, new { @class = "form-control" })
+                @Html.TextAreaFor(model => model.Device.CustomerAddress, new { @class = "form-control", @id="text-customer-address" })
             </div>
             @*<div class="col-sm-2 text-right @persianFont">
                     <span class="hidden">@Html.Raw(translateItems[LanguageKeys.PopUpload])</span>

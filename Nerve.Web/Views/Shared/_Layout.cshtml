@@ -43,6 +43,7 @@
             if (!!notification) {
                 var notifyJson = !!isConversionRequired ? JSON.parse(notification) : notification;
                 let iconCss = '';
+                let isShow = true;
                 if (notifyJson) {
                     $("#notifyModalTitle").text('');
                     $("#notifyModalMessage").text('');
@@ -62,16 +63,17 @@
                             iconCss = 'glyphicon glyphicon-warning-sign bg-yellow';
                             break;
                         default:
-                            iconCss = 'glyphicon glyphicon-ok-circle green';
                             break;
                     }
 
-                    iconCss = iconCss + " notification-icon";
-
-                    $("#notifyModalTitle").text(notifyJson.title);
-                    $("#notifyModalMessage").text(notifyJson.message);
-                    $("#notifyModalIcon").addClass(iconCss);
-                    $("#notifyModel").modal();
+                    //show popup
+                    if (!!iconCss) {
+                        iconCss = iconCss + " notification-icon";
+                        $("#notifyModalTitle").text(notifyJson.title);
+                        $("#notifyModalMessage").text(notifyJson.message);
+                        $("#notifyModalIcon").addClass(iconCss);
+                        $("#notifyModel").modal();
+                    }
                 }
             }
         }

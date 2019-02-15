@@ -24,5 +24,6 @@ namespace Nerve.Web.ViewModels
         public List<SelectListItem> PhysicalConditionItems { get; set; }
         public List<SelectListItem> FaultCodeItems { get; set; }
         public List<SelectListItem> AccessoryItems { get; set; }
+        public List<string> ValidationErrorItems { get; set; }
     }
 }

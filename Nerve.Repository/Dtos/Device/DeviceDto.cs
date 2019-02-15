@@ -11,7 +11,7 @@ namespace Nerve.Repository.Dtos
         public string AutoJobReferenceNumber { get; set; }
 
         [Required]
-        public string IMEINumber { get; set; }
+        public string ImeiNumber { get; set; }
         public bool DoA { get; set; }
 
         [Required]

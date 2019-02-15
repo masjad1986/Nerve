@@ -125,7 +125,7 @@ for details on configuring this project to bundle and minify static web assets. 
     list-style: none;
 }
 
-.bs-glyphicons li {
+.bs-glyphicons li a{
     float: left;
     width: 84px;
     height: 84px;
@@ -139,7 +139,7 @@ for details on configuring this project to bundle and minify static web assets. 
     word-break: break-word;
 }
 
-    .bs-glyphicons li:hover {
+    .bs-glyphicons li a:hover {
         cursor: pointer;
         color: #fff;
         background-color: #0C6D2C;

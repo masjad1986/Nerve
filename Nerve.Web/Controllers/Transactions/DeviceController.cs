@@ -261,10 +261,14 @@ namespace Nerve.Web.Controllers
             var deviceDto = deviceViewModel.Device;
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
+                }
                 //If product=MOBILE PHONES and brand= HUAWEI then imeino should be 16 Characters 
                 if (deviceDto.ProductName.ToUpper().Equals(WebConstants.ProductMobilePhone)
                         && deviceDto.BrandName.ToUpper().Equals(WebConstants.BrandHuawei)
-                        && deviceDto.IMEINumber.Length != WebConstants.ImeiLength)
+                        && deviceDto.ImeiNumber.Length != WebConstants.ImeiLength)
                 {
                     throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorInvalidImeiLength));
                 }
@@ -282,7 +286,7 @@ namespace Nerve.Web.Controllers
                 }
 
                 //Set Type as Bounce if last job date [max dispatchdate in DEALERLOG for the same imeino] is within last 15 days
-                var lastJob = await _jobService.GetLastJobByImeiNumberAsync(deviceDto.IMEINumber);
+                var lastJob = await _jobService.GetLastJobByImeiNumberAsync(deviceDto.ImeiNumber);
                 if (lastJob != null && DateTime.Now.Subtract(lastJob.Value).Days <= WebConstants.WarrantyBounceDays)
                 {
                     deviceDto.Type = (int)Repository.Enums.Type.Bounce;
@@ -346,7 +350,7 @@ namespace Nerve.Web.Controllers
                 ExpiryDate = DateTime.Parse("01/11/2019"),
                 Date = DateTime.Parse("01/01/2019"),
                 EcoCode = "91",
-                IMEINumber = "IMEI000000000001",
+                ImeiNumber = "IMEI000000000001",
 
             };
         }

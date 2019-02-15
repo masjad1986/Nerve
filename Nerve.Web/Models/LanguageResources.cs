@@ -149,11 +149,48 @@ namespace Nerve.Web
         public const string ExitConfirmation = "exit-confirmation";
         public const string ExitConfirmationMessage = "exit-confirmation-message";
         public const string ValidationFailureSummary = "validation-failure-summary";
+        public const string ValidationFailureDescription = "validation-failure-description";
         public const string ExceptionTitle = "exception-title";
+        public const string Yes = "yes";
+        public const string No = "no";
+        public const string Confirm = "confirm";
+        public const string ConfirmDeviceFields = "confirm-device-fields";
+        public const string UndoMessage = "undo-message";
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
         public const string ErrorFieldRequiredCollectionPoint = "error-field-required-collection-point";
-        public const string ErrorInvalidImeiLength = "error-invalid-imei-number-length";
         public const string ErrorPopDateShouldLessThan = "error-pop-date-should-less-than";
+        public const string ErrorFieldRequiredPopDate ="error-field-required-pop-date";
+        public const string ErrorFieldRequiredExpiryDate ="error-field-required-expiry-date";
+        public const string ErrorFieldRequiredTrackingNumber ="error-field-required-tracking-number";
+        public const string ErrorFieldRequiredTrackingDate ="error-field-required-tracking-date";
+        public const string ErrorFieldRequiredDeliveryAgent ="error-field-required-delivery-agent";
+        public const string ErrorFieldRequiredWarrantyType ="error-field-required-warranty-type";
+        public const string ErrorFieldRequiredProduct ="error-field-required-product";
+        public const string ErrorFieldRequiredBrand = "error-field-required-brand";
+        public const string ErrorFieldRequiredType ="error-field-required-type";
+        public const string ErrorFieldRequiredVendorRmaNumber ="error-field-required-vendor-rma-number";
+        public const string ErrorFieldRequiredModel ="error-field-required-model";
+        public const string ErrorFieldRequiredPhysicalCondition ="error-field-required-physical-condition";
+        public const string ErrorFieldRequiredTransferTo ="error-field-required-transfer-to";
+        public const string ErrorFieldRequiredFaultCode ="error-field-required-fault-code";
+        public const string ErrorFieldRequiredServiceCentre ="error-field-required-service-centre";
+        public const string ErrorFieldRequiredFaultDetail ="error-field-required-fault-detail";
+        public const string ErrorFieldRequiredCustomerName ="error-field-required-customer-name";
+        public const string ErrorFieldRequiredFarsiName ="error-field-required-farsi-name";
+        public const string ErrorFieldRequiredLastName ="error-field-required-last-name";
+        public const string ErrorFieldRequiredAccessories ="error-field-required-accessories";
+        public const string ErrorFieldRequiredMobileNumber = "error-field-required-mobile-number";
+        public const string ErrorFieldRequiredEmail ="error-field-required-email";
+        public const string ErrorFieldRequiredTelephone ="error-field-required-telephone";
+        public const string ErrorFieldRequiredEcoCode ="error-field-required-eco-code";
+        public const string ErrorFieldRequiredNationalId ="error-field-required-national-id";
+        public const string ErrorFieldRequiredNotes ="error-field-required-notes";
+        public const string ErrorFieldRequiredPostalCode ="error-field-required-postal-code";
+        public const string ErrorFieldRequiredCustomerAddress ="error-field-required-customer-address";
+
+        //invalid
+        public const string ErrorInvalidImeiLength = "error-invalid-imei-number-length";
+        public const string ErrorFieldInvalidEmail = "error-invalid-email-format";
     }
 }

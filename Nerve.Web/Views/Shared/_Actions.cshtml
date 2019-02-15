@@ -21,12 +21,15 @@
 {
 LanguageKeys.Save,
 LanguageKeys.Undo,
+LanguageKeys.UndoMessage,
 LanguageKeys.Delete,
 LanguageKeys.Print,
 LanguageKeys.Exit,
 LanguageKeys.ExitConfirmation,
-LanguageKeys.ExitConfirmationMessage
-}, langugeId);
+LanguageKeys.ExitConfirmationMessage,
+LanguageKeys.Yes,
+LanguageKeys.No
+});
 }
 
 @if (actionPermission != null)
@@ -36,16 +39,20 @@ LanguageKeys.ExitConfirmationMessage
             @if (actionPermission.SaveOption == WebConstants.HasActionOptionAccess)
             {
                 <li>
-                    <span id="@Model.ActionPrefix-save-click" class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> <span class="glyphicon-class">
-                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Save]</label>
-                    </span>
+                    <a href="#" id="@Model.ActionPrefix-save-click" >
+                        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> <span class="glyphicon-class">
+                            <label class="@persianFont cursor">@translateItems[LanguageKeys.Save]</label>
+                        </span>
+                    </a>
                 </li>
             }
 
             <li>
-                <span id="@Model.ActionPrefix-undo-click" class="glyphicon glyphicon-repeat" aria-hidden="true"></span> <span class="glyphicon-class">
-                    <label class="@persianFont cursor">@translateItems[LanguageKeys.Undo]</label>
-                </span>
+                <a href="@Model.UndoActionUrl" id="@Model.ActionPrefix-undo-click">
+                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Undo]</label>
+                    </span>
+                </a>
             </li>
 
             @*@if (actionPermission.UpdateOption == WebConstants.HasActionOptionAccess)
@@ -60,24 +67,30 @@ LanguageKeys.ExitConfirmationMessage
             @if (actionPermission.DeleteOption == Model.HasDeleteActionAccess)
             {
                 <li>
-                    <span id="@Model.ActionPrefix-delete-click" class="glyphicon glyphicon-trash" aria-hidden="true"></span> <span class="glyphicon-class">
-                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Delete]</label>
-                    </span>
+                    <a href="#" id="@Model.ActionPrefix-delete-click" >
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> <span class="glyphicon-class">
+                            <label class="@persianFont cursor">@translateItems[LanguageKeys.Delete]</label>
+                        </span>
+                    </a>
                 </li>
             }
 
             @if (actionPermission.PrintOption == WebConstants.HasActionOptionAccess)
             {
                 <li>
-                    <span id="@Model.ActionPrefix-print-click" class="glyphicon glyphicon-print" aria-hidden="true"></span> <span class="glyphicon-class">
-                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Print]</label>
-                    </span>
+                    <a href="#" id="@Model.ActionPrefix-print-click" >
+                        <span class="glyphicon glyphicon-print" aria-hidden="true"></span> <span class="glyphicon-class">
+                            <label class="@persianFont cursor">@translateItems[LanguageKeys.Print]</label>
+                        </span>
+                    </a>
                 </li>
             }
             <li>
-                <span id="exit-click" class="glyphicon glyphicon-off" aria-hidden="true"></span> <span class="glyphicon-class">
-                    <label class="@persianFont cursor">@translateItems[LanguageKeys.Exit]</label>
-                </span>
+                <a href="#" id="exit-click">
+                    <span class="glyphicon glyphicon-off" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <label class="@persianFont cursor">@translateItems[LanguageKeys.Exit]</label>
+                    </span>
+                </a>
             </li>
         </ul>
     </div>
@@ -88,14 +101,14 @@ LanguageKeys.ExitConfirmationMessage
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.ExitConfirmation])</span>
+                <span id="exit-modal-title" class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.Exit])</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="exit-modal-body">
                 @Html.Raw(translateItems[LanguageKeys.ExitConfirmationMessage])
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="select-collection-point">Exit</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Raw(translateItems[LanguageKeys.No])</button>
+                <button type="button" class="btn btn-primary" id="exit-click-modal">@Html.Raw(translateItems[LanguageKeys.Yes])</button>
             </div>
         </div>
     </div>
@@ -103,6 +116,32 @@ LanguageKeys.ExitConfirmationMessage
 
 <script>
     $(document).ready(function () {
+        $("#exit-click").on("click", function () {
+            let title = '@Html.Raw(translateItems[LanguageKeys.Exit])';
+            let message = '@Html.Raw(translateItems[LanguageKeys.ExitConfirmationMessage])';
+            confirm(title, message);
+        });
 
+        $("#@Model.ActionPrefix-undo-click").on("click", function (e) {
+            e.preventDefault();
+            let title = '@Html.Raw(translateItems[LanguageKeys.Undo])';
+            let message = '@Html.Raw(translateItems[LanguageKeys.UndoMessage])';
+            confirm(title, message);
+        });
+
+        $("#exit-click-modal").click(function () {
+            let title = $("#exit-modal-title").text();
+            let url = '@Url.Action("Index", "Home")';
+            if (title === '@Html.Raw(translateItems[LanguageKeys.Undo])') {
+                url = '@Model.UndoActionUrl';
+            }
+            window.location.href = url;
+        });
+
+        function confirm(title, message) {
+            $("#exit-modal-title").text(title);
+            $("#exit-modal-body").text(message);
+            $("#exit-modal").modal('show');
+        }
     });
 </script>

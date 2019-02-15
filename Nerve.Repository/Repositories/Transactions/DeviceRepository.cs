@@ -61,7 +61,7 @@ namespace Nerve.Repository
 
                 var baseParameters = new SqlParameter[]
                 {
-                    new SqlParameter { ParameterName = "@imei_number", Value = deviceDto.IMEINumber },
+                    new SqlParameter { ParameterName = "@imei_number", Value = deviceDto.ImeiNumber },
                     new SqlParameter { ParameterName = "@prefix", Value = deviceDto.Prefix },
                     new SqlParameter { ParameterName = "@doc_no", Value = deviceDto.TrackingNumber },
                     new SqlParameter { ParameterName = "@doc_date", Value = deviceDto.TrackingDate },
