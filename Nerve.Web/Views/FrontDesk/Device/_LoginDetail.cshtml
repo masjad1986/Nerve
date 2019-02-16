@@ -1,8 +1,8 @@
 ﻿@model Nerve.Web.ViewModels.DeviceViewModel
 @using Microsoft.AspNetCore.Http
-@using Nerve.Repository.Enums
-@using Nerve.Web.Enums
-@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@using Nerve.Common.Enums
+@using Nerve.Common
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 
 @{
     var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
@@ -64,6 +64,10 @@ LanguageKeys.ExceptionTitle
             if (e.keyCode == ENTER_KEYCODE) {
                 searchImeiNumber();
             }
+        });
+
+        $("#device-clear-button").on('click', function () {
+            $("#search-imei-number").val('');
         });
 
         $("#dropdown-product").on('change', function () {
@@ -174,6 +178,10 @@ LanguageKeys.ExceptionTitle
         //        //if (ev.date.valueOf() < startDate.valueOf()) {
         //        //}
         //    });
+
+        $("#tracking-date").datetimepicker({
+            format: 'dd/mm/yyyy'
+        });
 
         function searchImeiNumber() {
             showSpinner();
@@ -318,7 +326,7 @@ LanguageKeys.ExceptionTitle
                 @Html.TextBoxFor(model => model.ImeiNumber, new { @class = "form-control", @id = "search-imei-number" })
                 <span id="imei-search" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
             </div>
-            <button type="button" id="device-clear-button" class="btn btn-pr">@Html.Raw(translateItems[LanguageKeys.Clear]) </button>
+            <button type="button" id="device-clear-button"  class="btn btn-pr">@Html.Raw(translateItems[LanguageKeys.Clear]) </button>
         </div>
     </div>
 </div>

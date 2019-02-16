@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,10 @@ namespace Nerve.Repository
 {
     public class GenericMasterRepository : IGenericMasterRepository
     {
-        private readonly IOptions<AppSettings> _settings;
-        public GenericMasterRepository(IOptions<AppSettings> settings)
+        private readonly IOptions<AppSettings> _appSettings;
+        public GenericMasterRepository(IOptions<AppSettings> appSettings)
         {
-            _settings = settings;
+            _appSettings = appSettings;
         }
 
         #region Product Model
@@ -32,7 +33,7 @@ namespace Nerve.Repository
                 new SqlParameter {ParameterName = "@tag", Value = HAMI.BcgMasterTag.Model}
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_DATA_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);
@@ -68,7 +69,7 @@ namespace Nerve.Repository
                 new SqlParameter {ParameterName="@product_name", Value = productName}
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_DATA_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);
@@ -106,7 +107,7 @@ namespace Nerve.Repository
                 new SqlParameter {ParameterName="@product_name", Value = productName}
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_DATA_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);
@@ -146,7 +147,7 @@ namespace Nerve.Repository
                 new SqlParameter {ParameterName="@brand_name", Value = brandName}
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_DATA_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);
@@ -178,7 +179,7 @@ namespace Nerve.Repository
                             FROM [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.PhysicalConditionMaster}]
                             ORDER BY PhysicalCondition";
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_SCP_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query);
 
@@ -228,7 +229,7 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName = "@year", Value = year}
             };
 
-            var number = (string) await SqlHelper.ExecuteScalarAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_SCP_DATABASE),
+            var number = (string) await SqlHelper.ExecuteScalarAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);

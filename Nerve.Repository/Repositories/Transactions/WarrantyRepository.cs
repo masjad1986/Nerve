@@ -5,16 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 
 namespace Nerve.Repository
 {
     public class WarrantyRepository : IWarrantyRepository
     {
-        private readonly AppSettings _appSettings;
+        private readonly IOptions<AppSettings> _appSettings;
         public WarrantyRepository(IOptions<AppSettings> appSettings)
         {
-            _appSettings = appSettings.Value;
+            _appSettings = appSettings;
         }
 
         /// <summary>
@@ -26,7 +27,7 @@ namespace Nerve.Repository
             var query = $@"SELECT WarrantyTypeID AS [Id], WarrantyType AS [Name], PriorityLevel AS [Priority] FROM 
                             { SCP.MasterTables.WarrantyType } ORDER BY WarrantyType";
 
-            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.HAMI_SCP_DATABASE);
+            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE);
             var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query);
             if (!reader.HasRows)
             {

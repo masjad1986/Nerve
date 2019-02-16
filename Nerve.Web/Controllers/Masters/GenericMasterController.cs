@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Nerve.Common;
+using Nerve.Common.Enums;
+using Nerve.Common.Translations;
 using Nerve.Service;
-using Nerve.Web.Enums;
 using Nerve.Web.Helpers;
-using Nerve.Web.Translation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Nerve.Web.WebConstants;
 
 namespace Nerve.Web.Controllers
 {

@@ -1,7 +1,8 @@
 ﻿@using Nerve.Repository
 @using Microsoft.AspNetCore.Http
-@using Nerve.Repository.Enums
-@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@using Nerve.Common
+@using Nerve.Common.Enums
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 @model PageActionBarModel
 @{
 
@@ -39,7 +40,7 @@ LanguageKeys.No
             @if (actionPermission.SaveOption == WebConstants.HasActionOptionAccess)
             {
                 <li>
-                    <a href="#" id="@Model.ActionPrefix-save-click" >
+                    <a href="#" id="@Model.ActionPrefix-save-click">
                         <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> <span class="glyphicon-class">
                             <label class="@persianFont cursor">@translateItems[LanguageKeys.Save]</label>
                         </span>
@@ -67,7 +68,7 @@ LanguageKeys.No
             @if (actionPermission.DeleteOption == Model.HasDeleteActionAccess)
             {
                 <li>
-                    <a href="#" id="@Model.ActionPrefix-delete-click" >
+                    <a href="#" id="@Model.ActionPrefix-delete-click">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> <span class="glyphicon-class">
                             <label class="@persianFont cursor">@translateItems[LanguageKeys.Delete]</label>
                         </span>
@@ -78,7 +79,7 @@ LanguageKeys.No
             @if (actionPermission.PrintOption == WebConstants.HasActionOptionAccess)
             {
                 <li>
-                    <a href="#" id="@Model.ActionPrefix-print-click" >
+                    <a href="#" id="@Model.ActionPrefix-print-click">
                         <span class="glyphicon glyphicon-print" aria-hidden="true"></span> <span class="glyphicon-class">
                             <label class="@persianFont cursor">@translateItems[LanguageKeys.Print]</label>
                         </span>

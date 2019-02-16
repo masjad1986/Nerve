@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;

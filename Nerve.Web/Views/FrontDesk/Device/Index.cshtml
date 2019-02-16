@@ -1,7 +1,8 @@
 ﻿@model Nerve.Web.ViewModels.DeviceViewModel
 @using Microsoft.AspNetCore.Http
-@using Nerve.Repository.Enums
-@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@using Nerve.Common
+@using Nerve.Common.Enums
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 
 @{
     var emailRegex = "/^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\b$/i";
@@ -83,19 +84,19 @@ LanguageKeys.Yes
             if (!collectionPoint || collectionPoint == '0') errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCollectionPoint]');
 
             let imeiNumber = $("#text-imei-number").val();
-            if (!imeiNumber || imeiNumber.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber]');
+            if (checkNullOrEmpty(imeiNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber]');
 
             let popDate = $("#pop-date").val();
-            if (!popDate || popDate.trim().length == 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPopDate]');
+            if (checkNullOrEmpty(popDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPopDate]');
 
             let expiryDate = $("#expiry-date").val();
-            if (!expiryDate || expiryDate.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredExpiryDate]');
+            if (checkNullOrEmpty(expiryDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredExpiryDate]');
 
             let trackingNumber = $("#tracking-number").val();
-            if (!trackingNumber || trackingNumber.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingNumber]');
+            if (checkNullOrEmpty(trackingNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingNumber]');
 
             let trackingDate = $("#tracking-date").val();
-            if (!trackingDate || trackingDate.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingDate]');
+            if (checkNullOrEmpty(trackingDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingDate]');
 
             let deliveryAgent = $("#dropdown-delivery-agent").val(); //dropdown
             if (!deliveryAgent || parseInt(deliveryAgent) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredDeliveryAgent]');
@@ -110,59 +111,57 @@ LanguageKeys.Yes
             if (!type || parseInt(type) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredType]');
 
             let brand = $("#dropdown-brand").val();//dropdown
-            if (!brand || brand == "-1" || brand.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredBrand]');
+            if (checkNullOrEmpty(brand)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredBrand]');
 
             let vendorRmaNumber = $("#text-vendor-rma-number").val();
-            if (!vendorRmaNumber || vendorRmaNumber.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');
+            if (checkNullOrEmpty(vendorRmaNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');
 
             let model = $("#dropdown-model").val(); //dropdown
-            if (!model || model == "-1" || model.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredModel]');
+            if (checkNullOrEmpty(model)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredModel]');
 
             let physicalCondition = $("#dropdown-physical-condition").val();
-            if (!physicalCondition || physicalCondition == "-1" || physicalCondition.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPhysicalCondition]');
+            if (checkNullOrEmpty(physicalCondition)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPhysicalCondition]');
 
             let transferTo = $("#dropdown-transfer-to").val();
-            console.log('transfer', transferTo);
-            if (!transferTo || transferTo == "-1" || transferTo.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTransferTo]');
+            if (checkNullOrEmpty(transferTo)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTransferTo]');
 
             let faultCode = $("#dropdown-fault-code").val();
-            if (!faultCode || faultCode == "-1" || faultCode.trim().length === 0)errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultCode]');
+            if (checkNullOrEmpty(faultCode))errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultCode]');
 
             let serviceCentre = $("#dropdown-service-centre").val();
-            console.log('serviceCentre', serviceCentre);
-            if (!serviceCentre || serviceCentre == "-1" || serviceCentre.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredServiceCentre]');
+            if (checkNullOrEmpty(serviceCentre)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredServiceCentre]');
 
             let faultDetail = $("#text-fault-detail").val();
-            if (!faultDetail || faultDetail.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultDetail]');
+            if (checkNullOrEmpty(faultDetail)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultDetail]');
 
             let customerName = $("#text-customer-name").val();
-            if (!customerName || customerName.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerName]');
+            if (checkNullOrEmpty(customerName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerName]');
 
             let farsiName = $("#text-farsi-name").val();
-            if (!farsiName || farsiName.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFarsiName]');
+            if (checkNullOrEmpty(farsiName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFarsiName]');
 
             let lastName = $("#text-last-name").val();
-            if (!lastName || lastName.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredLastName]');
+            if (checkNullOrEmpty(lastName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredLastName]');
 
             @*let accessories = $("#multi-select-accessories").val(); //multiselect
             if (!accessories || accessories.length < 1) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredAccessories]');*@
 
             let mobileNumber = $("#text-mobile-number").val();
-            if (!mobileNumber || mobileNumber.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredMobileNumber]');
+            if (checkNullOrEmpty(mobileNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredMobileNumber]');
 
             let email = $("#text-email").val();
             var pattern = @emailRegex;
             if (email && !pattern.test(email)) errors.push('@translateItems[LanguageKeys.ErrorFieldInvalidEmail]');
 
             let ecocode = $("#text-ecocode").val();
-            if (!ecocode || ecocode.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredEcoCode]');
+            if (checkNullOrEmpty(ecocode)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredEcoCode]');
 
             let nationalId = $("#text-national-id").val();
-            if (!nationalId || nationalId.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredNationalId]');
+            if (checkNullOrEmpty(nationalId)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredNationalId]');
 
             //let postalCode = $("#text-postal-code").val();
             let customerAddress = $("#text-customer-address").val();
-            if (!customerAddress || customerAddress.trim().length === 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerAddress]');
+            if (checkNullOrEmpty(customerAddress)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerAddress]');
 
             if (!!errors && errors.length > 0) {
                 let errorHtml = "<div><b>@Html.Raw(translateItems[LanguageKeys.ValidationFailureDescription])</b><br><ul>";
@@ -195,7 +194,11 @@ LanguageKeys.Yes
         $("#device-confirm-modal-yes").on("click", function () {
             $("#device-confirm-modal").modal('hide');
             $("#device-form").submit();
-        })
+        });
+
+        function checkNullOrEmpty(value) {
+            return !value || value == "-1" || value.trim().length === 0;
+        }
     });
 </script>
 
@@ -282,6 +285,7 @@ LanguageKeys.Yes
                     <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.ValidationFailureSummary])</span>
                 </div>
                 <div class="modal-body">
+                    <span class="glyphicon glyphicon-remove-circle red pull-left right-space-10"></span>
                     <div id="validation-summary-item"></div>
                 </div>
                 <div class="modal-footer">

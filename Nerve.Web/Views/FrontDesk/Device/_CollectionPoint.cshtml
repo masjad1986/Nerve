@@ -1,8 +1,8 @@
 ﻿@model List<Nerve.Repository.Dtos.ItemDto>
 @using Microsoft.AspNetCore.Http
-@using Nerve.Repository.Enums
-@using Nerve.Web.Enums
-@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@using Nerve.Common
+@using Nerve.Common.Enums
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 @{
     var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
     var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);

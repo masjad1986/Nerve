@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Nerve.Repository
-@using Nerve.Web.Enums
+@using Nerve.Common.Enums
 @using System.Web
 <!DOCTYPE html>
 <html>
@@ -10,13 +10,14 @@
     <title>Nerve : @ViewData["Title"]</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
     @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-theme.css" />*@
     <link href="~/lib/bootstrap/dist/css/datepicker.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/css/color.css" rel="stylesheet" />
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 

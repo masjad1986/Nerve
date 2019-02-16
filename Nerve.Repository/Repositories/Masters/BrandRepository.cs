@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 
 namespace Nerve.Repository

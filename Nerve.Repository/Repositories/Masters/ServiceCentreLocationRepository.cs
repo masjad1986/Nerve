@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 using System.Collections.Generic;
 using System.Data;
@@ -10,10 +11,10 @@ namespace Nerve.Repository
 {
     public class ServiceCentreLocationRepository : IServiceCentreLocationRepository
     {
-        private readonly IOptions<AppSettings> _settings;
-        public ServiceCentreLocationRepository(IOptions<AppSettings> settings)
+        private readonly IOptions<AppSettings> _appSettings;
+        public ServiceCentreLocationRepository(IOptions<AppSettings> appSettings)
         {
-            _settings = settings;
+            _appSettings = appSettings;
         }
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName ="@service_centre_id", Value = serviceCentreId }
             };
 
-            var connection = SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_SCP_DATABASE);
+            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE);
             var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query);
             if (!reader.HasRows)
             {
@@ -82,7 +83,7 @@ namespace Nerve.Repository
                 new SqlParameter {ParameterName = "@brand_code", Value = brandCode}
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_SCP_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);
@@ -131,7 +132,7 @@ namespace Nerve.Repository
                 new SqlParameter {ParameterName="@exclude_acc_code",Value="MLDS"}
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_DATA_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);

@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
+using Nerve.Common;
+using Nerve.Common.Enums;
+using Nerve.Common.Helpers;
+using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
-using Nerve.Repository.Enums;
 using Nerve.Repository.Helpers;
 using Nerve.Service;
-using Nerve.Web.Enums;
 using Nerve.Web.Helpers;
-using Nerve.Web.Translation;
 using Nerve.Web.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace Nerve.Web.Controllers
         private readonly IBrandService _brandService;
         private readonly IGenericMasterService _genericMasterService;
         private readonly IServiceCentreLocationService _serviceCentreLocationService;
+        private readonly IAccessoryDetailService _accessoryDetailService;
         private readonly IUserService _userService;
         public DeviceController(
             ILanguageTranslator languageTranslator,
@@ -47,6 +49,7 @@ namespace Nerve.Web.Controllers
             IBrandService brandService,
             IGenericMasterService genericMasterService,
             IServiceCentreLocationService serviceCentreLocationService,
+            IAccessoryDetailService accessoryDetailService,
             IUserService userService)
         {
             _logger = logger;
@@ -59,6 +62,7 @@ namespace Nerve.Web.Controllers
             _brandService = brandService;
             _genericMasterService = genericMasterService;
             _serviceCentreLocationService = serviceCentreLocationService;
+            _accessoryDetailService = accessoryDetailService;
             _userService = userService;
         }
 
@@ -75,7 +79,7 @@ namespace Nerve.Web.Controllers
             try
             {
                 //remove after testing
-                model.Device = LoadDevice();
+                //model.Device = LoadDevice();
                 // get types
                 var typeItems = await _warrantyService.GetTypesAsync();
                 if (typeItems != null && typeItems.Any())
@@ -259,8 +263,16 @@ namespace Nerve.Web.Controllers
         public async Task<IActionResult> SaveAsync(DeviceViewModel deviceViewModel)
         {
             var deviceDto = deviceViewModel.Device;
+            var translateItems = new Dictionary<string, string>();
             try
             {
+                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                {
+                    LanguageKeys.DeviceLogin,
+                    LanguageKeys.ContactAdministrator,
+                    LanguageKeys.SaveDeviceMessage
+                });
+
                 if (!ModelState.IsValid)
                 {
                     return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
@@ -289,7 +301,7 @@ namespace Nerve.Web.Controllers
                 var lastJob = await _jobService.GetLastJobByImeiNumberAsync(deviceDto.ImeiNumber);
                 if (lastJob != null && DateTime.Now.Subtract(lastJob.Value).Days <= WebConstants.WarrantyBounceDays)
                 {
-                    deviceDto.Type = (int)Repository.Enums.Type.Bounce;
+                    deviceDto.Type = (int)Common.Enums.Type.Bounce;
                 }
 
                 deviceDto.CollectionDate = deviceDto.TrackingDate = DateTime.Now;
@@ -299,7 +311,7 @@ namespace Nerve.Web.Controllers
                 deviceDto.FarsiDate = persianCalender.ToDateTime(deviceDto.TrackingDate.Value.Year, deviceDto.TrackingDate.Value.Month, deviceDto.TrackingDate.Value.Day,
                     deviceDto.TrackingDate.Value.Hour, deviceDto.TrackingDate.Value.Minute, deviceDto.TrackingDate.Value.Second, deviceDto.TrackingDate.Value.Millisecond);
 
-                
+
                 deviceDto.LoginType = WebConstants.LoginType;
                 var userId = HttpContext.Session.GetString(SessionKeys.UserId);
                 var result = await _deviceService.SaveAsync(userId, deviceDto);
@@ -308,24 +320,26 @@ namespace Nerve.Web.Controllers
             {
                 var title = await _languageTranslator.TranslateAsync(LanguageKeys.ValidationFailureSummary);
                 TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(title, iex.Message, NotificationType.Error);
-
-                return View(WebConstants.ViewPage.DeviceLogin, deviceDto);
+                deviceViewModel = await PrepareDeviceModelAsync(deviceViewModel);
+                return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
             }
             catch (Exception ex)
             {
                 _logger.Log(_controller, WebConstants.PageRoute.SaveDevice, ex);
-                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
-                    {
-                        LanguageKeys.DeviceLogin,
-                        LanguageKeys.ContactAdministrator
-                    });
 
                 TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
                     translateItems[LanguageKeys.ContactAdministrator],
                     NotificationType.Error);
+
+                deviceViewModel = await PrepareDeviceModelAsync(deviceViewModel);
+                return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
             }
 
-            return Ok(deviceDto);
+            TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
+                    translateItems[LanguageKeys.SaveDeviceMessage],
+                    NotificationType.Success);
+
+            return RedirectToAction("Index");
         }
 
         [NonAction]
@@ -353,6 +367,144 @@ namespace Nerve.Web.Controllers
                 ImeiNumber = "IMEI000000000001",
 
             };
+        }
+
+        private async Task<DeviceViewModel> PrepareDeviceModelAsync(DeviceViewModel model)
+        {
+            // get types
+            var typeItems = await _warrantyService.GetTypesAsync();
+            if (typeItems != null && typeItems.Any())
+            {
+                model.TypeItems = typeItems.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Id),
+                    Selected = model.Device.Type == x.Id
+                }).ToList();
+            }
+
+            //get forwarder or delivery agent
+            var deliveryAgents = await _deliveryService.GetDeliveryAgentsAsync();
+            if (deliveryAgents != null && deliveryAgents.Any())
+            {
+                model.DeliveryAgentItems = deliveryAgents.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Code),
+                    Selected = Convert.ToString(x.Code) == model.Device.Forwarder
+                }).ToList();
+            }
+            //get list of products
+            var products = await _productService.GetAllAsync();
+            model.ProductItems = new List<SelectListItem>();
+            if (products != null && products.Any())
+            {
+                model.ProductItems = products.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Id),
+                    Selected = x.Id == model.Device.Product
+                }).ToList();
+            }
+
+            //get list of brands
+            var brands = await _brandService.GetAllByProductNameAsync(model.Device.ProductName);
+            model.BrandItems = new List<SelectListItem>();
+            if (brands != null && brands.Any())
+            {
+                model.BrandItems = brands.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Code),
+                    Selected = Convert.ToString(x.Code) == model.Device.BrandCode
+                }).ToList();
+            }
+
+            //get list of model
+            var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(model.Device.ProductName, model.Device.BrandName);
+            model.ModelItems = new List<SelectListItem>();
+            if (models != null && models.Any())
+            {
+                model.ModelItems = models.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Code),
+                    Selected = Convert.ToString(x.Code) == model.Device.Model
+                }).ToList();
+            }
+
+            var centres = new List<ServiceCentreLocationDto>();
+
+            centres = await _serviceCentreLocationService
+                .GetByIdAndBrandAndProductAsync(model.Device.CollectionPoint, model.Device.ProductName, model.Device.BrandName);
+
+            //get list of service centre
+            model.ServiceCentreItems = new List<SelectListItem>();
+            //get list of transfer to
+            model.TransferItems = new List<SelectListItem>();
+
+            if (centres != null && centres.Any())
+            {
+                model.ServiceCentreItems = centres.Select(x => new SelectListItem
+                {
+                    Text = x.LocationName,
+                    Value = Convert.ToString(x.ServiceCenterId),
+                    Selected = x.ServiceCenterId == model.Device.ServiceCentre
+                }).ToList();
+
+
+                model.TransferItems = centres.Select(x => new SelectListItem
+                {
+                    Text = x.LocationName,
+                    Value = Convert.ToString(x.ServiceCenterId),
+                    Selected = x.ServiceCenterId == model.Device.TransferTo
+                }).ToList();
+            }
+
+            //get list of warranty type
+            model.WarrantyTypeItems = new List<SelectListItem>() {
+                    new SelectListItem("Warranty", Convert.ToString((int)WarrantyType.Warranty)),
+                    new SelectListItem("Non-Warranty", Convert.ToString((int)WarrantyType.NonWarranty))
+                };
+            //get list of physical condition
+            var conditions = await _genericMasterService.GetPhysicalConditionsAsync();
+            model.PhysicalConditionItems = new List<SelectListItem>();
+            if (conditions != null && conditions.Any())
+            {
+                model.PhysicalConditionItems = conditions.Select(x => new SelectListItem
+                {
+                    Text = $"{x.Description} ({x.FarsiDescription})",
+                    Value = Convert.ToString(x.Id),
+                    Selected = Convert.ToString(x.Id) == model.Device.PhysicalCondition
+                }).ToList();
+            }
+
+            //get list of fault code
+            var faultCodes = await _genericMasterService.GetFaultCodesByBrandAsync(model.Device.BrandName);
+            model.FaultCodeItems = new List<SelectListItem>();
+            if (faultCodes != null && faultCodes.Any())
+            {
+                model.FaultCodeItems = faultCodes.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Code),
+                    Selected = Convert.ToString(x.Code) == model.Device.FaultCode
+                }).ToList();
+            }
+            //get list of accessories
+            var accessories = await _accessoryDetailService.GetByProductAndBrandAsync(model.Device.ProductName, model.Device.BrandName);
+            model.AccessoryItems = new List<SelectListItem>();
+            if (accessories != null && accessories.Count > 0)
+            {
+                model.AccessoryItems = accessories.Select(x => new SelectListItem
+                {
+                    Text = x.Description,
+                    Value = Convert.ToString(x.Id),
+                    Selected = model.Device.AccessoriesIds != null && model.Device.AccessoriesIds.Contains(x.Id)
+                }).ToList();
+
+            }
+            return model;
         }
     }
 

@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using Nerve.Common.Enums;
 using Nerve.Repository;
-using Nerve.Repository.Dtos;
-using Nerve.Repository.Enums;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Nerve.Service
 {

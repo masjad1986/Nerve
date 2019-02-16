@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 
 namespace Nerve.Repository
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly IOptions<AppSettings> _settings;
-        public ProductRepository(IOptions<AppSettings> settings)
+        private readonly IOptions<AppSettings> _appSettings;
+        public ProductRepository(IOptions<AppSettings> appSettings)
         {
-            _settings = settings;
+            _appSettings = appSettings;
         }
 
         public async Task<List<ProductDto>> GetAllAsync()
@@ -24,7 +25,7 @@ namespace Nerve.Repository
                             {RepositoryConstants.SchemaName}.{SCP.MasterTables.Product} 
                             ORDER BY ProductName";
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_SCP_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE),
                 CommandType.Text,
                 query);
 
@@ -60,7 +61,7 @@ namespace Nerve.Repository
                 }
             };
 
-            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_settings.Value.HAMI_DATA_DATABASE),
+            var reader = await SqlHelper.ExecuteReaderAsync(SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE),
                 CommandType.Text,
                 query,
                 parameters);

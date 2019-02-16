@@ -37,13 +37,6 @@ namespace Nerve.Web
             public const string Notification = "notification";
         }
 
-        public class NotifyMessage
-        {
-            public const string NoLanguageResourceFound = "No language resrouce file found";
-            public const string InvalidLanguageResourceFile = "Unable to read language resource file.";
-            public const string JobAlreadyOpenForImeiNumber = "Job already open for given IMEI number";
-        }
-
         public class ViewPage
         {
             public const string DeviceLogin = "Views/FrontDesk/Device/Index.cshtml";

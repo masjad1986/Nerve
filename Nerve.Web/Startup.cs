@@ -3,16 +3,14 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nerve.Web.Translation;
+using Nerve.Common.Models;
+using Nerve.Common.Translations;
 using NetCore.AutoRegisterDi;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -39,7 +37,7 @@ namespace Nerve.Web
             //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
 
-            services.Configure<Repository.AppSettings>(Configuration.GetSection("ApplicationSettings"));
+            services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
             services.AddMvc().AddJsonOptions(option =>
             {
                 option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -66,6 +64,7 @@ namespace Nerve.Web
             var assemblies = Assembly.GetExecutingAssembly().GetReferencedAssemblies().Where(x => x.Name.StartsWith("Nerve.")).ToList();
             var repositoryAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Repository")).ToArray();
             var serviceAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Service")).ToArray();
+            var commonAssemblies = assemblies.Where(x => x.FullName.Contains("Nerve.Common")).ToArray();
 
             // Register services
             if (serviceAssemblies.Length > 0)
@@ -81,6 +80,11 @@ namespace Nerve.Web
                 RegisterRepository(builder, repositoryAssembly);
             }
 
+            if (commonAssemblies.Length> 0)
+            {
+                var commonAssembly = Assembly.Load(commonAssemblies[0]);
+                RegisterCommon(builder, commonAssembly);
+            }
             // Register auto mapper
             RegisterAutoMapper(builder);
 
@@ -160,6 +164,11 @@ namespace Nerve.Web
                                                                 .As<IMapper>()
                                                                 .InstancePerLifetimeScope();
 
+        }
+
+        private static void RegisterCommon(ContainerBuilder builder, Assembly commonAssembly)
+        {
+            builder.RegisterAssemblyModules(commonAssembly);
         }
 
         //private static void EnableCorsRequest(HttpConfiguration config)

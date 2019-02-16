@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
-@using Nerve.Repository.Enums
-@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@using Nerve.Common
+@using Nerve.Common.Enums
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 @{
     ViewData["Title"] = "Home Page";
     var welcome = await _languageTranslator

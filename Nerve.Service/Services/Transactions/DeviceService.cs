@@ -1,4 +1,6 @@
-﻿using Nerve.Repository;
+﻿using Nerve.Common;
+using Nerve.Common.Translations;
+using Nerve.Repository;
 using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
@@ -16,12 +18,14 @@ namespace Nerve.Service
         private readonly IServiceCentreLocationRepository _serviceCentreLocationRepository;
         private readonly IAccessoryDetailRepository _accessoryDetailRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ILanguageTranslator _languageTranslator;
         public DeviceService(IDeviceRepository deviceRepository,
             IGenericMasterRepository genericMasterRepository,
             IJobRepository jobRepository,
             IServiceCentreLocationRepository serviceCentreLocationRepository,
             IAccessoryDetailRepository accessoryDetailRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ILanguageTranslator languageTranslator)
         {
             _deviceRepository = deviceRepository;
             _genericMasterRepository = genericMasterRepository;
@@ -29,6 +33,7 @@ namespace Nerve.Service
             _serviceCentreLocationRepository = serviceCentreLocationRepository;
             _accessoryDetailRepository = accessoryDetailRepository;
             _userRepository = userRepository;
+            _languageTranslator = languageTranslator;
         }
 
         /// <summary>
@@ -64,7 +69,7 @@ namespace Nerve.Service
 
             if (prefix == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorFieldPrefixNotMaintained));
             }
 
             deviceDto.Prefix = prefix.TrackingPrefix;
@@ -73,7 +78,7 @@ namespace Nerve.Service
             var jobValuePair = await _jobRepository.GetJobReferenceNumberAsync(deviceDto.LocationCode);
             if (jobValuePair.Key == null || string.IsNullOrEmpty(jobValuePair.Value))
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorFieldJobNuberNotFound));
             }
             
             deviceDto.AutoJobNumber = jobValuePair.Key;
@@ -81,8 +86,6 @@ namespace Nerve.Service
 
             // DOA is true
             // write here code for Pop Upload.
-
-            
 
             var accessories = await _accessoryDetailRepository.GetByIdsAsync(deviceDto.AccessoriesIds, deviceDto.ProductName, deviceDto.BrandCode);
             return await _deviceRepository.SaveAsync(userId, deviceDto, accessories);

@@ -3,8 +3,12 @@ D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.runtimec
 D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.runtimeconfig.dev.json
 D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.dll
 D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Service.pdb
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Common.dll
 D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Repository.dll
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Microsoft.AspNetCore.Hosting.Abstractions.dll
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Common.pdb
 D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Nerve.Repository.pdb
+D:\Asjad\Apps\Nerve\Nerve.Service\bin\Debug\netcoreapp2.2\Microsoft.AspNetCore.Hosting.Abstractions.xml
 D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.csprojResolveAssemblyReference.cache
 D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.csproj.CoreCompileInputs.cache
 D:\Asjad\Apps\Nerve\Nerve.Service\obj\Debug\netcoreapp2.2\Nerve.Service.AssemblyInfoInputs.cache

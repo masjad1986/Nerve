@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Nerve.Common;
+using Nerve.Common.Enums;
+using Nerve.Common.Translations;
 using Nerve.Repository;
 using Nerve.Service;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Nerve.Repository.Enums;
-using Nerve.Web.Translation;
-using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
-using Nerve.Web.Enums;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Nerve.Web.Controllers
 {

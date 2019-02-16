@@ -1,7 +1,8 @@
 ﻿@model List<Nerve.Repository.UserMenuAccess>
-@using Nerve.Repository.Enums
 @using Microsoft.AspNetCore.Http
-@inject Nerve.Web.Translation.ILanguageTranslator _languageTranslator
+@using Nerve.Common
+@using Nerve.Common.Enums
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 
 @{ var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);}
 

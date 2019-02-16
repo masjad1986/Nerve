@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nerve.Web", "Nerve.Web\Nerv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Translator", "Nerve.Translator\Nerve.Translator.csproj", "{E029AED4-7C5F-432B-8018-4093DD639F5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Common", "Nerve.Common\Nerve.Common.csproj", "{7633EA6A-2B58-4033-A4ED-3CAB5914D10F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{E029AED4-7C5F-432B-8018-4093DD639F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E029AED4-7C5F-432B-8018-4093DD639F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E029AED4-7C5F-432B-8018-4093DD639F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7633EA6A-2B58-4033-A4ED-3CAB5914D10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7633EA6A-2B58-4033-A4ED-3CAB5914D10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7633EA6A-2B58-4033-A4ED-3CAB5914D10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7633EA6A-2B58-4033-A4ED-3CAB5914D10F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

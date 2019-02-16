@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Routing;
+using Nerve.Common;
+using Nerve.Common.Enums;
+using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
 using Nerve.Service;
-using Nerve.Web.Enums;
-using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
-using Nerve.Web.Translation;
-using Nerve.Web.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Nerve.Web.Controllers
 {
