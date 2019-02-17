@@ -5,6 +5,7 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 .footer {
+    position: absolute;
     border-top: solid 1px lightgray;
     bottom: 0;
     width: 100%;
@@ -13,6 +14,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
     .footer p {
         padding-top: 5px;
+        margin-bottom: 0;
     }
 
 .home-welcome-text {
@@ -32,8 +34,8 @@ for details on configuring this project to bundle and minify static web assets. 
     padding-left: 0 !important;
 }
 
-.text-area {
-    min-height: 100px;
+textarea {
+    min-height: 80px;
 }
 
 .btn-primary {
@@ -217,4 +219,9 @@ for details on configuring this project to bundle and minify static web assets. 
     max-height: 250px;
     overflow-x: auto;
 }
+
+input[readonly] {
+    background-color: transparent !important;
+}
+
 

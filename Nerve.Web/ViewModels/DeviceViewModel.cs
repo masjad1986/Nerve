@@ -25,5 +25,6 @@ namespace Nerve.Web.ViewModels
         public List<SelectListItem> FaultCodeItems { get; set; }
         public List<SelectListItem> AccessoryItems { get; set; }
         public List<string> ValidationErrorItems { get; set; }
+        public PageActionBarModel PageActionBarModel { get; set; }
     }
 }

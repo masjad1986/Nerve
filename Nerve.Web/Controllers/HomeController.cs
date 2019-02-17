@@ -12,6 +12,7 @@ namespace Nerve.Web.Controllers
     {
         public IActionResult Index()
         {
+            HttpContext.Session.Remove(WebConstants.SessionKeys.CurrentMenuId);
             return View();
         }
 

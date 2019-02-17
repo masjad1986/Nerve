@@ -87,7 +87,10 @@ namespace Nerve.Service
             // DOA is true
             // write here code for Pop Upload.
 
-            var accessories = await _accessoryDetailRepository.GetByIdsAsync(deviceDto.AccessoriesIds, deviceDto.ProductName, deviceDto.BrandCode);
+            var accessories = new List<AccessoryDto>();
+            if (deviceDto.AccessoriesIds != null && deviceDto.AccessoriesIds.Any())
+                accessories = await _accessoryDetailRepository.GetByIdsAsync(deviceDto.AccessoriesIds, deviceDto.ProductName, deviceDto.BrandCode);
+
             return await _deviceRepository.SaveAsync(userId, deviceDto, accessories);
         }
     }

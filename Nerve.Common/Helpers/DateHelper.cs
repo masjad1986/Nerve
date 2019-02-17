@@ -24,9 +24,10 @@ namespace Nerve.Common.Helpers
                     isValid = first.Equals(second);
                     break;
                 case CompareType.GreaterThan:
-                    
+                    isValid = first > second;
                     break;
                 case CompareType.GreaterThanEqual:
+                    isValid = first >= second;
                     break;
                 case CompareType.LessThan:
                     isValid = first < second;

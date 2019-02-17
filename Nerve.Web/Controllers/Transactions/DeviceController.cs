@@ -68,13 +68,23 @@ namespace Nerve.Web.Controllers
 
         [HttpGet]
         [Route("Index/{id?}")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
+            HttpContext.Session.SetInt32(SessionKeys.CurrentMenuId, id ?? 0);
             var model = new DeviceViewModel()
             {
                 Device = new DeviceDto(),
                 WarrantyTypeItems = new List<SelectListItem>(),
-                DeliveryAgentItems = new List<SelectListItem>()
+                DeliveryAgentItems = new List<SelectListItem>(),
+                PageActionBarModel = new PageActionBarModel
+                {
+                    ActionPrefix = "device",
+                    HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
+                    MenuId = id ?? 0,
+                    ActionName = "",
+                    ControllerName = "",
+                    UndoActionUrl = Url.Action("Index", "Device") + "?id=" + id
+                }
             };
             try
             {
@@ -184,8 +194,8 @@ namespace Nerve.Web.Controllers
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(WebConstants.PageRoute.DeviceCollectionPoint)]
-        public async Task<PartialViewResult> CollectionPointAsync([FromQuery] string search)
+        [Route(WebConstants.PageRoute.DeviceCollectionPoint +"/{search?}")]
+        public async Task<PartialViewResult> CollectionPointAsync(string search)
         {
             try
             {
@@ -266,17 +276,27 @@ namespace Nerve.Web.Controllers
             var translateItems = new Dictionary<string, string>();
             try
             {
-                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
-                {
-                    LanguageKeys.DeviceLogin,
-                    LanguageKeys.ContactAdministrator,
-                    LanguageKeys.SaveDeviceMessage
-                });
 
                 if (!ModelState.IsValid)
                 {
                     return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
                 }
+
+                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                {
+                    LanguageKeys.DeviceLogin,
+                    LanguageKeys.ContactAdministrator,
+                    LanguageKeys.SaveDeviceMessage,
+                    LanguageKeys.JobAlreadyOpenForImeiNumber
+                });
+
+                //authenticate device
+                var result = await _deviceService.DeviceAuthenticateAsync(deviceDto.ImeiNumber);
+                if (result)
+                {
+                    throw new InvalidOperationException(translateItems[LanguageKeys.JobAlreadyOpenForImeiNumber]);
+                }
+
                 //If product=MOBILE PHONES and brand= HUAWEI then imeino should be 16 Characters 
                 if (deviceDto.ProductName.ToUpper().Equals(WebConstants.ProductMobilePhone)
                         && deviceDto.BrandName.ToUpper().Equals(WebConstants.BrandHuawei)
@@ -286,13 +306,13 @@ namespace Nerve.Web.Controllers
                 }
 
                 //POP Date: Not Null, Previous Date, Less than expiry date
-                if (!DateHelper.CompareDate(deviceDto.PopDate, deviceDto.ExpiryDate, CompareType.LessThan))
+                if (!DateHelper.CompareDate(deviceDto.PopDate.Value, deviceDto.ExpiryDate.Value, CompareType.LessThan))
                 {
                     throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorPopDateShouldLessThan));
                 }
 
                 //Set warranty type = warranty if expiry date greater than current date else set as non-warranty
-                if (DateHelper.CompareDate(DateTime.Now, deviceDto.ExpiryDate, CompareType.GreaterThan))
+                if (!DateHelper.CompareDate(DateTime.Now, deviceDto.ExpiryDate.Value, CompareType.GreaterThan))
                 {
                     deviceDto.WarrantyType = (int)WarrantyType.NonWarranty;
                 }
@@ -314,7 +334,7 @@ namespace Nerve.Web.Controllers
 
                 deviceDto.LoginType = WebConstants.LoginType;
                 var userId = HttpContext.Session.GetString(SessionKeys.UserId);
-                var result = await _deviceService.SaveAsync(userId, deviceDto);
+                result = await _deviceService.SaveAsync(userId, deviceDto);
             }
             catch (InvalidOperationException iex)
             {
@@ -339,7 +359,7 @@ namespace Nerve.Web.Controllers
                     translateItems[LanguageKeys.SaveDeviceMessage],
                     NotificationType.Success);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId) });
         }
 
         [NonAction]
@@ -369,6 +389,11 @@ namespace Nerve.Web.Controllers
             };
         }
 
+        /// <summary>
+        /// Prepare device model drop down values.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         private async Task<DeviceViewModel> PrepareDeviceModelAsync(DeviceViewModel model)
         {
             // get types
@@ -504,6 +529,19 @@ namespace Nerve.Web.Controllers
                 }).ToList();
 
             }
+
+            var menu = HttpContext.Session.GetInt32(WebConstants.SessionKeys.CurrentMenuId);
+            var undoUrl = Url.Action("Index", "Device") + "?id=" + menu;
+            model.PageActionBarModel = new PageActionBarModel
+            {
+                ActionPrefix = "device",
+                HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
+                MenuId = menu ?? 0,
+                ActionName = "",
+                ControllerName = "",
+                UndoActionUrl = undoUrl
+            };
+
             return model;
         }
     }

@@ -164,7 +164,7 @@ namespace Nerve.Repository
             var output = (from row in table.AsEnumerable()
                           select new UserMenuAccess
                           {
-                              ID = row.Field<int>("ID"),
+                              Id = row.Field<int>("ID"),
                               GroupId = row.Field<int>("GroupID"),
                               ModuleId = row.Field<int>("ModuleID"),
                               ViewOption = row.Field<string>("ViewOption"),

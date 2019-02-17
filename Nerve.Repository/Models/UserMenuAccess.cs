@@ -2,7 +2,7 @@
 {
     public class UserMenuAccess
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public int GroupId { get; set; }
         public int ModuleId { get; set; }
         public string ViewOption { get; set; }

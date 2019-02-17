@@ -2,26 +2,27 @@
 @using Nerve.Repository
 @using Nerve.Common.Enums
 @using System.Web
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nerve : @ViewData["Title"]</title>
+    <environment>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link href="~/lib/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="~/lib/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
-    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-theme.css" />*@
-    <link href="~/lib/bootstrap/dist/css/datepicker.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link href="~/css/color.css" rel="stylesheet" />
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <script>
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link href="~/css/color.css" rel="stylesheet" />
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap-datepicker.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    @RenderSection("Scripts", required: false)
+    <script type="text/javascript">
+        let ENTER_KEYCODE = 13;
         $(document).ready(function () {
             let height = screen.height;
             let layoutHeight = height ? height - 198 : 710;
@@ -29,8 +30,9 @@
             $("li.menu-link-click").click(function () {
                 let list = $(this).children("a").text();
             });
-            raiseNotification('@Html.Raw(TempData[WebConstants.TempDataKeys.Notification])');
-        })
+            raiseNotification('@Html.Raw(TempData[WebConstants.TempDataKeys.Notification])', true);
+        });
+
 
         function showSpinner() {
             $("#pageLoader").removeClass('hide');
@@ -38,6 +40,33 @@
 
         function hideSpinner() {
             $("#pageLoader").addClass('hide');
+        }
+
+        function setCalender(selector, target) {
+            $(selector).on("click", function () {
+                $(target).datepicker('show');
+                $(target).datepicker({
+                    todayBtn: true,
+                    autoClose: true,
+                }).on('changeDate', function (e) {
+                    var todayTime = e.date;
+                    var month = formatDate(todayTime.getMonth() + 1);
+                    var day = formatDate(todayTime.getDate());
+                    var year = formatDate(todayTime.getFullYear());
+                    let date = month + "/" + day + "/" + year;
+                    $(this).datepicker('hide');
+                    $(target).val(date);
+                });
+            });
+        }
+
+        function openCalender() {
+
+        }
+        function formatDate(value) {
+            if (value && value.toString().length === 1)
+                return "0" + value;
+            return value;
         }
 
         function raiseNotification(notification, isConversionRequired) {
@@ -87,6 +116,25 @@
 
         var menus = Newtonsoft.Json.JsonConvert
             .DeserializeObject<List<UserMenuAccess>>(Context.Session.GetString(WebConstants.SessionKeys.UserMenus));
+
+        var menuId = Context.Session.GetInt32(WebConstants.SessionKeys.CurrentMenuId);
+        var selectedUserMenu = new UserMenuAccess();
+        var parentMenu = new UserMenuAccess();
+        var userMenus = new Nerve.Web.ViewModels.MenuViewModel
+        {
+            CurrentMenuId = menuId ?? 0,
+            Menus = menus
+        };
+
+        if (menuId > 0 && menus != null && menus.Any())
+        {
+            selectedUserMenu = menus.FirstOrDefault(x => x.Id == menuId);
+
+            if (selectedUserMenu != null)
+            {
+                parentMenu = menus.FirstOrDefault(x => x.Id == selectedUserMenu.ParentMenuId);
+            }
+        }
     }
     <div class="main-container">
         <div class="modal fade" id="notifyModel" role="dialog">
@@ -113,46 +161,32 @@
                 <img src="~/images/loading.gif" /> Loading...
             </div>
         </div>
-        
         <img style="width:100%;height:100px;" src="~/images/banner.jpg" />
-        <partial name="_Menus" for="@menus" />
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Front Desk</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Device Login</li>
-            </ol>
-        </nav>
+        <partial name="_Menus" for="@userMenus" />
+        @if (selectedUserMenu != null && !string.IsNullOrEmpty(selectedUserMenu.MenuName))
+        {
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" id="bread-crumb-list">
+                    @if (parentMenu != null)
+                    {
+                        <li class="breadcrumb-item"><a href="#">@parentMenu.MenuName</a></li>
+                    }
+                    @if (selectedUserMenu != null)
+                    {
+                        <li class="breadcrumb-item active" aria-current="page">@selectedUserMenu.MenuName</li>
+                    }
+                </ol>
+            </nav>
+        }
         <div id="content-body" class="col-md-12">
             @RenderBody()
         </div>
-        <div>
-            <footer>
-                <p class="footer">&copy; 2019 - Nerve</p>
-            </footer>
-        </div>
+        @*<div id="footer" class="footer">
+                <footer>
+                    <p>&copy; 2019 - Nerve</p>
+                </footer>
+            </div>*@
     </div>
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-    </environment>
-
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

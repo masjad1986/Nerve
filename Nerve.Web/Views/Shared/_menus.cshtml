@@ -1,31 +1,41 @@
-﻿@model List<Nerve.Repository.UserMenuAccess>
+﻿@model Nerve.Web.ViewModels.MenuViewModel
 @using Microsoft.AspNetCore.Http
 @using Nerve.Common
 @using Nerve.Common.Enums
 @inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 
-@{ var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);}
+@{ 
+    var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);
+}
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <ul class="nav navbar-nav">
-            <li><a class="@persianFont" href="#">@await _languageTranslator.TranslateAsync(LanguageKeys.Home, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
+            <li>
+                <a class="@persianFont" asp-action="Index" asp-controller="Home">
+                    @await _languageTranslator.TranslateAsync(LanguageKeys.Home, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))
+                </a>
+            </li>
             @if (Model != null)
             {
-                var parents = Model.Where(x => x.ParentMenuId == 0).OrderBy(x => x.OrderBy).ToList();
+                var parents = Model.Menus.Where(x => x.ParentMenuId == 0).OrderBy(x => x.OrderBy).ToList();
                 @foreach (var parent in parents)
                 {
                     <li class="dropdown">
                         <a class="dropdown-toggle @persianFont" data-toggle="dropdown" href="#">
                             @await _languageTranslator.TranslateAsync(@parent.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))  <span class="caret"></span>
                         </a>
-                        @{var childs = @Model.Where(x => x.ParentMenuId == parent.MenuId).OrderBy(x => x.MenuName).ToList();
+                        @{var childs = @Model.Menus.Where(x => x.ParentMenuId == parent.MenuId).OrderBy(x => x.MenuName).ToList();
                             if (childs.Any())
                             {
                                 <ul class="dropdown-menu">
                                     @foreach (var child in childs)
                                     {
-                                        <li class="menu-link-click"><a class="@persianFont" href="@child.MenuLink?id=@child.MenuId">@await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))</a></li>
+                                        <li class="menu-link-click" data-content="@Newtonsoft.Json.JsonConvert.SerializeObject(parent)">
+                                            <a class="@persianFont" href="@child.MenuLink?id=@child.MenuId">
+                                                @await _languageTranslator.TranslateAsync(@child.LanguageKey, (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language))
+                                            </a>
+                                        </li>
                                     }
                                 </ul>
                             }
@@ -40,3 +50,18 @@
         </ul>
     </div>
 </nav>
+<script>
+    $(document).ready(function () {
+        let item = $(this).attr('data-content');
+        if (item) {
+            let menu = JSON.parse(item);
+            let parentMenu = menu.MenuName;
+            let parentMenuUrl = menu.MenuLink;
+            let currentMenu = $(this).children("a").first().text();
+            $("#bread-crumb-list").empty();
+            $("#bread-crumb-list").append(`<li class="breadcrumb-item"><a href="${parentMenuUrl}">${parentMenu}</a></li>
+                                       <li class="breadcrumb-item active" aria-current="page">${currentMenu}</li>`);
+        }
+    });
+</script>
+

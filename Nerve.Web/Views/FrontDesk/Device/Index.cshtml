@@ -5,66 +5,21 @@
 @inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 
 @{
-    var emailRegex = "/^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\b$/i";
     ViewData["Title"] = WebConstants.PageTitle.DeviceLogin;
-    var menuId = Convert.ToInt32(Context.Request.Query["id"]);
     var langugeId = (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language);
     var persianFont = Context.Session.GetString(WebConstants.SessionKeys.PersianFont);
-    var undoUrl = Url.Action("Index", "Device") + "?id=" + menuId;
-    var actionBarModel = new PageActionBarModel
-    {
-        ActionPrefix = "device",
-        HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
-        MenuId = menuId,
-        ActionName = "",
-        ControllerName = "",
-        UndoActionUrl = undoUrl
-    };
-
     var resourceKeys = new List<string>
 {
 LanguageKeys.Brand,
 LanguageKeys.CollectionPoint,
 LanguageKeys.Confirm,
 LanguageKeys.ConfirmDeviceFields,
-LanguageKeys.ErrorFieldRequiredBrand,
-LanguageKeys.ErrorFieldRequiredCollectionPoint,
-LanguageKeys.ErrorFieldRequiredImeiNumber,
-LanguageKeys.ErrorFieldRequiredPopDate,
-LanguageKeys.ErrorFieldRequiredExpiryDate,
-LanguageKeys.ErrorFieldRequiredTrackingNumber,
-LanguageKeys.ErrorFieldRequiredTrackingDate,
-LanguageKeys.ErrorFieldRequiredDeliveryAgent,
-LanguageKeys.ErrorFieldRequiredWarrantyType,
-LanguageKeys.ErrorFieldRequiredProduct,
-LanguageKeys.ErrorFieldRequiredType,
-LanguageKeys.ErrorFieldRequiredVendorRmaNumber,
-LanguageKeys.ErrorFieldRequiredModel,
-LanguageKeys.ErrorFieldRequiredPhysicalCondition,
-LanguageKeys.ErrorFieldRequiredTransferTo,
-LanguageKeys.ErrorFieldRequiredFaultCode,
-LanguageKeys.ErrorFieldRequiredServiceCentre,
-LanguageKeys.ErrorFieldRequiredFaultDetail,
-LanguageKeys.ErrorFieldRequiredCustomerName,
-LanguageKeys.ErrorFieldRequiredFarsiName,
-LanguageKeys.ErrorFieldRequiredLastName,
-LanguageKeys.ErrorFieldRequiredAccessories,
-LanguageKeys.ErrorFieldRequiredEmail,
-LanguageKeys.ErrorFieldInvalidEmail,
-LanguageKeys.ErrorFieldRequiredMobileNumber,
-LanguageKeys.ErrorFieldRequiredTelephone,
-LanguageKeys.ErrorFieldRequiredEcoCode,
-LanguageKeys.ErrorFieldRequiredNationalId,
-LanguageKeys.ErrorFieldRequiredNotes,
-LanguageKeys.ErrorFieldRequiredPostalCode,
-LanguageKeys.ErrorFieldRequiredCustomerAddress,
 LanguageKeys.ImeiNumber,
 LanguageKeys.Model,
 LanguageKeys.No,
 LanguageKeys.ServiceCentre,
-LanguageKeys.ValidationFailureSummary,
-LanguageKeys.ValidationFailureDescription,
-LanguageKeys.Yes
+LanguageKeys.Yes,
+LanguageKeys.ValidationFailureSummary
 };
 
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys); //pass languageId if persian translation required.
@@ -72,226 +27,93 @@ LanguageKeys.Yes
 
 <script>
     $(document).ready(function () {
-        $("#device-save-click").on("click", function () {
-            validate();
-        });
 
-        function validate() {
-            let errors = [];
-            $("#validation-summary-item").empty();
-
-            let collectionPoint = $("#collection-point-id").val();
-            if (!collectionPoint || collectionPoint == '0') errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCollectionPoint]');
-
-            let imeiNumber = $("#text-imei-number").val();
-            if (checkNullOrEmpty(imeiNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber]');
-
-            let popDate = $("#pop-date").val();
-            if (checkNullOrEmpty(popDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPopDate]');
-
-            let expiryDate = $("#expiry-date").val();
-            if (checkNullOrEmpty(expiryDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredExpiryDate]');
-
-            let trackingNumber = $("#tracking-number").val();
-            if (checkNullOrEmpty(trackingNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingNumber]');
-
-            let trackingDate = $("#tracking-date").val();
-            if (checkNullOrEmpty(trackingDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingDate]');
-
-            let deliveryAgent = $("#dropdown-delivery-agent").val(); //dropdown
-            if (!deliveryAgent || parseInt(deliveryAgent) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredDeliveryAgent]');
-
-            let warrantyType = $("#dropdown-warranty-type").val(); //dropdown
-            if (!warrantyType || parseInt(warrantyType) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredWarrantyType]');
-
-            let product = $("#dropdown-product").val(); //dropdown
-            if (!product || parseInt(product) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredProduct]');
-
-            let type = $("#dropdown-type").val();//dropdown
-            if (!type || parseInt(type) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredType]');
-
-            let brand = $("#dropdown-brand").val();//dropdown
-            if (checkNullOrEmpty(brand)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredBrand]');
-
-            let vendorRmaNumber = $("#text-vendor-rma-number").val();
-            if (checkNullOrEmpty(vendorRmaNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');
-
-            let model = $("#dropdown-model").val(); //dropdown
-            if (checkNullOrEmpty(model)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredModel]');
-
-            let physicalCondition = $("#dropdown-physical-condition").val();
-            if (checkNullOrEmpty(physicalCondition)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPhysicalCondition]');
-
-            let transferTo = $("#dropdown-transfer-to").val();
-            if (checkNullOrEmpty(transferTo)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTransferTo]');
-
-            let faultCode = $("#dropdown-fault-code").val();
-            if (checkNullOrEmpty(faultCode))errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultCode]');
-
-            let serviceCentre = $("#dropdown-service-centre").val();
-            if (checkNullOrEmpty(serviceCentre)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredServiceCentre]');
-
-            let faultDetail = $("#text-fault-detail").val();
-            if (checkNullOrEmpty(faultDetail)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultDetail]');
-
-            let customerName = $("#text-customer-name").val();
-            if (checkNullOrEmpty(customerName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerName]');
-
-            let farsiName = $("#text-farsi-name").val();
-            if (checkNullOrEmpty(farsiName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFarsiName]');
-
-            let lastName = $("#text-last-name").val();
-            if (checkNullOrEmpty(lastName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredLastName]');
-
-            @*let accessories = $("#multi-select-accessories").val(); //multiselect
-            if (!accessories || accessories.length < 1) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredAccessories]');*@
-
-            let mobileNumber = $("#text-mobile-number").val();
-            if (checkNullOrEmpty(mobileNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredMobileNumber]');
-
-            let email = $("#text-email").val();
-            var pattern = @emailRegex;
-            if (email && !pattern.test(email)) errors.push('@translateItems[LanguageKeys.ErrorFieldInvalidEmail]');
-
-            let ecocode = $("#text-ecocode").val();
-            if (checkNullOrEmpty(ecocode)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredEcoCode]');
-
-            let nationalId = $("#text-national-id").val();
-            if (checkNullOrEmpty(nationalId)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredNationalId]');
-
-            //let postalCode = $("#text-postal-code").val();
-            let customerAddress = $("#text-customer-address").val();
-            if (checkNullOrEmpty(customerAddress)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerAddress]');
-
-            if (!!errors && errors.length > 0) {
-                let errorHtml = "<div><b>@Html.Raw(translateItems[LanguageKeys.ValidationFailureDescription])</b><br><ul>";
-                for (var i = 0; i < errors.length; i++) {
-                    errorHtml += `<li class='red'>${errors[i]}</li>`;
-                }
-                errorHtml + "</ul></div>";
-                $("#device-confirm-summary").empty();
-                $("#device-confirm-modal").modal('hide');
-                $("#validation-summary-item").html(errorHtml);
-                $("#validation-summary-modal").modal('show');
-            } else {
-                $("#validation-summary-modal").modal('hide');
-                $("#validation-summary-item").empty();
-                $("#device-confirm-summary").empty();
-                let confirmBodyHtml = "<ul>";
-
-                confirmBodyHtml += "<li>@translateItems[LanguageKeys.CollectionPoint] : <b>" + $("#text-collection-point").val() + "</b></li>";
-                confirmBodyHtml += "<li>@translateItems[LanguageKeys.ServiceCentre] : <b>" + $("#dropdown-service-centre").find("option:selected").text() + "</b></li>";
-                confirmBodyHtml += "<li>@translateItems[LanguageKeys.Brand] : <b>" + $("#brand-name").val() + "</b></li>";
-                confirmBodyHtml += "<li>@translateItems[LanguageKeys.Model] : <b>" + $("#dropdown-model").find("option:selected").text() + "</b></li>";
-                confirmBodyHtml += "<li>@translateItems[LanguageKeys.ImeiNumber] : <b>" + $("#text-imei-number").val() + "</b></li>";
-                confirmBodyHtml += "</ul>";
-
-                $("#device-confirm-summary").html(confirmBodyHtml);
-                $("#device-confirm-modal").modal('show');
-            }
-        }
-
-        $("#device-confirm-modal-yes").on("click", function () {
-            $("#device-confirm-modal").modal('hide');
-            $("#device-form").submit();
-        });
-
-        function checkNullOrEmpty(value) {
-            return !value || value == "-1" || value.trim().length === 0;
-        }
     });
 </script>
 
-<form asp-action="Save" asp-controller="Device"
-      data-ajax="true"
-      data-ajax-method="POST"
-      data-ajax-mode="replace"
-      data-ajax-update="#ajaxpanel"
-      id="device-form">
-    <div class="main-container">
-        <partial name="@WebConstants.ViewPage.Partial.Actions" model="@actionBarModel" />
-    </div>
-    <div id="device-login" class="main-container">
-        @*<ul class="nav nav-pills">
-                <li class="active">
-                    <a href="#login-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.LoginDetails, langugeId)</a>
-                </li>
-                <li>
-                    <a href="#fault-accessory-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.FaultAndAccessoryDetails, langugeId)</a>
-                </li>
-                <li>
-                    <a href="#stand-by-units" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.StandByUnits, langugeId)</a>
-                </li>
-                <li>
-                    <a href="#pop-upload" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.PopUpload, langugeId)</a>
-                </li>
-                <li>
-                    <a href="#imei-history" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.ImeiHistory, langugeId)</a>
-                </li>
-            </ul>*@
-        <div class="tab-content clearfix">
-            <div class="tab-pane active" id="login-details">
+
+<div class="main-container">
+    <partial name="@WebConstants.ViewPage.Partial.Actions" model="@Model.PageActionBarModel" />
+</div>
+<div id="device-login" class="main-container">
+    @*<ul class="nav nav-pills">
+            <li class="active">
+                <a href="#login-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.LoginDetails, langugeId)</a>
+            </li>
+            <li>
+                <a href="#fault-accessory-details" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.FaultAndAccessoryDetails, langugeId)</a>
+            </li>
+            <li>
+                <a href="#stand-by-units" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.StandByUnits, langugeId)</a>
+            </li>
+            <li>
+                <a href="#pop-upload" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.PopUpload, langugeId)</a>
+            </li>
+            <li>
+                <a href="#imei-history" class="@persianFont" data-toggle="tab">@await _languageTranslator.TranslateAsync(LanguageKeys.ImeiHistory, langugeId)</a>
+            </li>
+        </ul>*@
+    <div class="tab-content clearfix">
+        <div class="tab-pane active" id="login-details">
+            @{
+                Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceLoginDetails, Model);
+            }
+        </div>
+        @*<div class="tab-pane" id="fault-accessory-details">
                 @{
-                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceLoginDetails, Model);
+                Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceFaultAccessoryDetails, Model.FaultAccessory);
                 }
             </div>
-            @*<div class="tab-pane" id="fault-accessory-details">
-                    @{
-                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceFaultAccessoryDetails, Model.FaultAccessory);
-                    }
-                </div>
-                <div class="tab-pane" id="stand-by-units">
-                    @{
-                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceStandByUnits, Model.StandByUnit);
-                    }
-                </div>*@
-            @*<div class="tab-pane" id="pop-upload">
-                    @{
-                        Html.RenderPartial(WebConstants.ViewPage.Partial.DevicePopUpload, Model.PopUpload);
-                    }
-                </div>*@
-            @*<div class="tab-pane" id="imei-history">
-                    @{
-                        Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceImeiHistory, Model.HistoryItems);
-                    }
-                </div>*@
-        </div>
+            <div class="tab-pane" id="stand-by-units">
+                @{
+                Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceStandByUnits, Model.StandByUnit);
+                }
+            </div>*@
+        @*<div class="tab-pane" id="pop-upload">
+                @{
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DevicePopUpload, Model.PopUpload);
+                }
+            </div>*@
+        @*<div class="tab-pane" id="imei-history">
+                @{
+                    Html.RenderPartial(WebConstants.ViewPage.Partial.DeviceImeiHistory, Model.HistoryItems);
+                }
+            </div>*@
     </div>
-    <button type="submit" name="save-device" class="hidden"></button>
-    <div class="modal fade" id="device-confirm-modal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.Confirm])</span>
-                </div>
-                <div class="modal-body">
-                    <div>@Html.Raw(translateItems[LanguageKeys.ConfirmDeviceFields])</div>
-                    <br />
-                    <div id="device-confirm-summary"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Raw(translateItems[LanguageKeys.No])</button>
-                    <button type="button" class="btn btn-primary" id="device-confirm-modal-yes">@Html.Raw(translateItems[LanguageKeys.Yes])</button>
-                </div>
+</div>
+<div class="modal fade" id="device-confirm-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.Confirm])</span>
+            </div>
+            <div class="modal-body">
+                <div>@Html.Raw(translateItems[LanguageKeys.ConfirmDeviceFields])</div>
+                <br />
+                <div id="device-confirm-summary"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Raw(translateItems[LanguageKeys.No])</button>
+                <button type="button" class="btn btn-primary" id="device-confirm-modal-yes">@Html.Raw(translateItems[LanguageKeys.Yes])</button>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="validation-summary-modal" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.ValidationFailureSummary])</span>
-                </div>
-                <div class="modal-body">
-                    <span class="glyphicon glyphicon-remove-circle red pull-left right-space-10"></span>
-                    <div id="validation-summary-item"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
+</div>
+<div class="modal fade" id="validation-summary-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.ValidationFailureSummary])</span>
+            </div>
+            <div class="modal-body">
+                <span class="glyphicon glyphicon-remove-circle red pull-left right-space-10"></span>
+                <div id="validation-summary-item"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</form>
+</div>

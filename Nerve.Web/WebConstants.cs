@@ -27,6 +27,7 @@ namespace Nerve.Web
             public const string DefaultStockLocation = "location";
             public const string DefaultDealer = "dealer";
             public const string PersianFont = "css";
+            public const string CurrentMenuId = "menuid";
 
             //View Data
             public const string BreadCrumb = "bread-crumb";
