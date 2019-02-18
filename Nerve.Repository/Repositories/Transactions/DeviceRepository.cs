@@ -47,6 +47,60 @@ namespace Nerve.Repository
             return result != null;
         }
 
+        /// <summary>
+        /// Find device based on IMEI or Tracking Number.
+        /// </summary>
+        /// <param name="imeiOrTrackingNumber">Pass IMEI or Tracking number to find the device.</param>
+        /// <returns></returns>
+        public async Task<DeviceDto> FindAsync(string imeiOrTrackingNumber)
+        {
+            var deviceDto = new DeviceDto();
+
+            var query = $@"SELECT TOP 1 *
+                        FROM  [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DealerLog}] j 
+                        WHERE(IMEINO = @search OR DocNo = @search)
+                        AND(ISNULL(Dispatched, 0) = 0 OR ISNULL(JobStatus, 0) = 0)";
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter
+                {
+                    ParameterName = "@search",
+                    Value = imeiOrTrackingNumber
+                }
+            };
+            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE);
+            var reader = await SqlHelper.ExecuteReaderAsync(connection,
+                CommandType.Text,
+                query,
+                parameters);
+
+            if (!reader.HasRows)
+                return deviceDto;
+
+            var table = new DataTable();
+            table.Load(reader);
+
+            deviceDto.ImeiNumber = Convert.ToString(table.Rows[0]["IMEINO"]);
+            deviceDto.CollectionPointName = Convert.ToString(table.Rows[0]["DCustomerName"]);
+            deviceDto.TrackingNumber = Convert.ToString(table.Rows[0]["Docno"]);
+            deviceDto.BrandName = Convert.ToString(table.Rows[0]["Brand"]);
+            deviceDto.ProductName = Convert.ToString(table.Rows[0]["Product"]);
+            deviceDto.Model = Convert.ToString(table.Rows[0]["Model"]);
+            deviceDto.LocationCode = Convert.ToString(table.Rows[0]["LocationCode"]);
+            deviceDto.LocationName = Convert.ToString(table.Rows[0]["LocationName"]);
+            deviceDto.CustomerName = Convert.ToString(table.Rows[0]["CustomerName"]);
+            deviceDto.VendorRmaNumber = Convert.ToString(table.Rows[0]["RMANo"]);
+            deviceDto.AutoJobReferenceNumber = Convert.ToString(table.Rows[0]["JOBREF"]);
+            return deviceDto;
+        }
+
+        /// <summary>
+        /// Save device information.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="deviceDto"></param>
+        /// <param name="accessories"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAsync(string userId, DeviceDto deviceDto, IEnumerable<AccessoryDto> accessories)
         {
             var isSaved = false;
@@ -132,7 +186,7 @@ namespace Nerve.Repository
                     VALUES 
                     (
 	                    @d_customer_id,@d_customer_name,@imei_number,@doc_no, @doc_date,@prefix,
-	                    @product,@brand,@model,@customer_name,@last_name, @mobile_number,
+	                    @product_name,@brand,@model,@customer_name,@last_name, @mobile_number,
 	                    @farsi_customer_name,@physical_condition,@pop_date, @expiry_date,@expirymonths,
 	                    @delivery_agent,@delivery_agent,@warranty_text, @type_of_warranty,@unit_dropped_date,
 	                    @phone,@rma_number, @national_id,@eco_code,@postal_code,@farsidate,@transfer_to, 
@@ -145,6 +199,7 @@ namespace Nerve.Repository
 
 
                 parameters.Add(new SqlParameter { ParameterName = "@product", Value = deviceDto.Product });
+                parameters.Add(new SqlParameter { ParameterName = "@product_name", Value = deviceDto.ProductName });
                 parameters.Add(new SqlParameter { ParameterName = "@brand", Value = deviceDto.BrandCode });
                 parameters.Add(new SqlParameter { ParameterName = "@model", Value = deviceDto.Model.Trim() });
                 parameters.Add(new SqlParameter { ParameterName = "@customer_name", Value = deviceDto.CustomerName });

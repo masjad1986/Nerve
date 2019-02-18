@@ -29,9 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Operations\" />
     <Folder Include="Interfaces\Reports\" />
-    <Folder Include="Services\Operations\" />
     <Folder Include="Services\Reports\" />
   </ItemGroup>
 

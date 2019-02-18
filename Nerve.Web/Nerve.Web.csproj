@@ -39,9 +39,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Reports\" />
-    <Folder Include="Views\Operations\" />
     <Folder Include="Views\Reports\" />
-    <Folder Include="Views\Transactions\" />
     <Folder Include="wwwroot\js\custom\" />
   </ItemGroup>
 

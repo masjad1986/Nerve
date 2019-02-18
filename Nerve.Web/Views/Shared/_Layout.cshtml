@@ -60,13 +60,14 @@
             });
         }
 
-        function openCalender() {
-
-        }
         function formatDate(value) {
             if (value && value.toString().length === 1)
                 return "0" + value;
             return value;
+        }
+
+        function showNotification(title, message, type, timout) {
+            raiseNotification({ 'autoDismissed': timout, 'title': title, 'message': message, 'type': type }, false);
         }
 
         function raiseNotification(notification, isConversionRequired) {

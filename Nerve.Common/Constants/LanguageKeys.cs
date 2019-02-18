@@ -54,12 +54,15 @@ namespace Nerve.Common
         public const string Hami = "hami";
         public const string Home = "home";
         public const string ImeiNumber = "imei-number";
+        public const string ImeiOrTrackingNumber = "imei-or-tracking-number";
         public const string ImeiHistory = "imei-history";
         public const string Inventory = "inventory";
         public const string Issued = "issued";
         public const string JobAllocation = "job-allocation";
         public const string JobClosing = "job-closing";
         public const string JobNumber = "job-number";
+        public const string LocationCode = "location-code";
+        public const string LocationName = "location-name";
         public const string LoginDetails = "login-details";
         public const string Logout = "logout";
         public const string LogDate = "log-date";
@@ -157,8 +160,10 @@ namespace Nerve.Common
         public const string ConfirmDeviceFields = "confirm-device-fields";
         public const string UndoMessage = "undo-message";
         public const string SaveDeviceMessage = "save-device-message";
+        public const string SearchItemNotFound = "search-item-not-found";
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
+        public const string ErrorFieldRequiredImeiOrTrackingNumber = "error-field-required-imei-tracking-number";
         public const string ErrorFieldRequiredCollectionPoint = "error-field-required-collection-point";
         public const string ErrorPopDateShouldLessThan = "error-pop-date-should-less-than";
         public const string ErrorFieldRequiredPopDate ="error-field-required-pop-date";

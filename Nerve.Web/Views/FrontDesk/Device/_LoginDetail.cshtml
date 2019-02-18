@@ -267,10 +267,6 @@ LanguageKeys.ValidationFailureDescription
             });
         }
 
-        function showNotification(title, message, type, timout) {
-            raiseNotification({ 'autoDismissed': timout, 'title': title, 'message': message, 'type': type }, false);
-        }
-
         function bindCollectionPoint() {
             showSpinner();
             let searchValue = $("#text-collection-point").val();

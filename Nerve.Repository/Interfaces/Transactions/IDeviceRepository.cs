@@ -10,5 +10,6 @@ namespace Nerve.Repository
     {
         Task<bool> DeviceAuthenticationAsync(string imeiNumber);
         Task<bool> SaveAsync(string userId, DeviceDto deviceDto, IEnumerable<AccessoryDto> accessories);
+        Task<DeviceDto> FindAsync(string imeiOrTrackingNumber);
     }
 }
