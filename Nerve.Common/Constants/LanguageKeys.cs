@@ -160,7 +160,8 @@ namespace Nerve.Common
         public const string ConfirmDeviceFields = "confirm-device-fields";
         public const string UndoMessage = "undo-message";
         public const string SaveDeviceMessage = "save-device-message";
-        public const string SearchItemNotFound = "search-item-not-found";
+        public const string SaveRecordMessage = "save-record-message";
+        public const string SearchItemNotFound = "no-search-record-found";
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
         public const string ErrorFieldRequiredImeiOrTrackingNumber = "error-field-required-imei-tracking-number";

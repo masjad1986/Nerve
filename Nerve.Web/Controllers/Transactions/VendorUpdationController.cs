@@ -15,8 +15,6 @@ using Nerve.Web.Helpers;
 using Nerve.Web.ViewModels;
 using static Nerve.Web.WebConstants;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Nerve.Web.Controllers.Transactions
 {
     //[Authorize]
@@ -69,8 +67,16 @@ namespace Nerve.Web.Controllers.Transactions
             try
             {
                 var result = await _vendorUpdationService.GetByImeiOrTrackingNumberAsync(search);
+                if (result == null)
+                {
+                    throw new InvalidOperationException(LanguageKeys.SearchItemNotFound);
+                }
                 return Ok(result);
             }
+            catch (InvalidOperationException)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest);
+            } 
             catch (Exception ex)
             {
                 _logger.Log(WebConstants.Controllers.VendorUpdation, WebConstants.PageRoute.Find, ex);
@@ -88,5 +94,58 @@ namespace Nerve.Web.Controllers.Transactions
             }
         }
 
+        /// <summary>
+        /// Update vendor rma number.
+        /// </summary>
+        /// <param name="vendorUpdationDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(WebConstants.PageRoute.Update)]
+        public async Task<IActionResult> UpdateAsync(VendorUpdateViewModel vendorUpdateViewModel)
+        {
+            var translateItems = new Dictionary<string, string>();
+            try
+            {
+                var vendorUpdationDto = vendorUpdateViewModel.VendorUpdation;
+                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.VendorRmaUpdation,
+                        LanguageKeys.ContactAdministrator,
+                        LanguageKeys.SaveRecordMessage
+                    });
+                var result = await _vendorUpdationService.UpdateAsync(vendorUpdationDto.VendorRmaNumber, vendorUpdationDto.ImeiNumber, vendorUpdationDto.TrackingNumber);
+
+                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.VendorRmaUpdation],
+                    translateItems[LanguageKeys.SaveRecordMessage],
+                    NotificationType.Success);
+                return RedirectToAction("Index", new { id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId) });
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(WebConstants.Controllers.VendorUpdation, WebConstants.PageRoute.Find, ex);
+                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                {
+                    LanguageKeys.VendorRmaUpdation,
+                    LanguageKeys.ContactAdministrator
+                });
+
+                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.VendorRmaUpdation],
+                    translateItems[LanguageKeys.ContactAdministrator],
+                    NotificationType.Error);
+
+                var id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId);
+                vendorUpdateViewModel.PageActionBarModel = new PageActionBarModel
+                {
+                    ActionPrefix = "vendor-updation",
+                    HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
+                    MenuId = id ?? 0,
+                    ActionName = "",
+                    ControllerName = WebConstants.Controllers.VendorUpdation,
+                    UndoActionUrl = Url.Action("Index", WebConstants.Controllers.VendorUpdation) + "?id=" + id
+                };
+
+                return View(WebConstants.ViewPage.VendorUpdation, vendorUpdateViewModel);
+            }
+        }
     }
 }

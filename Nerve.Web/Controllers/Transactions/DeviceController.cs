@@ -269,7 +269,7 @@ namespace Nerve.Web.Controllers
         /// <param name="deviceDto"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(WebConstants.PageRoute.SaveDevice)]
+        [Route(WebConstants.PageRoute.Save)]
         public async Task<IActionResult> SaveAsync(DeviceViewModel deviceViewModel)
         {
             var deviceDto = deviceViewModel.Device;
@@ -345,7 +345,7 @@ namespace Nerve.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log(_controller, WebConstants.PageRoute.SaveDevice, ex);
+                _logger.Log(_controller, WebConstants.PageRoute.Save, ex);
 
                 TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
                     translateItems[LanguageKeys.ContactAdministrator],

@@ -25,13 +25,6 @@ LanguageKeys.ValidationFailureSummary
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys); //pass languageId if persian translation required.
 }
 
-<script>
-    $(document).ready(function () {
-
-    });
-</script>
-
-
 <div class="main-container">
     <partial name="@WebConstants.ViewPage.Partial.Actions" model="@Model.PageActionBarModel" />
 </div>
@@ -100,20 +93,4 @@ LanguageKeys.ValidationFailureSummary
         </div>
     </div>
 </div>
-<div class="modal fade" id="validation-summary-modal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.ValidationFailureSummary])</span>
-            </div>
-            <div class="modal-body">
-                <span class="glyphicon glyphicon-remove-circle red pull-left right-space-10"></span>
-                <div id="validation-summary-item"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="@WebConstants.ViewPage.Partial.ValidationSummary" model="@translateItems[LanguageKeys.ValidationFailureSummary]" />

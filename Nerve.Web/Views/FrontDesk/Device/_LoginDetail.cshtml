@@ -107,7 +107,7 @@ LanguageKeys.ValidationFailureDescription
 
         //device save click
         $("#device-save-click").on("click", function () {
-            validate();
+            validateDevice();
         });
 
         //prevent form default
@@ -135,7 +135,7 @@ LanguageKeys.ValidationFailureDescription
 
         $("#dropdown-product").on('change', function () {
             showSpinner();
-            let url = '@Url.Action(WebConstants.PageRoute.GetBrandByProductName, "Brand")';
+            let url = '@Url.Action(WebConstants.PageRoute.GetBrandByProductName, WebConstants.Controllers.Brand)';
             let productName = $(this).find("option:selected").text();
             let productId = $(this).find("option:selected").val();
             $("#product-name").val(productName);
@@ -202,7 +202,7 @@ LanguageKeys.ValidationFailureDescription
                 $("#collection-point-id").val(point.val());
                 $("#text-collection-point").val(point.attr('title').trim());
                 $("#collection-point-modal").modal('hide');
-                let url = '@Url.Action(WebConstants.PageRoute.GetTrackingPrefix, "Device")';
+                let url = '@Url.Action(WebConstants.PageRoute.GetTrackingPrefix, WebConstants.Controllers.Device)';
                 $.ajax({
                 'url': url,
                 'type': 'GET',
@@ -239,55 +239,55 @@ LanguageKeys.ValidationFailureDescription
                 return;
             }
 
-            let url = '@WebConstants.PageRoute.DeviceAuthenticate/';
+            let url = '@Url.Action(WebConstants.PageRoute.DeviceAuthenticate, WebConstants.Controllers.Device)/';
             $.ajax({
-                'url': url + number,
+                    'url': url + number,
                 'type': 'GET',
                 'async': false,
                 'data': number,
                 'dataType': 'application/json',
                 complete: function (value) {
-                    if (!!value && value.responseText == "false") {
+                        if (!!value && value.responseText == "false") {
                         $("#text-imei-number").val(number);
-                    } else {
-                        _message = '@Html.Raw(translateItems[LanguageKeys.JobAlreadyOpenForImeiNumber])';
-                        showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
+                        } else {
+                            _message = '@Html.Raw(translateItems[LanguageKeys.JobAlreadyOpenForImeiNumber])';
+                            showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
+                        }
+                        hideSpinner();
                     }
-                    hideSpinner();
-                }
-            });
-        }
+                });
+            }
 
-        function bindDropDown(selector, data, textColumn, valueColumn) {
+            function bindDropDown(selector, data, textColumn, valueColumn) {
             $.each(data, function (index) {
-                let item = data[index];
-                let value = item[valueColumn];
-                let text = item[textColumn];
+                    let item = data[index];
+                    let value = item[valueColumn];
+                    let text = item[textColumn];
                 $(selector).append($("<option     />").val(value).text(text));
-            });
-        }
+                });
+            }
 
-        function bindCollectionPoint() {
-            showSpinner();
-            let searchValue = $("#text-collection-point").val();
-            let url = `@Url.Action(WebConstants.PageRoute.DeviceCollectionPoint, "Device")`;
-            if (!!searchValue)
-                url = encodeURI(`${url}/${searchValue}`);
+            function bindCollectionPoint() {
+                showSpinner();
+                let searchValue = $("#text-collection-point").val();
+                let url = `@Url.Action(WebConstants.PageRoute.DeviceCollectionPoint, WebConstants.Controllers.Device)`;
+                if (!!searchValue)
+                    url = encodeURI(`${url}/${searchValue}`);
             $('#collection-point-partial').load(url, function () {
                 $("#collection-point-modal").modal('show');
                 $("#collection-point-error").addClass('hide');
-                hideSpinner();
-            });
-        }
+                    hideSpinner();
+                });
+            }
 
-        function bindOption()
-        {
-            showSpinner();
-            let url = '@Url.Action(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, "Brand")';
-            let collectionPoint = $("#collection-point-id").val();
-            let brandName = $("#dropdown-brand").find("option:selected").text();
-            let productName = $("#dropdown-product").find("option:selected").text();
-            let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
+            function bindOption()
+            {
+                showSpinner();
+                let url = '@Url.Action(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, WebConstants.Controllers.Brand)';
+                let collectionPoint = $("#collection-point-id").val();
+                let brandName = $("#dropdown-brand").find("option:selected").text();
+                let productName = $("#dropdown-product").find("option:selected").text();
+                let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
 
             $("#brand-name").val(brandName);
             $("#dropdown-model").empty();
@@ -301,102 +301,102 @@ LanguageKeys.ValidationFailureDescription
             $("#dropdown-service-centre").append($("<option     />").val("-1").text(select));
             $("#dropdown-fault-code").append($("<option     />").val("-1").text(select));
             $.ajax({
-                'url': `${url}/${brandName}/${productName}/${!!collectionPoint ? collectionPoint : 0}`,
+                    'url': `${url}/${brandName}/${productName}/${!!collectionPoint ? collectionPoint : 0}`,
                 'type': 'GET',
                 'async': false,
                 'dataType': 'application/json',
                 complete: function (response) {
-                    if (!!response && response.status == @StatusCodes.Status200OK) {
-                        let item = JSON.parse(response.responseText);
-                        if (item) {
-                            if (item.models && item.models.length > 0)
-                                bindDropDown("#dropdown-model", item.models, "name", "code");
+                        if (!!response && response.status == @StatusCodes.Status200OK) {
+                            let item = JSON.parse(response.responseText);
+                            if (item) {
+                                if (item.models && item.models.length > 0)
+                                    bindDropDown("#dropdown-model", item.models, "name", "code");
 
-                            if (item.faultCodes && item.faultCodes.length > 0)
-                                bindDropDown("#dropdown-fault-code", item.faultCodes, "name", "code");
+                                if (item.faultCodes && item.faultCodes.length > 0)
+                                    bindDropDown("#dropdown-fault-code", item.faultCodes, "name", "code");
 
-                            if (item.accessories && item.accessories.length > 0)
-                                bindDropDown("#multi-select-accessories", item.accessories, "description", "id");
+                                if (item.accessories && item.accessories.length > 0)
+                                    bindDropDown("#multi-select-accessories", item.accessories, "description", "id");
 
-                            if (item.centres && item.centres.length > 0) {
-                                bindDropDown("#dropdown-service-centre", item.centres, "locationName", "serviceCenterId");
-                                bindDropDown("#dropdown-transfer-to", item.centres, "locationName", "serviceCenterId");
+                                if (item.centres && item.centres.length > 0) {
+                                    bindDropDown("#dropdown-service-centre", item.centres, "locationName", "serviceCenterId");
+                                    bindDropDown("#dropdown-transfer-to", item.centres, "locationName", "serviceCenterId");
+                                }
                             }
+                        } else {
+                            raiseNotification(response.responseText, true);
                         }
-                    } else {
-                        raiseNotification(response.responseText, true);
+                        hideSpinner();
                     }
-                    hideSpinner();
-                }
-            });
-        }
+                });
+            }
 
-        function validate() {
-            let errors = [];
+            function validateDevice() {
+                let errors = [];
             $("#validation-summary-item").empty();
 
-            let collectionPoint = $("#collection-point-id").val();
-            if (!collectionPoint || collectionPoint == '0') errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCollectionPoint]');
+                let collectionPoint = $("#collection-point-id").val();
+                if (!collectionPoint || collectionPoint == '0') errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCollectionPoint]');
 
-            let imeiNumber = $("#text-imei-number").val();
-            if (checkNullOrEmpty(imeiNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber]');
+                let imeiNumber = $("#text-imei-number").val();
+                if (checkNullOrEmpty(imeiNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber]');
 
-            let popDate = $("#pop-date").val();
-            if (checkNullOrEmpty(popDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPopDate]');
+                let popDate = $("#pop-date").val();
+                if (checkNullOrEmpty(popDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPopDate]');
 
-            let expiryDate = $("#expiry-date").val();
-            if (checkNullOrEmpty(expiryDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredExpiryDate]');
+                let expiryDate = $("#expiry-date").val();
+                if (checkNullOrEmpty(expiryDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredExpiryDate]');
 
-            let trackingNumber = $("#tracking-number").val();
-            if (checkNullOrEmpty(trackingNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingNumber]');
+                let trackingNumber = $("#tracking-number").val();
+                if (checkNullOrEmpty(trackingNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingNumber]');
 
-            let trackingDate = $("#tracking-date").val();
-            if (checkNullOrEmpty(trackingDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingDate]');
+                let trackingDate = $("#tracking-date").val();
+                if (checkNullOrEmpty(trackingDate)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTrackingDate]');
 
-            let deliveryAgent = $("#dropdown-delivery-agent").val(); //dropdown
-            if (!deliveryAgent || parseInt(deliveryAgent) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredDeliveryAgent]');
+                let deliveryAgent = $("#dropdown-delivery-agent").val(); //dropdown
+                if (!deliveryAgent || parseInt(deliveryAgent) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredDeliveryAgent]');
 
-            let warrantyType = $("#dropdown-warranty-type").val(); //dropdown
-            if (!warrantyType || parseInt(warrantyType) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredWarrantyType]');
+                let warrantyType = $("#dropdown-warranty-type").val(); //dropdown
+                if (!warrantyType || parseInt(warrantyType) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredWarrantyType]');
 
-            let product = $("#dropdown-product").val(); //dropdown
-            if (!product || parseInt(product) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredProduct]');
+                let product = $("#dropdown-product").val(); //dropdown
+                if (!product || parseInt(product) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredProduct]');
 
-            let type = $("#dropdown-type").val();//dropdown
-            if (!type || parseInt(type) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredType]');
+                let type = $("#dropdown-type").val();//dropdown
+                if (!type || parseInt(type) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredType]');
 
-            let brand = $("#dropdown-brand").val();//dropdown
-            if (checkNullOrEmpty(brand)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredBrand]');
+                let brand = $("#dropdown-brand").val();//dropdown
+                if (checkNullOrEmpty(brand)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredBrand]');
 
-            let vendorRmaNumber = $("#text-vendor-rma-number").val();
-            if (checkNullOrEmpty(vendorRmaNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');
+                let vendorRmaNumber = $("#text-vendor-rma-number").val();
+                if (checkNullOrEmpty(vendorRmaNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');
 
-            let model = $("#dropdown-model").val(); //dropdown
-            if (checkNullOrEmpty(model)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredModel]');
+                let model = $("#dropdown-model").val(); //dropdown
+                if (checkNullOrEmpty(model)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredModel]');
 
-            let physicalCondition = $("#dropdown-physical-condition").val();
-            if (checkNullOrEmpty(physicalCondition)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPhysicalCondition]');
+                let physicalCondition = $("#dropdown-physical-condition").val();
+                if (checkNullOrEmpty(physicalCondition)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredPhysicalCondition]');
 
-            let transferTo = $("#dropdown-transfer-to").val();
-            if (checkNullOrEmpty(transferTo)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTransferTo]');
+                let transferTo = $("#dropdown-transfer-to").val();
+                if (checkNullOrEmpty(transferTo)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredTransferTo]');
 
-            let faultCode = $("#dropdown-fault-code").val();
-            if (checkNullOrEmpty(faultCode))errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultCode]');
+                let faultCode = $("#dropdown-fault-code").val();
+                if (checkNullOrEmpty(faultCode))errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultCode]');
 
-            let serviceCentre = $("#dropdown-service-centre").val();
-            if (checkNullOrEmpty(serviceCentre)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredServiceCentre]');
+                let serviceCentre = $("#dropdown-service-centre").val();
+                if (checkNullOrEmpty(serviceCentre)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredServiceCentre]');
 
-            let faultDetail = $("#text-fault-detail").val();
-            if (checkNullOrEmpty(faultDetail)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultDetail]');
+                let faultDetail = $("#text-fault-detail").val();
+                if (checkNullOrEmpty(faultDetail)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFaultDetail]');
 
-            let customerName = $("#text-customer-name").val();
-            if (checkNullOrEmpty(customerName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerName]');
+                let customerName = $("#text-customer-name").val();
+                if (checkNullOrEmpty(customerName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredCustomerName]');
 
-            let farsiName = $("#text-farsi-name").val();
-            if (checkNullOrEmpty(farsiName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFarsiName]');
+                let farsiName = $("#text-farsi-name").val();
+                if (checkNullOrEmpty(farsiName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredFarsiName]');
 
-            let lastName = $("#text-last-name").val();
-            if (checkNullOrEmpty(lastName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredLastName]');
+                let lastName = $("#text-last-name").val();
+                if (checkNullOrEmpty(lastName)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredLastName]');
 
             @*let accessories = $("#multi-select-accessories").val(); //multiselect
             if (!accessories || accessories.length < 1) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredAccessories]');*@
@@ -445,10 +445,6 @@ LanguageKeys.ValidationFailureDescription
                 $("#device-confirm-modal").modal('show');
             }
         }
-
-        function checkNullOrEmpty(value) {
-            return !value || value == "-1" || value.trim().length === 0;
-        }
     });
 </script>
 <div class="panel panel-default top-margin-10">
@@ -469,7 +465,7 @@ LanguageKeys.ValidationFailureDescription
     </div>
 </div>
 
-<form asp-action="Save" asp-controller="Device"
+<form asp-action="@WebConstants.PageRoute.Save" asp-controller="@WebConstants.Controllers.Device"
       data-ajax="true"
       data-ajax-method="POST"
       data-ajax-mode="replace"
@@ -530,7 +526,7 @@ LanguageKeys.ValidationFailureDescription
                 </div>
                 <div class="col-sm-4">
                     <div class='input-group date'>
-                        @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control", @id = "tracking-date" })
+                        @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control", @id = "tracking-date", @readonly = "readonly" })
                         <span span class="input-group-addon cursor" id="tracking-date-calender">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>

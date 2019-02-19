@@ -1,0 +1,18 @@
+﻿@model string
+<div class="modal fade" id="validation-summary-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="modal-title model-title-header">@Model</span>
+            </div>
+            <div class="modal-body">
+                <span class="glyphicon glyphicon-remove-circle red pull-left right-space-10"></span>
+                <div id="validation-summary-item"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

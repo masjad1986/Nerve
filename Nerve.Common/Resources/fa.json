@@ -146,7 +146,7 @@
   "confirm-device-fields": "Please confirm the below field values are correct:",
   "undo-message": "Are you sure you want to discard the unsaved changes?",
   "save-device-message": "Device data save successfully.",
-  "search-item-not-found": "No record found related to search criteria",
+  "save-record-message": "Data has been saved successfully.",
   "validation-failure-summary": "Validation Summary",
   "validation-failure-description": "Please provide the missing values for below fields:",
   "error-field-required-imei-number": "IMEI number is required.",

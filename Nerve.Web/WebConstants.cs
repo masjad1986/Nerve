@@ -52,6 +52,7 @@ namespace Nerve.Web
                 public const string DeviceStandByUnits = "~/Views/FrontDesk/Device/_StandByUnits.cshtml";
                 public const string DevicePopUpload = "~/Views/FrontDesk/Device/_PopUpload.cshtml";
                 public const string DeviceImeiHistory = "~/Views/FrontDesk/Device/_ImeiHistory.cshtml";
+                public const string ValidationSummary = "_ValidationSummary";
             }
         }
 
@@ -62,18 +63,21 @@ namespace Nerve.Web
 
         public class PageRoute
         {
-            public const string DeviceAuthenticate = "Authenticate";
-            public const string DeviceCollectionPoint = "CollectionPoint";
-            public const string Find = "Find";
-            public const string GetBrandByProductName = "Product";
-            public const string GetOptionByBrandAndProductAndCollectionPoint = "Option";
-            public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "ServiceCentre";
-            public const string GetTrackingPrefix = "TrackingPrefix";
-            public const string SaveDevice = "Save";
+            public const string DeviceAuthenticate = "authenticate";
+            public const string DeviceCollectionPoint = "collectionpoint";
+            public const string Find = "find";
+            public const string GetBrandByProductName = "product";
+            public const string GetOptionByBrandAndProductAndCollectionPoint = "option";
+            public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "servicecentre";
+            public const string GetTrackingPrefix = "trackingprefix";
+            public const string Save = "save";
+            public const string Update = "update";
         }
 
         public class Controllers
         {
+            public const string Brand = "Brand";
+            public const string Device = "Device";
             public const string VendorUpdation = "VendorUpdation";
         }
     }

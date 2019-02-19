@@ -75,7 +75,7 @@ namespace Nerve.Repository
                 parameters);
 
             if (!reader.HasRows)
-                return deviceDto;
+                return null;
 
             var table = new DataTable();
             table.Load(reader);

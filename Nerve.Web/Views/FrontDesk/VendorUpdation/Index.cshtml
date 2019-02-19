@@ -22,9 +22,12 @@ LanguageKeys.VendorRmaNumber,
 LanguageKeys.LocationCode,
 LanguageKeys.JobNumber,
 LanguageKeys.VendorRmaUpdation,
+LanguageKeys.ErrorFieldRequiredVendorRmaNumber,
 LanguageKeys.ErrorFieldRequiredImeiNumber,
 LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber,
-LanguageKeys.SearchItemNotFound
+LanguageKeys.ValidationFailureSummary,
+LanguageKeys.SearchItemNotFound,
+LanguageKeys.ValidationFailureDescription
 };
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
@@ -32,7 +35,8 @@ LanguageKeys.SearchItemNotFound
 
 <script>
     $(document).ready(function () {
-        $("#imei-search").click(function () {
+        raiseNotification('@Html.Raw(TempData[WebConstants.TempDataKeys.Notification])', true);
+        $("#imei-search-click").click(function () {
             searchImeiNumber();
         });
 
@@ -42,58 +46,104 @@ LanguageKeys.SearchItemNotFound
                 searchImeiNumber();
             }
         });
+
+        //device save click
+        $("#@Model.PageActionBarModel.ActionPrefix-save-click").on("click", function () {
+            let errors = [];
+            let imeiNumber = $("#text-imei-number").val();
+
+            let trackingNumber = $("#tracking-number").val();
+            if (checkNullOrEmpty(trackingNumber) && checkNullOrEmpty(imeiNumber)) {
+                errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber]');
+            }
+
+            let vendorRmaNumber = $("#text-vendor-rma-number").val();
+            if (checkNullOrEmpty(vendorRmaNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');
+
+
+            if (!!errors && errors.length > 0) {
+                let errorHtml = "<div><b>@Html.Raw(translateItems[LanguageKeys.ValidationFailureDescription])</b><br><ul>";
+                for (var i = 0; i < errors.length; i++) {
+                    errorHtml += `<li class='red'>${errors[i]}</li>`;
+                }
+                errorHtml + "</ul></div>";
+                $("#validation-summary-item").html(errorHtml);
+                $("#validation-summary-modal").modal('show');
+            } else {
+                $("#validation-summary-modal").modal('hide');
+                $("#validation-summary-item").empty();
+                $("#vendor-updation-form").submit();
+            }
+        });
+
+        //prevent form default
+        $("#vendor-updation-form").on("keypress", function (event) {
+            if (event.keyCode == ENTER_KEYCODE) {
+                event.preventDefault();
+                return;
+            }
+        });
+
     });
 
     function searchImeiNumber() {
-            showSpinner();
-            let _title = '@Html.Raw(translateItems[LanguageKeys.VendorRmaUpdation])';
-            let _message = '';
-            let number = $("#search-imei-number").val();
-            if (number == undefined || number == '') {
-                _message = '@Html.Raw(translateItems[LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber])';
-                hideSpinner();
-                showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
-                return;
-            }
-
-            $("#text-imei-number").val('');
-            $("#text-tracking-number").val('');
-            $("#product-name").val('');
-            $("#brand-name").val('');
-            $("#text-model").val('');
-            $("#text-collection-point").val('');
-            $("#text-location-code").val('');
-            $("#text-job-number").val('');
-            $("#text-customer-name").val('');
-            $("#text-vendor-rma-number").val('');
-            let url = '@Url.Action(WebConstants.PageRoute.Find, WebConstants.Controllers.VendorUpdation)/';
-            $.ajax({
-                'url': url + number,
-                'type': 'GET',
-                'async': false,
-                'data': number,
-                'dataType': 'application/json',
-                complete: function (response) {
-                    if (!!response && response.status == @StatusCodes.Status200OK) {
-                        var vendor = JSON.parse(response.responseText);
-                        $("#text-imei-number").val(vendor.imeiNumber);
-                        $("#text-tracking-number").val(vendor.trackingNumber);
-                        $("#product-name").val(vendor.productName);
-                        $("#brand-name").val(vendor.brandName);
-                        $("#text-model").val(vendor.model);
-                        $("#text-collection-point").val(vendor.collectionPointName);
-                        $("#text-location-code").val(vendor.locationCode);
-                        $("#text-job-number").val(vendor.jobNumber);
-                        $("#text-customer-name").val(vendor.customerName);
-                        $("#text-vendor-rma-number").val(vendor.vendorRmaNumber);
-                    } else {
-                        _message = '@Html.Raw(translateItems[LanguageKeys.SearchItemNotFound])';
-                        showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
-                    }
-                    hideSpinner();
-                }
-            });
+        showSpinner();
+        let _title = '@Html.Raw(translateItems[LanguageKeys.VendorRmaUpdation])';
+        let _message = '';
+        let number = $("#search-imei-number").val();
+        if (number == undefined || number == '') {
+            _message = '@Html.Raw(translateItems[LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber])';
+            hideSpinner();
+            showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
+            return;
         }
+
+        clearVendorInformation();
+        let url = '@Url.Action(WebConstants.PageRoute.Find, WebConstants.Controllers.VendorUpdation)/';
+        $.ajax({
+            'url': url + number,
+            'type': 'GET',
+            'async': true,
+            'data': number,
+            'dataType': 'application/json',
+            complete: function (response) {
+                if (!!response && response.status == @StatusCodes.Status200OK) {
+                    var vendor = JSON.parse(response.responseText);
+                    setVendorInformation(vendor);
+                } else {
+                    _message = '@Html.Raw(translateItems[LanguageKeys.SearchItemNotFound])';
+                    showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
+                }
+                hideSpinner();
+            }
+        });
+    }
+
+    function setVendorInformation(vendor) {
+        $("#text-imei-number").val(vendor.imeiNumber);
+        $("#text-tracking-number").val(vendor.trackingNumber);
+        $("#product-name").val(vendor.productName);
+        $("#brand-name").val(vendor.brandName);
+        $("#text-model").val(vendor.model);
+        $("#text-collection-point").val(vendor.collectionPointName);
+        $("#text-location-code").val(vendor.locationCode);
+        $("#text-job-number").val(vendor.jobNumber);
+        $("#text-customer-name").val(vendor.customerName);
+        $("#text-vendor-rma-number").val(vendor.vendorRmaNumber);
+    }
+
+    function clearVendorInformation() {
+        $("#text-imei-number").val('');
+        $("#text-tracking-number").val('');
+        $("#product-name").val('');
+        $("#brand-name").val('');
+        $("#text-model").val('');
+        $("#text-collection-point").val('');
+        $("#text-location-code").val('');
+        $("#text-job-number").val('');
+        $("#text-customer-name").val('');
+        $("#text-vendor-rma-number").val('');
+    }
 </script>
 
 <partial name="@WebConstants.ViewPage.Partial.Actions" model="@Model.PageActionBarModel" />
@@ -108,12 +158,12 @@ LanguageKeys.SearchItemNotFound
             </div>
             <div class="col-sm-4">
                 @Html.TextBoxFor(model => model.Search, new { @class = "form-control", @id = "search-imei-number" })
-                <span id="imei-search" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+                <span id="imei-search-click" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
             </div>
         </div>
     </div>
 </div>
-<form asp-action="Update" asp-controller="VendorRmaUpdation"
+<form asp-action="@WebConstants.PageRoute.Update" asp-controller="@WebConstants.Controllers.VendorUpdation"
       data-ajax="true"
       data-ajax-method="POST"
       data-ajax-mode="replace"
@@ -195,3 +245,4 @@ LanguageKeys.SearchItemNotFound
     </div>
     <button type="submit" name="update-vendor-number" class="hidden"></button>
 </form>
+<partial name="@WebConstants.ViewPage.Partial.ValidationSummary" model="@translateItems[LanguageKeys.ValidationFailureSummary]" />
