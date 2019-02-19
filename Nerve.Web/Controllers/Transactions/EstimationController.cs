@@ -30,7 +30,6 @@ namespace Nerve.Web.Controllers.Transactions
 
         }
 
-
         [HttpGet]
         [Route("Index/{id?}")]
         public IActionResult Index(int? id)
