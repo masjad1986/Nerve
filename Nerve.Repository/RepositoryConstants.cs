@@ -37,6 +37,7 @@ namespace Nerve.Repository
             public const string DealerLogMain = "T_DealerLog_Main";
             public const string DealerLog = "DealerLog";
             public const string ReceiptDetail = "T_ReceiptTCDetail";
+            public const string DealerInvoice = "DealerTCInvoice";
         }
 
         public class TemporaryTables

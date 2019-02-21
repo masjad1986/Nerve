@@ -151,6 +151,8 @@
   "save-record-message": "Data has been saved successfully.",
   "validation-failure-summary": "Validation Summary",
   "validation-failure-description": "Please provide the missing values for below fields:",
+  "invoice-number": "Invoice Number",
+  "invoice-date": "Invoice Date",
   "error-field-required-imei-number": "IMEI number is required.",
   "error-field-required-imei-tracking-number": "IMEI or Tracking number is required.",
   "error-invalid-imei-number-length": "IMEI number length should be 16 charactor.",

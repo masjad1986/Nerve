@@ -25,7 +25,7 @@ LanguageKeys.FarsiName,
 LanguageKeys.Brand,
 LanguageKeys.Accessories,
 LanguageKeys.PopDate,
-LanguageKeys.ExpireDate,
+LanguageKeys.ExpiryDate,
 LanguageKeys.Forwarder,
 LanguageKeys.TransferTo,
 LanguageKeys.WarrantyType,
@@ -447,7 +447,7 @@ LanguageKeys.ValidationFailureDescription
         }
     });
 </script>
-<div class="panel panel-default top-margin-10">
+<div class="panel panel-default">
     <div class="panel-body">
         <b>@Html.Raw(translateItems[LanguageKeys.SearchCriteria])</b>
     </div>
@@ -496,22 +496,24 @@ LanguageKeys.ValidationFailureDescription
                 </div>
                 <div class="col-sm-4">
                     <div class='input-group date'>
+                        @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control", @id = "tracking-date", @readonly = "readonly" })
+                        <span span class="input-group-addon cursor" id="tracking-date-calender">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    
+                </div>
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.PopDate])
+                </div>
+                <div class="col-sm-4">
+                    <div class='input-group date'>
                         @Html.TextBoxFor(model => model.Device.PopDate, new { @class = "form-control", @id = "pop-date", @readonly = "readonly" })
                         <span class="input-group-addon cursor" id="pop-date-calender">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
                     </div>
-                </div>
-                <div class="col-sm-2 text-right @persianFont">
-                    @Html.Raw(translateItems[LanguageKeys.ExpireDate])
-                </div>
-                <div class="col-sm-4">
-                    <div class='input-group date'>
-                        @Html.TextBoxFor(model => model.Device.ExpiryDate, new { @class = "form-control", @id = "expiry-date", @readonly = "readonly" })
-                        <span class="input-group-addon cursor" id="expiry-date-calender">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
+                   
                 </div>
             </div>
             <div class="row row-space">
@@ -522,12 +524,12 @@ LanguageKeys.ValidationFailureDescription
                     @Html.TextBoxFor(model => model.Device.TrackingNumber, new { @class = "form-control", @id = "tracking-number", @readonly = "readonly" })
                 </div>
                 <div class="col-sm-2 text-right @persianFont">
-                    @Html.Raw(translateItems[LanguageKeys.Date])
+                    @Html.Raw(translateItems[LanguageKeys.ExpiryDate])
                 </div>
                 <div class="col-sm-4">
                     <div class='input-group date'>
-                        @Html.TextBoxFor(model => model.Device.TrackingDate, new { @class = "form-control", @id = "tracking-date", @readonly = "readonly" })
-                        <span span class="input-group-addon cursor" id="tracking-date-calender">
+                        @Html.TextBoxFor(model => model.Device.ExpiryDate, new { @class = "form-control", @id = "expiry-date", @readonly = "readonly" })
+                        <span class="input-group-addon cursor" id="expiry-date-calender">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
                     </div>

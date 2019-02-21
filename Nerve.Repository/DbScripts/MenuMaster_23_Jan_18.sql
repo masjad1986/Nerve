@@ -16,6 +16,6 @@ DELETE FROM DUPLICATE WHERE ROW_NO = 2
 --MENU LINKING WITH ACTUAL PAGE
 --FRONTDESK MENU
 UPDATE [HAMI_SCP].[dbo].[WEB_MENUMASTER] SET MenuLink ='/Device/Index' WHERE MenuName = 'Device Login' AND ModuleID = 6
+UPDATE [HAMI_SCP].[dbo].[WEB_MENUMASTER] SET MenuLink ='/Invoice/DispatchNote' WHERE MenuName = 'Dispatch Note' AND ModuleID = 6
 UPDATE [HAMI_SCP].[dbo].[WEB_MENUMASTER] SET MenuLink ='/VendorUpdation/Index' WHERE MenuName = 'Vendor RMA Updation' AND ModuleID = 6
-
 UPDATE [HAMI_SCP].[dbo].[WEB_MENUMASTER] SET MenuLink ='/Estimation/Index' WHERE MenuName = 'Estimation' AND ModuleID = 6

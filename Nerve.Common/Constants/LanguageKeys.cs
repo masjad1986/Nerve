@@ -41,7 +41,7 @@ namespace Nerve.Common
         public const string Estimation = "estimation";
         public const string EstimationApproval = "estimation-approval";
         public const string Exit = "exit";
-        public const string ExpireDate = "expiry-date";
+        public const string ExpiryDate = "expiry-date";
         public const string Farsi = "farsi";
         public const string FaultAndAccessoryDetails = "fault-and-accessory-details";
         public const string FaultCode = "fault-code";
@@ -53,6 +53,8 @@ namespace Nerve.Common
         public const string Grn = "grn";
         public const string Hami = "hami";
         public const string Home = "home";
+        public const string InvoiceDate = "invoice-date";
+        public const string InvoiceNumber = "invoice-number";
         public const string ImeiNumber = "imei-number";
         public const string ImeiOrTrackingNumber = "imei-or-tracking-number";
         public const string ImeiHistory = "imei-history";

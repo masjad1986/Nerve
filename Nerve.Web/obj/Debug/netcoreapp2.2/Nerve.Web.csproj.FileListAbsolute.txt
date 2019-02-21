@@ -45,3 +45,4 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.csproj.CopyCompl
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Transactions\Estimation\Index.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\VendorUpdation\Index.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_ValidationSummary.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Transactions\Invoice\DispatchNote.g.cshtml.cs

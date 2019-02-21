@@ -42,6 +42,7 @@ namespace Nerve.Web
         {
             public const string DeviceLogin = "Views/FrontDesk/Device/Index.cshtml";
             public const string VendorUpdation = "Views/FrontDesk/VendorUpdation/Index.cshtml";
+            public const string DispatchNote = "Views/Transactions/Invoice/DispatchNote.cshtml";
             public const string Estimation = "Views/Transactions/Estimation/Index.cshtml";
             public class Partial
             {
@@ -66,12 +67,14 @@ namespace Nerve.Web
             public const string DeviceAuthenticate = "authenticate";
             public const string DeviceCollectionPoint = "collectionpoint";
             public const string Find = "find";
+            public const string Save = "save";
+            public const string Update = "update";
+            public const string DispatchNote = "dispatchnote";
+            public const string GetDealerInvoices = "dealerinvoices";
             public const string GetBrandByProductName = "product";
             public const string GetOptionByBrandAndProductAndCollectionPoint = "option";
             public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "servicecentre";
             public const string GetTrackingPrefix = "trackingprefix";
-            public const string Save = "save";
-            public const string Update = "update";
         }
 
         public class Controllers
@@ -79,6 +82,7 @@ namespace Nerve.Web
             public const string Brand = "Brand";
             public const string Device = "Device";
             public const string VendorUpdation = "VendorUpdation";
+            public const string Invoice = "Invoice";
         }
     }
 }

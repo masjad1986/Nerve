@@ -1,7 +1,7 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
 .panel {
-    margin-bottom: 15px !important;
+    margin-bottom: 5px !important;
 }
 
 .footer {
@@ -88,7 +88,7 @@ textarea {
 
 #device-login .tab-content {
     background-color: #f5f5f5;
-    padding: 5px 15px;
+    padding: 5px;
 }
 
 .cursor {
@@ -96,22 +96,25 @@ textarea {
 }
 
 .bs-glyphicons {
-    margin: 0 0 20px;
+    margin: 0 0 10px;
     overflow: hidden;
     background-color: #f5f5f5;
 }
 
     .bs-glyphicons .glyphicon {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        font-size: 20px;
+        font-size: 15px;
     }
 
     .bs-glyphicons .glyphicon-class {
-        display: block;
+        display: inline-flex;
         text-align: center;
         word-wrap: break-word;
+        vertical-align: middle;
     }
+
+.glyphicon-class label {
+    padding-left: 5px;
+}
 
 .glyphicon {
     display: inline-block;
@@ -123,28 +126,29 @@ textarea {
 }
 
 .bs-glyphicons-list {
-    padding: 10px;
+    padding: 5px;
     list-style: none;
 }
 
-.bs-glyphicons li a{
+.bs-glyphicons li a {
     float: left;
-    width: 84px;
-    height: 84px;
-    padding: 10px 1px 0 5px;
+    width: auto;
+    height: auto;
+    padding: 10px 1px 5px 25px;
     font-size: 12px;
-    line-height: 1.4;
-    text-align: center;
     background-color: #e7f0f4;
     border: 1px solid #fff;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     word-break: break-word;
+    min-width: 100px;
+    margin-right: 3px;
 }
 
     .bs-glyphicons li a:hover {
         cursor: pointer;
         color: #fff;
         background-color: #0C6D2C;
+        text-decoration: none;
     }
 
 .notification-message {
