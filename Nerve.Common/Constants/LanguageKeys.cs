@@ -14,6 +14,7 @@ namespace Nerve.Common
         public const string Accessories = "accessories";
         public const string AdditionalSerialNumber = "additional-serial-number";
         public const string AirwayBillNumber = "airway-bill-number";
+        public const string Amount = "amount";
         public const string AutoCrn = "auto-crn";
         public const string Battery = "battery";
         public const string Brand = "brand";
@@ -30,6 +31,8 @@ namespace Nerve.Common
         public const string LastName = "last-name";
         public const string DebitNoteEntry = "debit-note-entry";
         public const string Delete = "delete";
+        public const string DeliveryDate = "delivery-date";
+        public const string DeliveredDate = "delivered-date";
         public const string DeviceLogin = "device-login";
         public const string DispatchDate = "dispatch-date";
         public const string DispatchNote = "dispatch-note";
@@ -53,6 +56,7 @@ namespace Nerve.Common
         public const string Grn = "grn";
         public const string Hami = "hami";
         public const string Home = "home";
+        public const string Invoices = "invoices";
         public const string InvoiceDate = "invoice-date";
         public const string InvoiceNumber = "invoice-number";
         public const string ImeiNumber = "imei-number";
@@ -161,9 +165,21 @@ namespace Nerve.Common
         public const string Confirm = "confirm";
         public const string ConfirmDeviceFields = "confirm-device-fields";
         public const string UndoMessage = "undo-message";
+        public const string SelectAll = "select-all";
+        public const string UnselectAll = "unselect-all";
         public const string SaveDeviceMessage = "save-device-message";
         public const string SaveRecordMessage = "save-record-message";
         public const string SearchItemNotFound = "no-search-record-found";
+
+        public const string SwapImeiNumber = "swap-imei-number";
+        public const string Delivery = "delivery";
+        public const string ShipmentDetails = "shipment-details";
+        public const string AllocatedTo = "allocated-to";
+        public const string RmaReference = "rma-reference";
+        public const string Warranty = "warranty";
+        public const string LoginType = "login-type";
+        public const string Cost = "cost";
+        public const string TotalQuantity = "total-quantity";
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
         public const string ErrorFieldRequiredImeiOrTrackingNumber = "error-field-required-imei-tracking-number";
@@ -199,6 +215,7 @@ namespace Nerve.Common
         public const string ErrorFieldRequiredCustomerAddress ="error-field-required-customer-address";
         public const string ErrorFieldPrefixNotMaintained = "error-field-prefix-not-maintained";
         public const string ErrorFieldJobNuberNotFound = "error-field-job-number-not-maintained";
+        public const string ErrorFieldSelectionRequired = "error-field-selection-required";
         //invalid
         public const string ErrorInvalidImeiLength = "error-invalid-imei-number-length";
         public const string ErrorFieldInvalidEmail = "error-invalid-email-format";

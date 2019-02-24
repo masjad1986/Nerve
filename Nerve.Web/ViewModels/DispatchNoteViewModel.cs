@@ -10,9 +10,10 @@ namespace Nerve.Web.ViewModels
     public class DispatchNoteViewModel
     {
         public string ImeiOrTrackingNumber { get; set; }
-        public List<SelectListItem> AirwayBillItems { get; set; }
         public List<SelectListItem> DeliveryAgentItems { get; set; }
+        public List<DealerInvoiceDto> Devices { get; set; }
         public DispatchNoteDto DispatchNote { get; set; }
         public PageActionBarModel PageActionBarModel { get; set; }
+        public bool IsSaveRequest { get; set; }
     }
 }

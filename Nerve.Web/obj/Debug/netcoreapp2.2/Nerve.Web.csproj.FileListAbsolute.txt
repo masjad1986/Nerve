@@ -46,3 +46,6 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Transactions\E
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\FrontDesk\VendorUpdation\Index.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_ValidationSummary.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Transactions\Invoice\DispatchNote.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Transactions\Invoice\_Invoices.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\MvcGrid\_Grid.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\MvcGrid\_Pager.g.cshtml.cs

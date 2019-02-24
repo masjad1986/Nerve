@@ -45,36 +45,75 @@ namespace Nerve.Web
         [Route(WebConstants.PageRoute.DispatchNote + "/{id?}")]
         public async Task<IActionResult> DispatchNoteAsync(int? id)
         {
-            HttpContext.Session.SetInt32(SessionKeys.CurrentMenuId, id ?? 0);
-            var dispatchViewModel = new DispatchNoteViewModel
+            try
             {
-                AirwayBillItems = new List<SelectListItem>(),
-                DeliveryAgentItems = new List<SelectListItem>(),
-                DispatchNote = new DispatchNoteDto(),
-                PageActionBarModel = new PageActionBarModel
+                HttpContext.Session.SetInt32(SessionKeys.CurrentMenuId, id ?? 0);
+                var dispatchViewModel = new DispatchNoteViewModel
                 {
-                    ActionPrefix = "dispatch-note",
-                    HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
-                    MenuId = id ?? 0,
-                    ActionName = "",
-                    ControllerName = WebConstants.Controllers.VendorUpdation,
-                    UndoActionUrl = Url.Action("Index", WebConstants.Controllers.VendorUpdation) + "?id=" + id
-                }
-            };
+                    DeliveryAgentItems = new List<SelectListItem>(),
+                    Devices = new List<DealerInvoiceDto>(),
+                    DispatchNote = new DispatchNoteDto(),
+                    PageActionBarModel = new PageActionBarModel
+                    {
+                        ActionPrefix = "dispatch-note",
+                        HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
+                        MenuId = id ?? 0,
+                        ActionName = "",
+                        ControllerName = WebConstants.Controllers.Invoice,
+                        UndoActionUrl = Url.Action(WebConstants.PageRoute.DispatchNote, WebConstants.Controllers.Invoice) + "?id=" + id
+                    }
+                };
 
-            //get forwarder or delivery agent
-            var deliveryAgents = await _deliveryService.GetDeliveryAgentsAsync();
-            if (deliveryAgents != null && deliveryAgents.Any())
-            {
-                dispatchViewModel.DeliveryAgentItems = deliveryAgents.Select(x => new SelectListItem
+                //get forwarder or delivery agent
+                var deliveryAgents = await _deliveryService.GetDeliveryAgentsAsync();
+                if (deliveryAgents != null && deliveryAgents.Any())
                 {
-                    Text = x.Name,
-                    Value = Convert.ToString(x.Code),
-                }).ToList();
+                    dispatchViewModel.DeliveryAgentItems = deliveryAgents.Select(x => new SelectListItem
+                    {
+                        Text = x.Name,
+                        Value = Convert.ToString(x.Code),
+                    }).ToList();
+                }
+
+                return View(WebConstants.ViewPage.DispatchNote, await Task.FromResult(dispatchViewModel));
             }
-            
-            return View(WebConstants.ViewPage.DispatchNote, await Task.FromResult(dispatchViewModel));
+            catch (Exception ex)
+            {
+                _logger.Log(WebConstants.Controllers.VendorUpdation, WebConstants.PageRoute.Find, ex);
+                return View(WebConstants.ViewPage.Error);
+            }
         }
+
+        /// <summary>
+        /// Search invoice number details.
+        /// </summary>
+        /// <param name="dispatchViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(WebConstants.PageRoute.DispatchNote)]
+        public async Task<IActionResult> DispatchNoteAsync(DispatchNoteViewModel dispatchViewModel)
+        {
+            try
+            {
+                if (!dispatchViewModel.IsSaveRequest)
+                {
+                    dispatchViewModel = await LoadDispatchModel(dispatchViewModel);
+                    dispatchViewModel.Devices = await _invoiceService
+                        .GetDealerInvoiceByParamAsync(dispatchViewModel.ImeiOrTrackingNumber, dispatchViewModel.DispatchNote.DeliveryAgent);
+                }
+                else
+                {
+
+                }
+                return View(WebConstants.ViewPage.DispatchNote, await Task.FromResult(dispatchViewModel));
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(WebConstants.Controllers.Invoice, WebConstants.PageRoute.DispatchNote, ex);
+                return View(WebConstants.ViewPage.Error);
+            }
+        }
+
 
         /// <summary>
         /// Get list of dealer invoice.
@@ -82,13 +121,18 @@ namespace Nerve.Web
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(WebConstants.PageRoute.GetDealerInvoices + "/{search}")]
-        public async Task<IActionResult> GetDealerInvoiceAsync(string search)
+        [Route(WebConstants.PageRoute.Find + "/{search?}")]
+        public async Task<IActionResult> GetDealerInvoiceAsync(int? search)
         {
             try
             {
                 var result = await _invoiceService.GetDealerInvoiceAsync(search);
-                return Ok(result);
+                var invoices = result?.Select(i => new ItemDto
+                {
+                    Name = Convert.ToString(i.InvoiceNumber),
+                    Id = i.Id
+                }).ToList();
+                return PartialView(WebConstants.ViewPage.Partial.Invoice, invoices);
             }
             catch (InvalidOperationException)
             {
@@ -109,6 +153,36 @@ namespace Nerve.Web
 
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [NonAction]
+        private async Task<DispatchNoteViewModel> LoadDispatchModel(DispatchNoteViewModel dispatchViewModel)
+        {
+            var id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId);
+            dispatchViewModel.DeliveryAgentItems = new List<SelectListItem>();
+            dispatchViewModel.PageActionBarModel = new PageActionBarModel
+            {
+                ActionPrefix = "dispatch-note",
+                HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
+                MenuId = id ?? 0,
+                ActionName = "",
+                ControllerName = WebConstants.Controllers.Invoice,
+                UndoActionUrl = Url.Action(WebConstants.PageRoute.DispatchNote, WebConstants.Controllers.Invoice) + "?id=" + id
+            };
+
+            //get forwarder or delivery agent
+            var deliveryAgents = await _deliveryService.GetDeliveryAgentsAsync();
+            if (deliveryAgents != null && deliveryAgents.Any())
+            {
+                dispatchViewModel.DeliveryAgentItems = deliveryAgents.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Code),
+                    Selected = Convert.ToString(x.Code) == Convert.ToString(dispatchViewModel.DispatchNote.DeliveryAgent)
+                }).ToList();
+            }
+
+            return dispatchViewModel;
         }
     }
 }

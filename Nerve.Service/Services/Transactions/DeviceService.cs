@@ -81,8 +81,8 @@ namespace Nerve.Service
                 throw new InvalidOperationException(await _languageTranslator.TranslateAsync(LanguageKeys.ErrorFieldJobNuberNotFound));
             }
             
-            deviceDto.AutoJobNumber = jobValuePair.Key;
-            deviceDto.AutoJobReferenceNumber = jobValuePair.Value;
+            deviceDto.JobNumber = jobValuePair.Key;
+            deviceDto.JobReferenceNumber = jobValuePair.Value;
 
             // DOA is true
             // write here code for Pop Upload.

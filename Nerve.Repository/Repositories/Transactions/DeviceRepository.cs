@@ -27,7 +27,7 @@ namespace Nerve.Repository
         /// <returns></returns>
         public async Task<bool> DeviceAuthenticationAsync(string imeiNumber)
         {
-            var query = $@"SELECT 1 AS [Pending] FROM [{RepositoryConstants.SchemaName}].[{SCP.Views.Jobs}] j 
+            var query = $@"SELECT 1 AS [Pending] FROM [{RepositoryConstants.SchemaName}].[{HAMI.Views.Jobs}] j 
                         WHERE(IMEINO = @imei_number OR msnno = @imei_number)
                         AND(ISNULL(Dispatched, 0) = 0 OR ISNULL(JobStatus, 0) = 0 OR ISNULL(REPAIR_STATUS, 0) = 0)";
             var parameters = new SqlParameter[]
@@ -90,7 +90,7 @@ namespace Nerve.Repository
             deviceDto.LocationName = Convert.ToString(table.Rows[0]["LocationName"]);
             deviceDto.CustomerName = Convert.ToString(table.Rows[0]["CustomerName"]);
             deviceDto.VendorRmaNumber = Convert.ToString(table.Rows[0]["RMANo"]);
-            deviceDto.AutoJobReferenceNumber = Convert.ToString(table.Rows[0]["JOBREF"]);
+            deviceDto.JobReferenceNumber = Convert.ToString(table.Rows[0]["JOBREF"]);
             return deviceDto;
         }
 
@@ -122,8 +122,8 @@ namespace Nerve.Repository
                     new SqlParameter { ParameterName = "@doc_date", Value = deviceDto.TrackingDate },
                     new SqlParameter { ParameterName = "@d_customer_name", Value = deviceDto.CollectionPointName},
                     new SqlParameter { ParameterName = "@d_customer_id", Value = deviceDto.CollectionPoint},
-                    new SqlParameter { ParameterName = "@job_number", Value = deviceDto.AutoJobNumber },
-                    new SqlParameter { ParameterName = "@job_reference_number", Value = deviceDto.AutoJobReferenceNumber }
+                    new SqlParameter { ParameterName = "@job_number", Value = deviceDto.JobNumber },
+                    new SqlParameter { ParameterName = "@job_reference_number", Value = deviceDto.JobReferenceNumber }
                 };
 
                 var query = $@"INSERT INTO [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DealerLogMain}]

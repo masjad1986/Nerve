@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.2",
-    "signature": "e1939067095d7eff52cafff4020555f59b8e69a9"
+    "signature": "ab3f1c3d2b167a24240d408e58dc1cbcf2554f07"
   },
   "compilationOptions": {
     "defines": [
@@ -35,7 +35,8 @@
           "Nerve.Common": "1.0.0",
           "Nerve.Repository": "1.0.0",
           "Nerve.Service": "1.0.0",
-          "NetCore.AutoRegisterDi": "1.0.0"
+          "NetCore.AutoRegisterDi": "1.0.0",
+          "NonFactors.Grid.Core.Mvc6": "4.0.3"
         },
         "runtime": {
           "Nerve.Web.dll": {}
@@ -471,6 +472,21 @@
           "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
       },
+      "NonFactors.Grid.Core.Mvc6/4.0.3": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "2.2.0",
+          "System.Linq.Queryable": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.6/Mvc.Grid.Core.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.6/Mvc.Grid.Core.dll": {}
+        }
+      },
       "NuGet.Frameworks/4.7.0": {
         "dependencies": {
           "NETStandard.Library": "2.0.3"
@@ -505,7 +521,7 @@
           "System.Diagnostics.Debug": "4.3.0",
           "System.Linq": "4.3.0",
           "System.Linq.Expressions": "4.3.0",
-          "System.Linq.Queryable": "4.0.1",
+          "System.Linq.Queryable": "4.3.0",
           "System.ObjectModel": "4.3.0",
           "System.Reflection": "4.3.0",
           "System.Reflection.Extensions": "4.3.0",
@@ -683,7 +699,7 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.Linq.Queryable/4.0.1": {
+      "System.Linq.Queryable/4.3.0": {
         "dependencies": {
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
@@ -3865,6 +3881,13 @@
       "path": "newtonsoft.json/12.0.1",
       "hashPath": "newtonsoft.json.12.0.1.nupkg.sha512"
     },
+    "NonFactors.Grid.Core.Mvc6/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oOsB0Ia1ao+tLSpv4MaNwPPKcBHacugE3n9eydqaq2jbD8dttfPC4J4wfE21mZ6Khyu1BXFm/K+ccVtieEUO1w==",
+      "path": "nonfactors.grid.core.mvc6/4.0.3",
+      "hashPath": "nonfactors.grid.core.mvc6.4.0.3.nupkg.sha512"
+    },
     "NuGet.Frameworks/4.7.0": {
       "type": "package",
       "serviceable": true,
@@ -3956,12 +3979,12 @@
       "path": "system.linq.parallel/4.3.0",
       "hashPath": "system.linq.parallel.4.3.0.nupkg.sha512"
     },
-    "System.Linq.Queryable/4.0.1": {
+    "System.Linq.Queryable/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Yn/WfYe9RoRfmSLvUt2JerP0BTGGykCZkQPgojaxgzF2N0oPo+/AhB8TXOpdCcNlrG3VRtsamtK2uzsp3cqRVw==",
-      "path": "system.linq.queryable/4.0.1",
-      "hashPath": "system.linq.queryable.4.0.1.nupkg.sha512"
+      "sha512": "sha512-wdbQgzMijyDkBQySuqYnDcK/V70V6KIUUQdXpkXShHbgQRn0bn9wY3ar0VnsDwCcwu8ig6XBrpC2EU2xK+TuQg==",
+      "path": "system.linq.queryable/4.3.0",
+      "hashPath": "system.linq.queryable.4.3.0.nupkg.sha512"
     },
     "Nerve.Common/1.0.0": {
       "type": "project",

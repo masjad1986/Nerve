@@ -8,6 +8,7 @@ namespace Nerve.Service
 {
     public interface IInvoiceService
     {
-        Task<List<DealerInvoiceDto>> GetDealerInvoiceAsync(string searchInvoice);
+        Task<List<DealerInvoiceDto>> GetDealerInvoiceAsync(int? searchInvoice);
+        Task<List<DealerInvoiceDto>> GetDealerInvoiceByParamAsync(string imeiOrTrackingNumber, string deliveryAgent);
     }
 }

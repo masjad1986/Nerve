@@ -38,6 +38,7 @@ namespace Nerve.Repository
             public const string DealerLog = "DealerLog";
             public const string ReceiptDetail = "T_ReceiptTCDetail";
             public const string DealerInvoice = "DealerTCInvoice";
+            public const string DealerInvoiceDetail = "DealerTCInvoice_Detail";
         }
 
         public class TemporaryTables
@@ -46,7 +47,6 @@ namespace Nerve.Repository
         }
         public class Views
         {
-            public const string Jobs = "vwnrv_jobs";
         }
     }
 
@@ -54,15 +54,22 @@ namespace Nerve.Repository
     {
         public class MasterTables
         {
-            public const string BcgMaster = "bcgmast";
             public const string AccountMaster = "accmst";
+            public const string BcgMaster = "bcgmast";
+            public const string ITMaster = "ITMAST";
+            public const string JobParts = "JBPARTS";
             public const string JobRepair = "JBREPAIR";
             public const string JobRepairMain = "JBREPAIR_MAIN";
         }
 
+        public class TransactionTables
+        {
+            public const string SwapInvoice = "T_SwapInvoice";
+        }
         public class Views
         {
-            public const string Jobs = "usermaster";
+            public const string Jobs = "vwnrv_jobs";
+            public const string SwapCashBack = "VW_SWAPNCASHBACK";
         }
 
         public class BcgMasterTag

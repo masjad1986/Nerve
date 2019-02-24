@@ -41,7 +41,7 @@ namespace Nerve.Service
                 LocationName = deviceDto.LocationName,
                 CustomerName = deviceDto.CustomerName,
                 VendorRmaNumber = deviceDto.VendorRmaNumber,
-                JobNumber = deviceDto.AutoJobReferenceNumber
+                JobNumber = deviceDto.JobReferenceNumber
             };
         }
 

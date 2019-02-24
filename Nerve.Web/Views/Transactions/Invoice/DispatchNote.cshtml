@@ -2,24 +2,50 @@
 @using Microsoft.AspNetCore.Http
 @using Nerve.Common.Enums
 @using Nerve.Common
+@using NonFactors.Mvc.Grid
 @inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 @{
     var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
     var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
     var resourceKeys = new List<string>
 {
-        LanguageKeys.AirwayBillNumber,
+LanguageKeys.TrackingNumber,
+LanguageKeys.LocationCode,
+LanguageKeys.JobNumber,
+LanguageKeys.SwapImeiNumber,
+LanguageKeys.Product,
+LanguageKeys.Brand,
+LanguageKeys.Model,
+LanguageKeys.Clear,
+LanguageKeys.Delivery,
+LanguageKeys.ShipmentDetails,
+LanguageKeys.AllocatedTo,
+LanguageKeys.RmaReference,
+LanguageKeys.Warranty,
+LanguageKeys.LoginType,
+LanguageKeys.Cost,
+LanguageKeys.AirwayBillNumber,
+LanguageKeys.Amount,
+LanguageKeys.DeliveredDate,
 LanguageKeys.DispatchNote,
 LanguageKeys.Forwarder,
+LanguageKeys.Find,
+LanguageKeys.Invoices,
 LanguageKeys.InvoiceNumber,
 LanguageKeys.InvoiceDate,
 LanguageKeys.ImeiNumber,
 LanguageKeys.ImeiOrTrackingNumber,
 LanguageKeys.ErrorFieldRequiredImeiNumber,
 LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber,
+LanguageKeys.ErrorFieldSelectionRequired,
 LanguageKeys.SearchItemNotFound,
+LanguageKeys.SelectAll,
+LanguageKeys.NoRecodsAvaiable,
+LanguageKeys.TotalQuantity,
+LanguageKeys.Remarks,
 LanguageKeys.ValidationFailureSummary,
-LanguageKeys.ValidationFailureDescription
+LanguageKeys.ValidationFailureDescription,
+LanguageKeys.UnselectAll
 };
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
@@ -31,20 +57,69 @@ LanguageKeys.ValidationFailureDescription
         //invoice date calender
         setCalender("#invoice-date-calender", "#text-invoice-date");
 
-        $("#imei-search-click").click(function () {
+        //delivery date calender
+        setCalender("#delivery-date-calender", "#text-delivery-date");
+
+        $("#invoice-search-click").click(function () {
             searchInvoices()();
         });
 
         //search imei enter event
-        $("#search-imei-number").on('keyup', function (e) {
+        $("#text-invoice-number").on('keyup', function (e) {
             if (e.keyCode == ENTER_KEYCODE) {
                 searchInvoices()();
             }
         });
 
-        //device save click
+        $("button[name=select-invoice]").click(function () {
+            let point = $('input[name=invoice-radio]:checked');
+            if (point && point.length > 0) {
+                //$("#inovice-id").val(point.val());
+                $("#text-invoice-number").val(point.attr('title').trim());
+                $("#invoice-modal").modal('hide');
+            } else {
+                $("#invoice-error").removeClass('hide');
+            }
+        });
+
+        $("#close-invoice-error").click(function () {
+            $("#invoice-error").addClass('hide');
+        })
+
+
+        $("#dispatch-selection").on("click", function () {
+            let selectAllText = '@translateItems[LanguageKeys.SelectAll]';
+            let unselectAllText = '@translateItems[LanguageKeys.UnselectAll]';
+            let button = $("#dispatch-selection-button");
+            let color = button.data('color');
+            let checked = $("#dispatch-selection-checkbox").prop('checked');
+            if (checked === false) {
+                button
+                    .removeClass('btn-default')
+                    .addClass('btn-' + color + ' active');
+                $("#dispatch-selection-checkbox").attr("checked", "checked");
+                $("#dispatch-selection-icon").attr("class", "glyphicon glyphicon-check");
+                $("#dispatch-selection-text").html(unselectAllText);
+            } else {
+                button
+                    .removeClass('btn-' + color + ' active')
+                    .addClass('btn-default');
+                $("#dispatch-selection-checkbox").removeAttr("checked");
+                $("#dispatch-selection-icon").attr("class", "glyphicon glyphicon-unchecked");
+                $("#dispatch-selection-text").html(selectAllText);
+            }
+        });
+
+        //dispatch find click
+        $("#dispatch-find-button").on("click", function () {
+            $("is-save-request-type").val(false);
+            $("#dispatch-note-form").submit();
+        })
+
+        //dispatch save click
         $("#@Model.PageActionBarModel.ActionPrefix-save-click").on("click", function () {
             let errors = [];
+            $("is-save-request-type").val(true);
             let imeiNumber = $("#text-imei-number").val();
 
             @*let trackingNumber = $("#tracking-number").val();
@@ -67,12 +142,12 @@ LanguageKeys.ValidationFailureDescription
             } else {
                 $("#validation-summary-modal").modal('hide');
                 $("#validation-summary-item").empty();
-                $("#vendor-updation-form").submit();
+                $("#dispatch-note-form").submit();
             }
         });
 
         //prevent form default
-        $("#vendor-updation-form").on("keypress", function (event) {
+        $("#dispatch-note-form").on("keypress", function (event) {
             if (event.keyCode == ENTER_KEYCODE) {
                 event.preventDefault();
                 return;
@@ -83,53 +158,40 @@ LanguageKeys.ValidationFailureDescription
 
     function searchInvoices() {
         showSpinner();
-        let _title = '@Html.Raw(translateItems[LanguageKeys.DispatchNote])';
-        let _message = '';
-        let number = $("#search-imei-number").val();
-        if (number == undefined || number == '') {
-            _message = '@Html.Raw(translateItems[LanguageKeys.ErrorFieldRequiredImeiNumber])';
+        let searchValue = $("#text-invoice-number").val();
+        let url = `@Url.Action(WebConstants.PageRoute.Find, WebConstants.Controllers.Invoice)`;
+        if (!!searchValue)
+            url = encodeURI(`${url}/${searchValue}`);
+        $('#invoice-partial').load(url, function () {
+            $("#invoice-modal").modal('show');
+            $("#invoice-error").addClass('hide');
             hideSpinner();
-            showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
-            return;
-        }
-
-        clearVendorInformation();
-        let url = '@Url.Action(WebConstants.PageRoute.Find, WebConstants.Controllers.Invoice)/';
-        $.ajax({
-            'url': url + number,
-            'type': 'GET',
-            'async': true,
-            'data': number,
-            'dataType': 'application/json',
-            complete: function (response) {
-                if (!!response && response.status == @StatusCodes.Status200OK) {
-                    var vendor = JSON.parse(response.responseText);
-                    setVendorInformation(vendor);
-                } else {
-                    _message = '@Html.Raw(translateItems[LanguageKeys.SearchItemNotFound])';
-                    showNotification(_title, _message, @Convert.ToInt32(NotificationType.Error), false);
-                }
-                hideSpinner();
-            }
         });
+    }
+
+    function itemSelection(selected) {
+
     }
 </script>
 
 <partial name="@WebConstants.ViewPage.Partial.Actions" model="@Model.PageActionBarModel" />
-<form asp-action="@WebConstants.PageRoute.Save" asp-controller="@WebConstants.Controllers.Invoice"
+<form asp-action="@WebConstants.PageRoute.DispatchNote" asp-controller="@WebConstants.Controllers.Invoice"
       data-ajax="true"
       data-ajax-method="POST"
       data-ajax-mode="replace"
       data-ajax-update="#ajaxpanel"
-      id="dipatch-note-form">
+      id="dispatch-note-form">
     <div class="panel panel-default">
         <div id="ajaxpanel" class="panel-body">
+            @Html.HiddenFor(model => model.IsSaveRequest, new { @id = "is-save-request-type" })
             <div class="row row-space">
                 <div class="col-sm-2 text-right @persianFont">
                     @Html.Raw(translateItems[LanguageKeys.InvoiceNumber])
                 </div>
-                <div class="col-sm-4 has-feedback">
-                    @Html.TextBoxFor(model => model.DispatchNote.InvoiceNumber, new { @class = "form-control", @id = "text-invoice-number" })
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.DispatchNote.InvoiceNumber, new { @class = "form-control", @id = "text-invoice-number", @type = "number" })
+                    <span id="invoice-search-click" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary">
+                    </span>
                 </div>
                 <div class="col-sm-2 text-right @persianFont">
                     @Html.Raw(translateItems[LanguageKeys.InvoiceDate])
@@ -145,17 +207,21 @@ LanguageKeys.ValidationFailureDescription
             </div>
             <div class="row row-space">
                 <div class="col-sm-2 text-right @persianFont">
-                    @Html.Raw(translateItems[LanguageKeys.Forwarder])
+                    @Html.Raw(translateItems[LanguageKeys.AllocatedTo])
                 </div>
                 <div class="col-sm-4">
                     @Html.DropDownListFor(model => model.DispatchNote.DeliveryAgent, new SelectList(Model.DeliveryAgentItems, "Value", "Text"), "Select...", new { @id = "dropdown-delivery-agent", @class = "form-control disabled", })
                 </div>
                 <div class="col-sm-2 text-right @persianFont">
-                    @Html.Raw(translateItems[LanguageKeys.ImeiOrTrackingNumber])
+                    @Html.Raw(translateItems[LanguageKeys.DeliveredDate])
                 </div>
                 <div class="col-sm-4">
-                    @Html.TextBoxFor(model => model.ImeiOrTrackingNumber, new { @class = "form-control disabled", @id = "search-imei-number", @readonly = "readonly" })
-                    <span id="imei-search-click" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+                    <div class='input-group date'>
+                        @Html.TextBoxFor(model => model.DispatchNote.DeliveryDate, new { @class = "form-control", @id = "text-delivery-date", @readonly = "readonly" })
+                        <span span class="input-group-addon cursor" id="delivery-date-calender">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="row row-space">
@@ -163,53 +229,111 @@ LanguageKeys.ValidationFailureDescription
                     @Html.Raw(translateItems[LanguageKeys.AirwayBillNumber])
                 </div>
                 <div class="col-sm-4">
-                    @Html.DropDownListFor(model => model.DispatchNote.AirwayBillNumber, new SelectList(Model.AirwayBillItems, "Value", "Text"), "Select...", new { @id = "dropdown-airway-bill-number", @class = "form-control disabled", })
+                    @Html.TextBoxFor(model => model.DispatchNote.AirwayBillNumber, new { @id = "text-airway-bill-number", @class = "form-control", })
+                </div>
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.ImeiOrTrackingNumber])
+                </div>
+                <div class="col-sm-4">
+                    @Html.TextBoxFor(model => model.ImeiOrTrackingNumber, new { @class = "form-control disabled", @id = "imei-tracking-number" })
                 </div>
             </div>
-            @*<div class="row row-space">
-            <div class="col-sm-2 text-right @persianFont">
-                @Html.Raw(translateItems[LanguageKeys.Model])
-            </div>
-            <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.VendorUpdation.Model, new { @class = "form-control", @id = "text-model", @readonly = "readonly" })
-            </div>
-            <div class="col-sm-2 text-right @persianFont">
-                @Html.Raw(translateItems[LanguageKeys.CollectionPoint])
-            </div>
-            <div class="col-sm-4 has-feedback">
-                @Html.TextBoxFor(model => model.VendorUpdation.CollectionPointName, new { @class = "form-control", @id = "text-collection-point", @readonly = "readonly" })
+            <div class="row row-space">
+                <div class="col-sm-6 text-right @persianFont">
+                </div>
+                <div class="col-sm-6 text-right @persianFont">
+                    <button type="button" id="dispatch-find-button" class="btn btn-primary">@Html.Raw(translateItems[LanguageKeys.Find]) </button>
+                    <button type="button" id="dispatch-clear-button" class="btn btn-pr">@Html.Raw(translateItems[LanguageKeys.Clear]) </button>
+                </div>
             </div>
         </div>
-        <div class="row row-space">
-            <div class="col-sm-2 text-right @persianFont">
-                @Html.Raw(translateItems[LanguageKeys.LocationCode])
-            </div>
-            <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.VendorUpdation.LocationCode, new { @class = "form-control", @id = "text-location-code", @readonly = "readonly" })
-            </div>
-            <div class="col-sm-2 text-right @persianFont">
-                @Html.Raw(translateItems[LanguageKeys.JobNumber])
-            </div>
-            <div class="col-sm-4 has-feedback">
-                @Html.TextBoxFor(model => model.VendorUpdation.JobNumber, new { @class = "form-control", @id = "text-job-number", @readonly = "readonly" })
+    </div>
+
+    <div id="invoice-grid" class="panel panel-default">
+        <div class="panel-body">
+            <span id="dispatch-selection" class="button-checkbox pull-right">
+                <button id="dispatch-selection-button" type="button" class="btn btn-default" data-color="primary">
+                    <i id="dispatch-selection-icon" class="glyphicon glyphicon-unchecked"></i>&nbsp;
+                    <span id="dispatch-selection-text">@translateItems[LanguageKeys.SelectAll]</span>
+                </button>
+                <input id="dispatch-selection-checkbox" type="checkbox" class="hidden">
+            </span>
+            <div class="row row-space">
+                <div class="col-sm-12">
+                    <div class="row row-space">
+                        <div class="col-sm-12">
+                            @if (Model.Devices != null && Model.Devices.Any())
+                            {
+                                @(Html.Grid(Model.Devices).Build(columns =>
+                                                {
+                                                    columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
+                                                    columns.Add(model => model.LocationCode).Titled(translateItems[LanguageKeys.LocationCode]);
+                                                    columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
+                                                    columns.Add(model => model.ImeiNumber).Titled(translateItems[LanguageKeys.ImeiNumber]);
+                                                    columns.Add(model => model.SwapImeiNumber).Titled(translateItems[LanguageKeys.SwapImeiNumber]);
+                                                    columns.Add(model => model.ProductName).Titled(translateItems[LanguageKeys.Product]);
+                                                    columns.Add(model => model.BrandName).Titled(translateItems[LanguageKeys.Brand]);
+                                                    columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
+                                                    columns.Add(model => model.Delivery).Titled(translateItems[LanguageKeys.Delivery]);
+                                                    //columns.Add(model => model.ShipmentDetails).Titled(translateItems[LanguageKeys.ShipmentDetails]);
+                                                    columns.Add(model => model.AllocatedTo).Titled(translateItems[LanguageKeys.AllocatedTo]);
+                                                    columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.RmaReference]);
+                                                    columns.Add(model => model.WarrantyTypeText).Titled(translateItems[LanguageKeys.Warranty]);
+                                                    columns.Add(model => model.LoginType).Titled(translateItems[LanguageKeys.LoginType]);
+                                                    columns.Add(model => model.Cost).Titled(translateItems[LanguageKeys.Cost]);
+                                                })
+                                                                        .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                                        .Filterable()
+                                                                        .Sortable()
+                                                                        .Pageable()
+                                )
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row row-space">
-            <div class="col-sm-2 text-right @persianFont">
-                @Html.Raw(translateItems[LanguageKeys.CustomerName])
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row row-space">
+                <div class="col-sm-8 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.TotalQuantity])
+                </div>
+                <div class="col-sm-4 has-feedback">
+                    @Html.TextBoxFor(model => model.DispatchNote.Quantity, new { @class = "form-control", @id = "text-amount" })
+                </div>
             </div>
-            <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.VendorUpdation.CustomerName, new { @class = "form-control", @id = "text-customer-name", @readonly = "readonly" })
-            </div>
-            <div class="col-sm-2 text-right @persianFont">
-                @Html.Raw(translateItems[LanguageKeys.VendorRmaNumber])
-            </div>
-            <div class="col-sm-4">
-                @Html.TextBoxFor(model => model.VendorUpdation.VendorRmaNumber, new { @class = "form-control", @id = "text-vendor-rma-number" })
-            </div>
-        </div>*@
         </div>
     </div>
     <button type="submit" name="dispatch-note-save" class="hidden"></button>
 </form>
+<div class="modal fade" id="invoice-modal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.Invoices])</span>
+            </div>
+            <div class="modal-body popup-grid-container">
+                <div id="invoice-error" class="alert alert-danger hide">
+                    <button type="button" id="close-invoice-error" class="close" aria-hidden="true">
+                        &times;
+                    </button>
+                    <span class="glyphicon glyphicon-remove-circle red">
+                    </span>
+                    <span class="@persianFont">
+                        @translateItems[LanguageKeys.ErrorFieldSelectionRequired]
+                    </span>
+                </div>
+                <div id="invoice-partial"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" name="select-invoice" id="select-invoice">Select</button>
+            </div>
+        </div>
+    </div>
+</div>
 <partial name="@WebConstants.ViewPage.Partial.ValidationSummary" model="@translateItems[LanguageKeys.ValidationFailureSummary]" />

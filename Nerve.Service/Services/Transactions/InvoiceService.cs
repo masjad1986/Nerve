@@ -20,9 +20,20 @@ namespace Nerve.Service.Services.Transactions
         /// </summary>
         /// <param name="searchInvoice"></param>
         /// <returns></returns>
-        public async Task<List<DealerInvoiceDto>> GetDealerInvoiceAsync(string searchInvoice)
+        public async Task<List<DealerInvoiceDto>> GetDealerInvoiceAsync(int? searchInvoice)
         {
             return await _invoiceRepository.GetDealerInvoiceAsync(searchInvoice);
+        }
+
+        /// <summary>
+        /// Get list of invoice details for imei or tracking number or delivery agent.
+        /// </summary>
+        /// <param name="imeiOrTrackingNumber"></param>
+        /// <param name="deliveryAgent"></param>
+        /// <returns></returns>
+        public async Task<List<DealerInvoiceDto>> GetDealerInvoiceByParamAsync(string imeiOrTrackingNumber, string deliveryAgent)
+        {
+           return await _invoiceRepository.GetDealerInvoiceByParamAsync(imeiOrTrackingNumber, deliveryAgent);
         }
     }
 }
