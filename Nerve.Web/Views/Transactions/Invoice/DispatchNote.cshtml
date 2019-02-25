@@ -37,6 +37,8 @@ LanguageKeys.ImeiNumber,
 LanguageKeys.ImeiOrTrackingNumber,
 LanguageKeys.ErrorFieldRequiredImeiNumber,
 LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber,
+LanguageKeys.ErrorFieldRequiredInvoiceNumber,
+LanguageKeys.ErrorFieldRequiredAllocatedTo,
 LanguageKeys.ErrorFieldSelectionRequired,
 LanguageKeys.SearchItemNotFound,
 LanguageKeys.SelectAll,
@@ -74,7 +76,6 @@ LanguageKeys.UnselectAll
         $("button[name=select-invoice]").click(function () {
             let point = $('input[name=invoice-radio]:checked');
             if (point && point.length > 0) {
-                //$("#inovice-id").val(point.val());
                 $("#text-invoice-number").val(point.attr('title').trim());
                 $("#invoice-modal").modal('hide');
             } else {
@@ -93,6 +94,7 @@ LanguageKeys.UnselectAll
             let button = $("#dispatch-selection-button");
             let color = button.data('color');
             let checked = $("#dispatch-selection-checkbox").prop('checked');
+            let gridCheckbox = $("input[type=checkbox]#dispatch-note-grid-checkbox");
             if (checked === false) {
                 button
                     .removeClass('btn-default')
@@ -100,6 +102,8 @@ LanguageKeys.UnselectAll
                 $("#dispatch-selection-checkbox").attr("checked", "checked");
                 $("#dispatch-selection-icon").attr("class", "glyphicon glyphicon-check");
                 $("#dispatch-selection-text").html(unselectAllText);
+                gridCheckbox.attr('checked', 'checked');
+                $("#text-quantity").val(gridCheckbox.length);
             } else {
                 button
                     .removeClass('btn-' + color + ' active')
@@ -107,7 +111,11 @@ LanguageKeys.UnselectAll
                 $("#dispatch-selection-checkbox").removeAttr("checked");
                 $("#dispatch-selection-icon").attr("class", "glyphicon glyphicon-unchecked");
                 $("#dispatch-selection-text").html(selectAllText);
+                gridCheckbox.removeAttr("checked");
+                $("#text-quantity").val('');
             }
+
+
         });
 
         //dispatch find click
@@ -122,14 +130,18 @@ LanguageKeys.UnselectAll
             $("is-save-request-type").val(true);
             let imeiNumber = $("#text-imei-number").val();
 
-            @*let trackingNumber = $("#tracking-number").val();
-            if (checkNullOrEmpty(trackingNumber) && checkNullOrEmpty(imeiNumber)) {
-                errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber]');
-            }*@
+            let invoiceNumber = $("#text-invoice-number").val();
+            if (checkNullOrEmpty(invoiceNumber) && checkNullOrEmpty(invoiceNumber)) {
+                errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredInvoiceNumber]');
+            }
 
-            @*let vendorRmaNumber = $("#text-vendor-rma-number").val();
-            if (checkNullOrEmpty(vendorRmaNumber)) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredVendorRmaNumber]');*@
+            let deliveryAgent = $("#dropdown-delivery-agent").val(); //dropdown
+                if (!deliveryAgent || parseInt(deliveryAgent) <= 0) errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredAllocatedTo]');
 
+            let quantity = $("#text-quantity").val();
+            if (checkNullOrEmpty(quantity) || parseInt(quantity) === 0) {
+                errors.push('@translateItems[LanguageKeys.ErrorFieldSelectionRequired]');
+            }
 
             if (!!errors && errors.length > 0) {
                 let errorHtml = "<div><b>@Html.Raw(translateItems[LanguageKeys.ValidationFailureDescription])</b><br><ul>";
@@ -262,32 +274,33 @@ LanguageKeys.UnselectAll
                 <div class="col-sm-12">
                     <div class="row row-space">
                         <div class="col-sm-12">
-                            @if (Model.Devices != null && Model.Devices.Any())
-                            {
-                                @(Html.Grid(Model.Devices).Build(columns =>
-                                                {
-                                                    columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
-                                                    columns.Add(model => model.LocationCode).Titled(translateItems[LanguageKeys.LocationCode]);
-                                                    columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
-                                                    columns.Add(model => model.ImeiNumber).Titled(translateItems[LanguageKeys.ImeiNumber]);
-                                                    columns.Add(model => model.SwapImeiNumber).Titled(translateItems[LanguageKeys.SwapImeiNumber]);
-                                                    columns.Add(model => model.ProductName).Titled(translateItems[LanguageKeys.Product]);
-                                                    columns.Add(model => model.BrandName).Titled(translateItems[LanguageKeys.Brand]);
-                                                    columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
-                                                    columns.Add(model => model.Delivery).Titled(translateItems[LanguageKeys.Delivery]);
-                                                    //columns.Add(model => model.ShipmentDetails).Titled(translateItems[LanguageKeys.ShipmentDetails]);
-                                                    columns.Add(model => model.AllocatedTo).Titled(translateItems[LanguageKeys.AllocatedTo]);
-                                                    columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.RmaReference]);
-                                                    columns.Add(model => model.WarrantyTypeText).Titled(translateItems[LanguageKeys.Warranty]);
-                                                    columns.Add(model => model.LoginType).Titled(translateItems[LanguageKeys.LoginType]);
-                                                    columns.Add(model => model.Cost).Titled(translateItems[LanguageKeys.Cost]);
-                                                })
-                                                                        .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
-                                                                        .Filterable()
-                                                                        .Sortable()
-                                                                        .Pageable()
-                                )
-                            }
+                            @*@if (Model.Devices != null && Model.Devices.Any())
+                                {*@
+                            @(Html.Grid(Model.Devices).Build(columns =>
+                                                                {
+                                                                    columns.Add(model => Html.CheckBox("checkbox", new { @id = "dispatch-note-grid-checkbox" })).Titled("#");
+                                                                    columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
+                                                                    columns.Add(model => model.LocationCode).Titled(translateItems[LanguageKeys.LocationCode]);
+                                                                    columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
+                                                                    columns.Add(model => model.ImeiNumber).Titled(translateItems[LanguageKeys.ImeiNumber]);
+                                                                    columns.Add(model => model.SwapImeiNumber).Titled(translateItems[LanguageKeys.SwapImeiNumber]);
+                                                                    columns.Add(model => model.ProductName).Titled(translateItems[LanguageKeys.Product]);
+                                                                    columns.Add(model => model.BrandName).Titled(translateItems[LanguageKeys.Brand]);
+                                                                    columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
+                                                                    columns.Add(model => model.Delivery).Titled(translateItems[LanguageKeys.Delivery]);
+                                                                                //columns.Add(model => model.ShipmentDetails).Titled(translateItems[LanguageKeys.ShipmentDetails]);
+                                                                                columns.Add(model => model.AllocatedTo).Titled(translateItems[LanguageKeys.AllocatedTo]);
+                                                                    columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.RmaReference]);
+                                                                    columns.Add(model => model.WarrantyTypeText).Titled(translateItems[LanguageKeys.Warranty]);
+                                                                    columns.Add(model => model.LoginType).Titled(translateItems[LanguageKeys.LoginType]);
+                                                                    columns.Add(model => model.Cost).Titled(translateItems[LanguageKeys.Cost]);
+                                                                })
+                                                                                                            .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                                                                            .Filterable()
+                                                                                                            .Sortable()
+                                                                                                            .Pageable()
+                            )
+                            @*}*@
                         </div>
                     </div>
                 </div>
@@ -302,7 +315,7 @@ LanguageKeys.UnselectAll
                     @Html.Raw(translateItems[LanguageKeys.TotalQuantity])
                 </div>
                 <div class="col-sm-4 has-feedback">
-                    @Html.TextBoxFor(model => model.DispatchNote.Quantity, new { @class = "form-control", @id = "text-amount" })
+                    @Html.TextBoxFor(model => model.DispatchNote.Quantity, new { @class = "form-control", @id = "text-quantity", @readonly= "readonly" })
                 </div>
             </div>
         </div>
