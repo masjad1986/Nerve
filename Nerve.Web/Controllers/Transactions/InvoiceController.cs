@@ -52,7 +52,11 @@ namespace Nerve.Web
                 {
                     DeliveryAgentItems = new List<SelectListItem>(),
                     Devices = new List<DealerInvoiceDto>(),
-                    DispatchNote = new DispatchNoteDto(),
+                    DispatchNote = new DispatchNoteDto()
+                    {
+                        InvoiceDate = DateTime.Now.ToString("MM/dd/yyyy"),
+                        DeliveryDate = DateTime.Now.ToString("MM/dd/yyyy")
+                    },
                     PageActionBarModel = new PageActionBarModel
                     {
                         ActionPrefix = "dispatch-note",
