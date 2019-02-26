@@ -91,33 +91,17 @@ LanguageKeys.UnselectAll
         $("#dispatch-selection").on("click", function () {
             let checked = $("#dispatch-selection-icon").prop("class") === "glyphicon glyphicon-check";
             let count = $('input.dispatch-note-grid-checkbox').length;
-            if (checked === false) {
-                $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', true);
-                $("#text-quantity").val(count);
-            } else {
-                $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', false);
-                $("#text-quantity").val('');
-            }
+            $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', !checked);
+            $("#text-quantity").val(count > 0 && !checked ? count : '');
             checkboxSelection(!checked);
         });
 
         //grid checkbox selection
         $('input.dispatch-note-grid-checkbox').on("click", function () {
             let checkedAll = $('input.dispatch-note-grid-checkbox').length == $('input.dispatch-note-grid-checkbox:checked').length;
-            if (checkedAll) {
-                $("#dispatch-selection-checkbox").attr("checked", "checked");
-            }
-            else {
-                $("#dispatch-selection-checkbox").removeAttr("checked");
-            }
-
+            $("#dispatch-selection-checkbox").prop("checked", checkedAll);
             let gridCheckbox = $('input.dispatch-note-grid-checkbox:checked').length;
-            if (gridCheckbox && gridCheckbox > 0) {
-                $("#text-quantity").val(gridCheckbox);
-            } else {
-                $("#text-quantity").val('');
-            }
-
+            $("#text-quantity").val(gridCheckbox > 0 ? gridCheckbox : '');
             checkboxSelection(checkedAll);
         });
 
