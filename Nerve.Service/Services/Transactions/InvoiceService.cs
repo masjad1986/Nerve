@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Nerve.Repository;
@@ -31,9 +32,24 @@ namespace Nerve.Service.Services.Transactions
         /// <param name="imeiOrTrackingNumber"></param>
         /// <param name="deliveryAgent"></param>
         /// <returns></returns>
-        public async Task<List<DealerInvoiceDto>> GetDealerInvoiceByParamAsync(string imeiOrTrackingNumber, string deliveryAgent)
+        public async Task<List<DealerInvoiceDto>> GetDealerInvoiceByParamAsync(string imeiOrTrackingNumber, int? deliveryAgent)
         {
-           return await _invoiceRepository.GetDealerInvoiceByParamAsync(imeiOrTrackingNumber, deliveryAgent);
+            return await _invoiceRepository.GetDealerInvoiceByParamAsync(imeiOrTrackingNumber, deliveryAgent);
+        }
+
+        /// <summary>
+        /// Save dealer invoice and dispatch note.
+        /// </summary>
+        /// <param name="dealerInvoiceDto"></param>
+        /// <param name="dispatchNoteDto"></param>
+        /// <returns></returns>
+        public async Task<bool> SaveDispatchNoteAsync(DispatchNoteDto dispatchNoteDto, string userId)
+        {
+            var dealerInvoices = new List<DealerInvoiceDto>();
+            if (dispatchNoteDto.SelectedTrackingNumbers != null && dispatchNoteDto.SelectedTrackingNumbers.Any())
+                dealerInvoices = await _invoiceRepository.GetDealerInvoiceBytTrackingNumbersAsync(dispatchNoteDto.SelectedTrackingNumbers);
+
+            return await _invoiceRepository.SaveDispatchNoteAsync(dealerInvoices, dispatchNoteDto, userId);
         }
     }
 }

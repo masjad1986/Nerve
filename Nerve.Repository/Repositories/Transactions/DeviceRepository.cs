@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Nerve.Common.Enums;
 using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 using System;
@@ -245,7 +246,8 @@ namespace Nerve.Repository
                 parameters.Add(new SqlParameter { ParameterName = "@backend", Value = deviceDto.Backend });
                 parameters.Add(new SqlParameter { ParameterName = "@doa", Value = deviceDto.DoA });
                 parameters.Add(new SqlParameter { ParameterName = "@qrs", Value = 0 });
-                
+                parameters.Add(new SqlParameter { ParameterName = "@dealer_id", Value = 1 });
+
                 //insert data into DealerLog
                 parameters.AddRange(baseParameters.ToList());
                 await SqlHelper.ExecuteNonQueryAsync(transaction,
@@ -378,6 +380,41 @@ namespace Nerve.Repository
                    query,
                    parameters.FirstOrDefault(x => x.ParameterName == "@doc_no"));
                 }
+
+                query = $@"
+                            DECLARE @receipt_number NUMERIC(18, 0)
+			                SELECT @receipt_number = isnull(MAX(ReceiptNo),10000)+1 
+                            FROM  [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DispatchReceiptHeader}] WITH(TABLOCKX) 
+			                INSERT INTO  [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DispatchReceiptHeader}](ReceiptNo, Date, UserID, ReceiptFrom, ReceiverName)
+			                VALUES(@receipt_number, @tracking_date, @user_id,@transfer_to, @delivery_agent)
+		
+			                INSERT INTO [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DispatchReceiptDetail}]
+			                (
+				                ReceiptNo,DealerRef,Brand,Model, DcustomerID, DcustomerName,
+				                IMEINo,FaultDetails, CustomerName,mobile,Dealer_ID,Locode,Jobno
+			                )
+			                VALUES
+			                (
+				                @receipt_number,@doc_no, @brand, @model, @d_customer_id,@d_customer_name,
+				                @imei_number, @fault_details, @customer_name, @mobile_number, @dealer_id,@location_code,@job_number
+			                )
+
+			                UPDATE [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DealerLog}]
+                            SET ReceivedFrom_DC='1', ReceivedFrom_DC_ReceiptRef=@receipt_number,
+				                ReceivedFrom_DC_ReceiptDate=@tracking_date, DeliveryAgent=@delivery_agent,
+				                JobStatus='{(int)JobStatusType.WaitingForAllocation}' 
+			                WHERE Docno=@doc_no
+
+			                UPDATE [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.ReceiptDetail}] SET RC_Received='1',
+			                RC_ReceivedBy=@user_id, RC_ReceivedDate=@tracking_date, ReceivedFrom_DC_ReceiptRef=@receipt_number
+			                WHERE ProdigyRef=@doc_no
+                ";
+
+                parameters.AddRange(baseParameters.ToList());
+                await SqlHelper.ExecuteNonQueryAsync(transaction,
+                    CommandType.Text,
+                    query,
+                    parameters.Distinct().ToArray());
 
                 transaction.Commit();
                 isSaved = true;

@@ -1,0 +1,154 @@
+﻿@model Nerve.Web.ViewModels.JobAllocationViewModel
+@using Microsoft.AspNetCore.Http
+@using Nerve.Common.Enums
+@using Nerve.Common
+@using NonFactors.Mvc.Grid
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
+@{
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var resourceKeys = new List<string>
+{
+LanguageKeys.AgeingHrs,
+LanguageKeys.AllocatedToday,
+LanguageKeys.Brand,
+LanguageKeys.DoAStatus,
+LanguageKeys.ErrorFieldRequiredVendorRmaNumber,
+LanguageKeys.ErrorFieldRequiredImeiNumber,
+LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber,
+LanguageKeys.LocationCode,
+LanguageKeys.LogDate,
+LanguageKeys.JobNumber,
+LanguageKeys.Model,
+LanguageKeys.NoRecodsAvaiable,
+LanguageKeys.SearchItemNotFound,
+LanguageKeys.TrackingNumber,
+LanguageKeys.Product,
+LanguageKeys.PendingJobs,
+LanguageKeys.ValidationFailureDescription,
+LanguageKeys.ValidationFailureSummary,
+LanguageKeys.VendorRmaNumber,
+LanguageKeys.WarrantyStatus,
+LanguageKeys.WarrantyType
+};
+    var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
+}
+
+<script></script>
+<partial name="@WebConstants.ViewPage.Partial.Actions" model="@Model.PageActionBarModel" />
+<form asp-action="@WebConstants.PageRoute.Update" asp-controller="@WebConstants.Controllers.Job"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-mode="replace"
+      data-ajax-update="#ajaxpanel"
+      id="vendor-updation-form">
+    <div class="panel panel-default">
+        <div id="ajaxpanel" class="panel-body">
+            @*<div class="row row-space">
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.LocationCode])
+                    </div>
+                    <div class="col-sm-4 has-feedback">
+                        @Html.TextBoxFor(model => model.JobAllocation.TrackingNumber, new { @class = "form-control", @id = "text-tracking-number", @readonly = "readonly" })
+                    </div>
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.ImeiNumber])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.ImeiNumber, new { @class = "form-control disabled", @id = "text-imei-number", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.Product])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.ProductName, new { @class = "form-control", @id = "product-name", @readonly = "readonly" })
+                    </div>
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.Brand])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.BrandName, new { @class = "form-control", @id = "brand-name", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.Model])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.Model, new { @class = "form-control", @id = "text-model", @readonly = "readonly" })
+                    </div>
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.CollectionPoint])
+                    </div>
+                    <div class="col-sm-4 has-feedback">
+                        @Html.TextBoxFor(model => model.VendorUpdation.CollectionPointName, new { @class = "form-control", @id = "text-collection-point", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.LocationCode])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.LocationCode, new { @class = "form-control", @id = "text-location-code", @readonly = "readonly" })
+                    </div>
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.JobNumber])
+                    </div>
+                    <div class="col-sm-4 has-feedback">
+                        @Html.TextBoxFor(model => model.VendorUpdation.JobNumber, new { @class = "form-control", @id = "text-job-number", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.CustomerName])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.CustomerName, new { @class = "form-control", @id = "text-customer-name", @readonly = "readonly" })
+                    </div>
+                    <div class="col-sm-2 text-right @persianFont">
+                        @Html.Raw(translateItems[LanguageKeys.VendorRmaNumber])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.VendorUpdation.VendorRmaNumber, new { @class = "form-control", @id = "text-vendor-rma-number" })
+                    </div>
+                </div>*@
+        </div>
+        <div class="row row-space">
+            <div class="col-sm-12">
+                <div class="row row-space">
+                    <div class="col-sm-12">
+                        @Html.ListBoxFor(model => model.SelectedTrackingNumbers, new List<SelectListItem>(), new { @id = "multiselect-tracking-number", @class = "hidden" })
+                        @*@if (Model.Devices != null && Model.Devices.Any())
+                            {*@
+                        @(Html.Grid(Model.JobAllocations)
+                                                                .Build(columns =>
+                                                                {
+                                                                    columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "job-allocation-grid-checkbox" })).Titled("#");
+                                                                    columns.Add(model => model.WarrantyType).Titled(translateItems[LanguageKeys.WarrantyType]);
+                                                                    columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
+                                                                    columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.VendorRmaNumber]);
+                                                                    columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
+                                                                    columns.Add(model => model.UnitReceivedDate).Titled(translateItems[LanguageKeys.LogDate]);
+                                                                    columns.Add(model => model.Product).Titled(translateItems[LanguageKeys.Product]);
+                                                                    columns.Add(model => model.Brand).Titled(translateItems[LanguageKeys.Brand]);
+                                                                    columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
+                                                                    columns.Add(model => model.WarrantyStatus).Titled(translateItems[LanguageKeys.WarrantyStatus]);
+                                                                    columns.Add(model => model.Ageing).Titled(translateItems[LanguageKeys.AgeingHrs]);
+                                                                    columns.Add(model => model.DoAStatus).Titled(translateItems[LanguageKeys.DoAStatus]);
+                                                                })
+                                                                .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                                .Filterable()
+                                                                .Sortable()
+                                                                .Pageable()
+                        )
+                        @*}*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" name="update-job-allocation" class="hidden"></button>
+</form>
+<partial name="@WebConstants.ViewPage.Partial.ValidationSummary" model="@translateItems[LanguageKeys.ValidationFailureSummary]" />

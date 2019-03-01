@@ -13,5 +13,14 @@ namespace Nerve.Web
         public string ActionName { get; set; }
         public string ControllerName { get; set; }
         public string UndoActionUrl { get; set; }
+
+        public List<ActionBarMenuItem> AdditionalMenus { get; set; }
+    }
+
+    public class ActionBarMenuItem
+    {
+        public string Name { get; set; }
+        public string TranslateKey { get; set; }
+        public string Icon { get; set; }
     }
 }

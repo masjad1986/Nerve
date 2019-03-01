@@ -86,7 +86,7 @@ namespace Nerve.Web.Controllers
                 HttpContext.Session.SetInt32(WebConstants.SessionKeys.Language, user.LanguageId ?? 0);
 
                 // default laptop vendor location
-                HttpContext.Session.SetInt32(WebConstants.SessionKeys.DefaultStockLocation, authenticatedUser.LaptopVenderId.Value);
+                HttpContext.Session.SetString(WebConstants.SessionKeys.DefaultStockLocation, authenticatedUser.DefaultLocationCode);
 
                 HttpContext.Session.SetString(WebConstants.SessionKeys.PersianFont, (user.LanguageId == (int)LanguageType.Farsi ? "persian-font-size" : ""));
 

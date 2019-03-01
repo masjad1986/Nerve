@@ -16,6 +16,7 @@
   "crn-slash-rma-number": "CRN / RMA Number",
   "credit-limt-recouncillation-report": "Credit Limt Recouncillation Report",
   "delete": "Delete",
+
   "debit-note-entry": "Debit Note Entry",
   "device-login": "Device Login",
   "dispatch-note": "Dispatch Note",
@@ -206,5 +207,11 @@
   "total-quantity": "Total Quantity",
   "invoices": "Invoices",
   "select-all": "Select All",
-  "unselect-all": "Unselect All"
+  "unselect-all": "Unselect All",
+  "audit": "Audit",
+  "allocated-today": "Allocated Today",
+  "pending-jobs": "Pending Jobs",
+  "warranty-status": "Warranty Status",
+  "ageing-hrs": "Ageing (Hrs)",
+  "doa-status": "DoA Status"
 }

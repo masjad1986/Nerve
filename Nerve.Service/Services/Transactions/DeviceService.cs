@@ -48,7 +48,8 @@ namespace Nerve.Service
 
         public async Task<bool> SaveAsync(string userId, DeviceDto deviceDto)
         {
-            var serviceCentreLocations = await _serviceCentreLocationRepository.GetByIdAndBrandAndProductAsync(deviceDto.CollectionPoint, deviceDto.ProductName, deviceDto.BrandCode);
+            var serviceCentreLocations = await _serviceCentreLocationRepository.GetByIdAndBrandAndProductAsync(Convert.ToInt32(deviceDto.CollectionPoint),
+                deviceDto.ProductName, deviceDto.BrandCode);
             if (serviceCentreLocations != null && serviceCentreLocations.Any())
             {
                 var serviceCentreLocation = serviceCentreLocations.Select(x => new ServiceCentreLocationDto

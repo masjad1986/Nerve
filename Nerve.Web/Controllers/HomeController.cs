@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Nerve.Repository;
-using Nerve.Web.Models;
-using System.Collections.Generic;
+using Nerve.Web.ViewModels;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace Nerve.Web.Controllers
 {

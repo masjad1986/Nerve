@@ -7,7 +7,6 @@ namespace Nerve.Repository.Dtos
     {
         public string JobReferenceNumber { get; set; }
         public bool DoA { get; set; }
-        public int CollectionPoint { get; set; }
         public DateTime? TrackingDate { get; set; }
         public DateTime? FarsiDate { get; set; }
         public bool AutoCrn { get; set; }

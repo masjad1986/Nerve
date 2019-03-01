@@ -14,7 +14,10 @@ namespace Nerve.Common
         public const string Accessories = "accessories";
         public const string AdditionalSerialNumber = "additional-serial-number";
         public const string AirwayBillNumber = "airway-bill-number";
+        public const string AllocatedToday = "allocated-today";
+        public const string AgeingHrs = "ageing-hrs";
         public const string Amount = "amount";
+        public const string Audit = "audit";
         public const string AutoCrn = "auto-crn";
         public const string Battery = "battery";
         public const string Brand = "brand";
@@ -29,6 +32,7 @@ namespace Nerve.Common
         public const string CustomerName = "customer-name";
         public const string CustomerAddress = "customer-address";
         public const string LastName = "last-name";
+        public const string DoAStatus = "doa-status";
         public const string DebitNoteEntry = "debit-note-entry";
         public const string Delete = "delete";
         public const string DeliveryDate = "delivery-date";
@@ -180,6 +184,8 @@ namespace Nerve.Common
         public const string LoginType = "login-type";
         public const string Cost = "cost";
         public const string TotalQuantity = "total-quantity";
+        public const string PendingJobs = "pending-jobs";
+        public const string WarrantyStatus = "warranty-status";
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
         public const string ErrorFieldRequiredImeiOrTrackingNumber = "error-field-required-imei-tracking-number";

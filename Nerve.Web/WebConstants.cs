@@ -44,6 +44,8 @@ namespace Nerve.Web
             public const string VendorUpdation = "Views/FrontDesk/VendorUpdation/Index.cshtml";
             public const string DispatchNote = "Views/Transactions/Invoice/DispatchNote.cshtml";
             public const string Estimation = "Views/Transactions/Estimation/Index.cshtml";
+            public const string JobAllocation = "Views/Transactions/Jobs/JobAllocation.cshtml";
+
             public const string Error = "Error";
             public class Partial
             {
@@ -71,6 +73,7 @@ namespace Nerve.Web
             public const string DeviceCollectionPoint = "collectionpoint";
             public const string Devices = "devices";
             public const string Find = "find";
+            public const string JobAllocation = "allocation";
             public const string Save = "save";
             public const string Update = "update";
             public const string DispatchNote = "dispatchnote";
@@ -85,8 +88,9 @@ namespace Nerve.Web
         {
             public const string Brand = "Brand";
             public const string Device = "Device";
-            public const string VendorUpdation = "VendorUpdation";
             public const string Invoice = "Invoice";
+            public const string Job = "Job";
+            public const string VendorUpdation = "VendorUpdation";
         }
     }
 }

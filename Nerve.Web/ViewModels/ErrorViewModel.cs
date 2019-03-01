@@ -1,6 +1,6 @@
 using System;
 
-namespace Nerve.Web.Models
+namespace Nerve.Web.ViewModels
 {
     public class ErrorViewModel
     {

@@ -10,6 +10,7 @@
         public string UpdateOption { get; set; }
         public string DeleteOption { get; set; }
         public string PrintOption { get; set; }
+        public string AuditOption { get; set; }
         public string Deleted { get; set; }
         public int MenuId { get; set; }
         public string MenuName { get; set; }

@@ -55,7 +55,8 @@ namespace Nerve.Web
                     DispatchNote = new DispatchNoteDto()
                     {
                         InvoiceDate = DateTime.Now.ToString("MM/dd/yyyy"),
-                        DeliveryDate = DateTime.Now.ToString("MM/dd/yyyy")
+                        DeliveryDate = DateTime.Now.ToString("MM/dd/yyyy"),
+                        SelectedTrackingNumbers = new List<string>()
                     },
                     PageActionBarModel = new PageActionBarModel
                     {
@@ -102,12 +103,25 @@ namespace Nerve.Web
                 if (!dispatchViewModel.IsSaveRequest)
                 {
                     dispatchViewModel = await LoadDispatchModel(dispatchViewModel);
+                    dispatchViewModel.DispatchNote.SelectedTrackingNumbers = new List<string>();
                     dispatchViewModel.Devices = await _invoiceService
-                        .GetDealerInvoiceByParamAsync(dispatchViewModel.ImeiOrTrackingNumber, dispatchViewModel.DispatchNote.DeliveryAgent);
+                        .GetDealerInvoiceByParamAsync(dispatchViewModel.ImeiOrTrackingNumber, dispatchViewModel.DispatchNote.DeliveryAgent == 0 ? null : (int?)dispatchViewModel.DispatchNote.DeliveryAgent);
                 }
                 else
                 {
+                    var result = await _invoiceService.SaveDispatchNoteAsync(dispatchViewModel.DispatchNote, HttpContext.Session.GetString(SessionKeys.UserId));
 
+                    var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+                    {
+                        LanguageKeys.DispatchNote,
+                        LanguageKeys.SaveRecordMessage
+                    });
+
+                    TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DispatchNote],
+                    translateItems[LanguageKeys.SaveRecordMessage],
+                    NotificationType.Success);
+
+                    return RedirectToAction(WebConstants.ViewPage.DispatchNote, new { id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId) });
                 }
                 return View(WebConstants.ViewPage.DispatchNote, await Task.FromResult(dispatchViewModel));
             }

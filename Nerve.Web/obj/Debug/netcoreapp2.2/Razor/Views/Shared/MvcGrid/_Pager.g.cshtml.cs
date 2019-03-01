@@ -18,18 +18,13 @@ using Nerve.Web;
 
 #line default
 #line hidden
-#line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\_ViewImports.cshtml"
-using Nerve.Web.Models;
-
-#line default
-#line hidden
 #line 1 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\Shared\MvcGrid\_Pager.cshtml"
 using NonFactors.Mvc.Grid;
 
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"3d2fab4c8ffb7faa456e03b0c86977bd89093deb", @"/Views/Shared/MvcGrid/_Pager.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"99594d08e9904441231da0f54667e41be0b4da55", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"0b4ad927f8ad8b4c65681b12622429f55ec7cd77", @"/Views/_ViewImports.cshtml")]
     public class Views_Shared_MvcGrid__Pager : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<IGridPager>
     {
         #line hidden
@@ -254,7 +249,7 @@ WriteAttributeValue(" ", 225, Model.CssClasses, 226, 17, false);
             WriteLiteral("                                ");
             EndContext();
             BeginContext(2041, 55, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3d2fab4c8ffb7faa456e03b0c86977bd89093deb10584", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3d2fab4c8ffb7faa456e03b0c86977bd89093deb10461", async() => {
                 BeginContext(2077, 10, false);
 #line 54 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\Shared\MvcGrid\_Pager.cshtml"
                                                               Write(size.Value);
@@ -300,7 +295,7 @@ WriteAttributeValue(" ", 225, Model.CssClasses, 226, 17, false);
             WriteLiteral("                                ");
             EndContext();
             BeginContext(2226, 46, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3d2fab4c8ffb7faa456e03b0c86977bd89093deb13169", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("option", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3d2fab4c8ffb7faa456e03b0c86977bd89093deb13046", async() => {
                 BeginContext(2253, 10, false);
 #line 58 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\Shared\MvcGrid\_Pager.cshtml"
                                                      Write(size.Value);

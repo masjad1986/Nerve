@@ -13,6 +13,7 @@ namespace Nerve.Repository.Dtos
         public decimal InvoiceNumber { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public string CollectionPointName { get; set; }
+        public string CollectionPoint { get; set; }
         public string AirwayBillNumber { get; set; }
         public string DeliveryAgent { get; set; }
         public string Remarks { get; set; }

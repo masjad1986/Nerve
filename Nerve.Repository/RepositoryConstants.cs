@@ -39,6 +39,8 @@ namespace Nerve.Repository
             public const string ReceiptDetail = "T_ReceiptTCDetail";
             public const string DealerInvoice = "DealerTCInvoice";
             public const string DealerInvoiceDetail = "DealerTCInvoice_Detail";
+            public const string DispatchReceiptHeader = "T_DC_ReceiptHeader";
+            public const string DispatchReceiptDetail = "T_DC_ReceiptDetail";
         }
 
         public class TemporaryTables

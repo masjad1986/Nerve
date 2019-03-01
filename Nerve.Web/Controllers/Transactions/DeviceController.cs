@@ -73,7 +73,7 @@ namespace Nerve.Web.Controllers
             HttpContext.Session.SetInt32(SessionKeys.CurrentMenuId, id ?? 0);
             var model = new DeviceViewModel()
             {
-                Device = new DeviceDto(),
+                Device = new DeviceDto() { Type = (int)Common.Enums.Type.Normal },
                 WarrantyTypeItems = new List<SelectListItem>(),
                 DeliveryAgentItems = new List<SelectListItem>(),
                 PageActionBarModel = new PageActionBarModel
@@ -97,7 +97,7 @@ namespace Nerve.Web.Controllers
                     model.TypeItems = typeItems.Select(x => new SelectListItem
                     {
                         Text = x.Name,
-                        Value = Convert.ToString(x.Id),
+                        Value = Convert.ToString(x.Id)
                     }).ToList();
                 }
 
@@ -461,7 +461,7 @@ namespace Nerve.Web.Controllers
             var centres = new List<ServiceCentreLocationDto>();
 
             centres = await _serviceCentreLocationService
-                .GetByIdAndBrandAndProductAsync(model.Device.CollectionPoint, model.Device.ProductName, model.Device.BrandName);
+                .GetByIdAndBrandAndProductAsync(Convert.ToInt32(model.Device.CollectionPoint), model.Device.ProductName, model.Device.BrandName);
 
             //get list of service centre
             model.ServiceCentreItems = new List<SelectListItem>();

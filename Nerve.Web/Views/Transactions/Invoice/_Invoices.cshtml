@@ -33,7 +33,7 @@ LanguageKeys.NoRecodsAvaiable
             @foreach (var item in Model)
             {
                 <tr>
-                    <td><input type="radio" id="invoice-check-@item.Id" checked="@item.Selected" title="@item.Name" name="invoice-radio" class="invoice-click" value="@item.Id" /></td>
+                    <td><input type="radio" id="invoice-check-@item.Id" data-item="@Json.Serialize(item)" checked="@item.Selected" title="@item.Name" name="invoice-radio" class="invoice-click" value="@item.Id" /></td>
                     <td>@item.Name</td>
                 </tr>
             }

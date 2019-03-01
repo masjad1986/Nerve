@@ -7,6 +7,8 @@ namespace Nerve.Repository
     public interface IInvoiceRepository
     {
         Task<List<DealerInvoiceDto>> GetDealerInvoiceAsync(int? searchInvoice);
-        Task<List<DealerInvoiceDto>> GetDealerInvoiceByParamAsync(string imeiOrTrackingNumber, string deliveryAgent);
+        Task<List<DealerInvoiceDto>> GetDealerInvoiceBytTrackingNumbersAsync(List<string> trackingNumbers);
+        Task<List<DealerInvoiceDto>> GetDealerInvoiceByParamAsync(string imeiOrTrackingNumber, int? deliveryAgent);
+        Task<bool> SaveDispatchNoteAsync(List<DealerInvoiceDto> dealerInvoiceDto, DispatchNoteDto dispatchNoteDto, string userId);
     }
 }

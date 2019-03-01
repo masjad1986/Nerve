@@ -12,25 +12,32 @@
             .DeserializeObject<List<UserMenuAccess>>(Context.Session.GetString(WebConstants.SessionKeys.UserMenus));
 
     var actionPermission = new UserMenuAccess();
-
     if (menus != null)
     {
         actionPermission = menus.SingleOrDefault(x => x.MenuId == Model.MenuId);
     }
 
-    var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+    var resourceKeys = new List<string>
 {
-LanguageKeys.Save,
-LanguageKeys.Undo,
-LanguageKeys.UndoMessage,
+LanguageKeys.Audit,
 LanguageKeys.Delete,
-LanguageKeys.Print,
 LanguageKeys.Exit,
 LanguageKeys.ExitConfirmation,
 LanguageKeys.ExitConfirmationMessage,
-LanguageKeys.Yes,
-LanguageKeys.No
-});
+LanguageKeys.No,
+LanguageKeys.Print,
+LanguageKeys.Save,
+LanguageKeys.Undo,
+LanguageKeys.UndoMessage,
+LanguageKeys.Yes
+};
+
+    if (Model.AdditionalMenus != null && Model.AdditionalMenus.Any())
+    {
+        resourceKeys.AddRange(Model.AdditionalMenus.Select(x => x.TranslateKey).ToList());
+    }
+
+    var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys);
 }
 
 @if (actionPermission != null)
@@ -80,12 +87,28 @@ LanguageKeys.No
             {
                 <li>
                     <a href="#" id="@Model.ActionPrefix-print-click">
-                        <span class="glyphicon glyphicon-print" aria-hidden="true"></span> <span class="glyphicon-class">
+                        <span class="glyphicon glyphicon-print" aria-hidden="true"></span> <span>
                             <label class="@persianFont cursor">@translateItems[LanguageKeys.Print]</label>
                         </span>
                     </a>
                 </li>
             }
+
+            @if (Model.AdditionalMenus != null && Model.AdditionalMenus.Any())
+            {
+                @foreach (var item in Model.AdditionalMenus)
+                {
+                    <li>
+                        <a href="#" id="@Model.ActionPrefix-@item.Name.ToLower()-click">
+                            <span class="glyphicon glyphicon-@item.Icon" aria-hidden="true"></span> <span class="glyphicon-class">
+                                <label class="@persianFont cursor">@translateItems[item.TranslateKey]</label>
+                            </span>
+                        </a>
+                    </li>
+                }
+
+            }
+
             <li>
                 <a href="#" id="exit-click">
                     <span class="glyphicon glyphicon-off" aria-hidden="true"></span> <span class="glyphicon-class">

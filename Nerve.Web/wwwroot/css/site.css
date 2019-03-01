@@ -1,5 +1,9 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
+p {
+    margin: 0 !important;
+}
+
 .panel {
     margin-bottom: 5px !important;
 }
@@ -14,7 +18,7 @@ for details on configuring this project to bundle and minify static web assets. 
 
     .footer p {
         padding-top: 5px;
-        margin-bottom: 0;
+        margin-bottom: 0 !important;
     }
 
 .home-welcome-text {
@@ -69,6 +73,12 @@ textarea {
     padding-right: -15px;
     padding-left: -15px;
 }
+
+.normal-row {
+    padding-right: 0!important;
+    padding-left: 0!important;
+}
+
 
 .right-space-10 {
     padding-right: 10px;
@@ -334,4 +344,9 @@ body {
         .notfound .notfound-404 h1 {
             font-size: 112px;
         }
+}
+
+input[type=radio], input[type=checkbox] {
+    margin: 10px 0 0 !important;
+    line-height: normal;
 }

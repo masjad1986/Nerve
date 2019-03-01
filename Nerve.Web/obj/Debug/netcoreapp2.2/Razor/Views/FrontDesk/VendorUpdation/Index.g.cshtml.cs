@@ -18,11 +18,6 @@ using Nerve.Web;
 
 #line default
 #line hidden
-#line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\_ViewImports.cshtml"
-using Nerve.Web.Models;
-
-#line default
-#line hidden
 #line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\FrontDesk\VendorUpdation\Index.cshtml"
 using Microsoft.AspNetCore.Http;
 
@@ -39,7 +34,7 @@ using Nerve.Common;
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"2f92f8eceaed90dbc053b60ed915230e66bee355", @"/Views/FrontDesk/VendorUpdation/Index.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"99594d08e9904441231da0f54667e41be0b4da55", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"0b4ad927f8ad8b4c65681b12622429f55ec7cd77", @"/Views/_ViewImports.cshtml")]
     public class Views_FrontDesk_VendorUpdation_Index : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<Nerve.Web.ViewModels.VendorUpdateViewModel>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("data-ajax", new global::Microsoft.AspNetCore.Html.HtmlString("true"), global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
@@ -307,7 +302,7 @@ LanguageKeys.ValidationFailureDescription
             WriteLiteral("ext-location-code\").val(\'\');\r\n        $(\"#text-job-number\").val(\'\');\r\n        $(\"#text-customer-name\").val(\'\');\r\n        $(\"#text-vendor-rma-number\").val(\'\');\r\n    }\r\n</script>\r\n\r\n");
             EndContext();
             BeginContext(5881, 91, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "2f92f8eceaed90dbc053b60ed915230e66bee35515702", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "2f92f8eceaed90dbc053b60ed915230e66bee35515579", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_TagHelpers_PartialTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.PartialTagHelper>();
@@ -381,7 +376,7 @@ WriteAttributeValue(" ", 6246, persianFont, 6247, 12, false);
             WriteLiteral("\r\n                <span id=\"imei-search-click\" class=\"glyphicon glyphicon-search cursor form-control-feedback btn-primary\"></span>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n");
             EndContext();
             BeginContext(6701, 4691, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "2f92f8eceaed90dbc053b60ed915230e66bee35520002", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "2f92f8eceaed90dbc053b60ed915230e66bee35519879", async() => {
                 BeginContext(6966, 151, true);
                 WriteLiteral("\r\n    <div class=\"panel panel-default\">\r\n        <div id=\"ajaxpanel\" class=\"panel-body\">\r\n            <div class=\"row row-space\">\r\n                <div");
                 EndContext();
@@ -746,7 +741,7 @@ WriteAttributeValue(" ", 10925, persianFont, 10926, 12, false);
             WriteLiteral("\r\n");
             EndContext();
             BeginContext(11394, 130, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "2f92f8eceaed90dbc053b60ed915230e66bee35539775", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "2f92f8eceaed90dbc053b60ed915230e66bee35539652", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_TagHelpers_PartialTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.PartialTagHelper>();

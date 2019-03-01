@@ -53,7 +53,7 @@
     $(document).ready(function () {
         let height = screen.height;
         console.log(screen.height);
-        let layoutHeight = height ? height - 154 : 700;
+        let layoutHeight = height ? height - 194 : window.innerHeight;
         $(".body-container").innerHeight(layoutHeight);
         $('input[value="0"]').attr('checked', 'checked');
         notify();
@@ -97,16 +97,12 @@
     }
 </script>
 <div class="body-container">
-    <div class="row">
-        <div class="col-md-12">
-            <img style="width:100%;height:100px;" src="~/images/banner.jpg" />
-        </div>
-    </div>
+    <img style="width:100%;height:100px;" src="~/images/banner.jpg" />
     <div class="clearfix"></div>
-    <div class="row">
+    <div class="normal-row">
         <div class="col-md-4"></div>
         <div class="col-md-6">
-            <div class="row">
+            <div class="normal-row">
                 <div class="col-md-8 table-bordered">
                     <section>
                         <div>

@@ -18,11 +18,6 @@ using Nerve.Web;
 
 #line default
 #line hidden
-#line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\_ViewImports.cshtml"
-using Nerve.Web.Models;
-
-#line default
-#line hidden
 #line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\FrontDesk\Device\_CollectionPoint.cshtml"
 using Microsoft.AspNetCore.Http;
 
@@ -39,7 +34,7 @@ using Nerve.Common.Enums;
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"cc91f4190da5adf160094cf96eb6af9420b966e7", @"/Views/FrontDesk/Device/_CollectionPoint.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"99594d08e9904441231da0f54667e41be0b4da55", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"0b4ad927f8ad8b4c65681b12622429f55ec7cd77", @"/Views/_ViewImports.cshtml")]
     public class Views_FrontDesk_Device__CollectionPoint : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<List<Nerve.Repository.Dtos.ItemDto>>
     {
         #pragma warning disable 1998
