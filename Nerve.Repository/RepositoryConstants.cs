@@ -58,6 +58,7 @@ namespace Nerve.Repository
         {
             public const string AccountMaster = "accmst";
             public const string BcgMaster = "bcgmast";
+            public const string GluMaster = "glumast";
             public const string ITMaster = "ITMAST";
             public const string JobParts = "JBPARTS";
             public const string JobRepair = "JBREPAIR";
@@ -78,6 +79,15 @@ namespace Nerve.Repository
         {
             public const string Model = "Y";
             public const string FaultCode = "F";
+            public const string Engineer = "T";
+        }
+    }
+
+    public class VIEW
+    {
+        public class MasterTables
+        {
+            public const string UserMaster = "usermast";
         }
     }
 }

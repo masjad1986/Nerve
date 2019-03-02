@@ -257,16 +257,7 @@ LanguageKeys.ValidationFailureDescription
                     }
                 });
             }
-
-            function bindDropDown(selector, data, textColumn, valueColumn) {
-            $.each(data, function (index) {
-                    let item = data[index];
-                    let value = item[valueColumn];
-                    let text = item[textColumn];
-                $(selector).append($("<option     />").val(value).text(text));
-                });
-            }
-
+            
             function bindCollectionPoint() {
                 showSpinner();
                 let searchValue = $("#text-collection-point").val();

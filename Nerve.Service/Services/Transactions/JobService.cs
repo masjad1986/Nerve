@@ -29,10 +29,24 @@ namespace Nerve.Service
         /// Get list of job allocation for location.
         /// </summary>
         /// <param name="locationCode"></param>
+        /// <param name="engineerCode"></param>
+        /// <param name="isAllPendingJobs"></param>
         /// <returns></returns>
-        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByLocationAsync(string locationCode)
+        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByLocationAsync(string locationCode, string engineerCode, bool isAllPendingJobs = false)
         {
-            return await _jobRepository.GetPendingJobAllocationByLocationAsync(locationCode);
+            return await _jobRepository.GetPendingJobAllocationByLocationAsync(locationCode, engineerCode, isAllPendingJobs);
+        }
+
+        /// <summary>
+        /// Get list of job allocation for date.
+        /// </summary>
+        /// <param name="locationCode"></param>
+        /// <param name="engineerCode"></param>
+        /// <param name="isAllPendingJobs"></param>
+        /// <returns></returns>
+        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(string locationCode, string engineerCode, DateTime jobDate)
+        {
+            return await _jobRepository.GetPendingJobAllocationByDateAsync(locationCode, engineerCode, jobDate);
         }
     }
 }

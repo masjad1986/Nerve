@@ -213,5 +213,6 @@
   "pending-jobs": "Pending Jobs",
   "warranty-status": "Warranty Status",
   "ageing-hrs": "Ageing (Hrs)",
-  "doa-status": "DoA Status"
+  "doa-status": "DoA Status",
+  "engineer": "Engineer"
 }

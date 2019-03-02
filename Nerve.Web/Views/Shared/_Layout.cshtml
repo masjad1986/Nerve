@@ -71,6 +71,15 @@
             return value;
         }
 
+        function bindDropDown(selector, data, textColumn, valueColumn, concatColumn = false) {
+            $.each(data, function (index) {
+                let item = data[index];
+                let value = item[valueColumn];
+                let text = item[textColumn];
+                $(selector).append($("<option     />").val(value).text(concatColumn ? text + '(' + value + ')' : text));
+            });
+        }
+
         function showNotification(title, message, type, timout) {
             raiseNotification({ 'autoDismissed': timout, 'title': title, 'message': message, 'type': type }, false);
         }

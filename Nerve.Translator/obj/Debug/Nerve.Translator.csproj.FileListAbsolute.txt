@@ -18,6 +18,7 @@ D:\Asjad\Apps\Nerve\Nerve.Translator\bin\Debug\Google.Apis.Translate.v2.pdb
 D:\Asjad\Apps\Nerve\Nerve.Translator\bin\Debug\Google.Apis.Translate.v2.xml
 D:\Asjad\Apps\Nerve\Nerve.Translator\bin\Debug\Newtonsoft.Json.pdb
 D:\Asjad\Apps\Nerve\Nerve.Translator\bin\Debug\Newtonsoft.Json.xml
+D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.csprojResolveAssemblyReference.cache
 D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.frmTranslator.resources
 D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.Properties.Resources.resources
 D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.csproj.GenerateResource.cache
@@ -25,4 +26,3 @@ D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.csproj.CoreCompi
 D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.csproj.CopyComplete
 D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.exe
 D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.pdb
-D:\Asjad\Apps\Nerve\Nerve.Translator\obj\Debug\Nerve.Translator.csprojResolveAssemblyReference.cache

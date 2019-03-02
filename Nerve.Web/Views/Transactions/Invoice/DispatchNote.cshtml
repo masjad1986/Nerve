@@ -94,28 +94,23 @@ LanguageKeys.UnselectAll
         })
 
         //select all or unselect all
-        $("#dispatch-selection").on("click", function () {
-            let checked = $("#dispatch-selection-icon").prop("class") === "glyphicon glyphicon-check";
+        $(".dispatch-note-grid-header-checkbox").on("click", function () {
             let count = $('input.dispatch-note-grid-checkbox').length;
-            $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', !checked);
+            $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', $(this).prop("checked") === true);
             $("#text-quantity").val(count > 0 && !checked ? count : '');
-            checkboxSelection(!checked);
+            checkboxSelection();
         });
 
         //grid checkbox selection
         $('input.dispatch-note-grid-checkbox').on("click", function () {
             let checkedAll = $('input.dispatch-note-grid-checkbox').length == $('input.dispatch-note-grid-checkbox:checked').length;
-            $("#dispatch-selection-checkbox").prop("checked", checkedAll);
+            $(".dispatch-note-grid-header-checkbox").prop("checked", checkedAll);
             let gridCheckbox = $('input.dispatch-note-grid-checkbox:checked').length;
             $("#text-quantity").val(gridCheckbox > 0 ? gridCheckbox : '');
-            checkboxSelection(checkedAll);
+            checkboxSelection();
         });
 
-        function checkboxSelection(isCheckedAll) {
-            let selectAllText = '@translateItems[LanguageKeys.SelectAll]';
-            let unselectAllText = '@translateItems[LanguageKeys.UnselectAll]';
-            let button = $("#dispatch-selection-button");
-            let color = button.data('color');
+        function checkboxSelection() {
             let multiselect = $("#multiselect-tracking-number");
             if (multiselect)
                 multiselect.empty();
@@ -125,23 +120,6 @@ LanguageKeys.UnselectAll
                 items.each((index, item) => {
                     multiselect.append(`<option selected ="true" value='${item.value}'>${item.value}</option>`);
                 });
-            }
-
-            if (isCheckedAll) {
-                button
-                    .removeClass('btn-default')
-                    .addClass('btn-' + color + ' active');
-                $("#dispatch-selection-checkbox").attr("checked", "checked");
-                $("#dispatch-selection-icon").attr("class", "glyphicon glyphicon-check");
-                $("#dispatch-selection-text").html(unselectAllText);
-            }
-            else {
-                button
-                    .removeClass('btn-' + color + ' active')
-                    .addClass('btn-default');
-                $("#dispatch-selection-checkbox").removeAttr("checked");
-                $("#dispatch-selection-icon").attr("class", "glyphicon glyphicon-unchecked");
-                $("#dispatch-selection-text").html(selectAllText);
             }
         }
 
@@ -260,7 +238,7 @@ LanguageKeys.UnselectAll
                     @Html.Raw(translateItems[LanguageKeys.AllocatedTo])
                 </div>
                 <div class="col-sm-4">
-                    @Html.HiddenFor(model => model.DispatchNote.DeliveryAgentName, new { @id= "text-delivery-agent-name" })
+                    @Html.HiddenFor(model => model.DispatchNote.DeliveryAgentName, new { @id = "text-delivery-agent-name" })
                     @Html.DropDownListFor(model => model.DispatchNote.DeliveryAgent, new SelectList(Model.DeliveryAgentItems, "Value", "Text"), "Select...", new { @id = "dropdown-delivery-agent", @class = "form-control disabled", })
                 </div>
                 <div class="col-sm-2 text-right @persianFont">
@@ -302,47 +280,37 @@ LanguageKeys.UnselectAll
 
     <div id="invoice-grid" class="panel panel-default">
         <div class="panel-body">
-            @if (Model.Devices != null && Model.Devices.Any())
-                    {
-                <span id="dispatch-selection" class="button-checkbox pull-right">
-                    <button id="dispatch-selection-button" type="button" class="btn btn-default" data-color="primary">
-                        <i id="dispatch-selection-icon" class="glyphicon glyphicon-unchecked"></i>&nbsp;
-                        <span id="dispatch-selection-text">@translateItems[LanguageKeys.SelectAll]</span>
-                    </button>
-                    <input id="dispatch-selection-checkbox" type="checkbox" class="hidden">
-                </span>
-            }
             <div class="row row-space">
                 <div class="col-sm-12">
                     <div class="row row-space">
                         <div class="col-sm-12">
-                            @Html.ListBoxFor(model => model.DispatchNote.SelectedTrackingNumbers, new List<SelectListItem>(), new { @id= "multiselect-tracking-number", @class = "hidden" })
+                            @Html.ListBoxFor(model => model.DispatchNote.SelectedTrackingNumbers, new List<SelectListItem>(), new { @id = "multiselect-tracking-number", @class = "hidden" })
                             @*@if (Model.Devices != null && Model.Devices.Any())
                                 {*@
                             @(Html.Grid(Model.Devices)
-                                        .Build(columns =>
-                                        {
-                                            columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "dispatch-note-grid-checkbox" })).Titled("#");
-                                            columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
-                                            columns.Add(model => model.LocationCode).Titled(translateItems[LanguageKeys.LocationCode]);
-                                            columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
-                                            columns.Add(model => model.ImeiNumber).Titled(translateItems[LanguageKeys.ImeiNumber]);
-                                            columns.Add(model => model.SwapImeiNumber).Titled(translateItems[LanguageKeys.SwapImeiNumber]);
-                                            columns.Add(model => model.ProductName).Titled(translateItems[LanguageKeys.Product]);
-                                            columns.Add(model => model.BrandName).Titled(translateItems[LanguageKeys.Brand]);
-                                            columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
-                                            columns.Add(model => model.Delivery).Titled(translateItems[LanguageKeys.Delivery]);
-                                                        //columns.Add(model => model.ShipmentDetails).Titled(translateItems[LanguageKeys.ShipmentDetails]);
-                                                        columns.Add(model => model.AllocatedTo).Titled(translateItems[LanguageKeys.AllocatedTo]);
-                                            columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.RmaReference]);
-                                            columns.Add(model => model.WarrantyTypeText).Titled(translateItems[LanguageKeys.Warranty]);
-                                            columns.Add(model => model.LoginType).Titled(translateItems[LanguageKeys.LoginType]);
-                                            columns.Add(model => model.Cost).Titled(translateItems[LanguageKeys.Cost]);
-                                        })
-                                        .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
-                                        .Filterable()
-                                        .Sortable()
-                                        .Pageable()
+                                                .Build(columns =>
+                                                {
+                                                    columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "dispatch-note-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "dispatch-note-grid-header-checkbox" }));
+                                                    columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
+                                                    columns.Add(model => model.LocationCode).Titled(translateItems[LanguageKeys.LocationCode]);
+                                                    columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
+                                                    columns.Add(model => model.ImeiNumber).Titled(translateItems[LanguageKeys.ImeiNumber]);
+                                                    columns.Add(model => model.SwapImeiNumber).Titled(translateItems[LanguageKeys.SwapImeiNumber]);
+                                                    columns.Add(model => model.ProductName).Titled(translateItems[LanguageKeys.Product]);
+                                                    columns.Add(model => model.BrandName).Titled(translateItems[LanguageKeys.Brand]);
+                                                    columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
+                                                    columns.Add(model => model.Delivery).Titled(translateItems[LanguageKeys.Delivery]);
+                                                                //columns.Add(model => model.ShipmentDetails).Titled(translateItems[LanguageKeys.ShipmentDetails]);
+                                                                columns.Add(model => model.AllocatedTo).Titled(translateItems[LanguageKeys.AllocatedTo]);
+                                                    columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.RmaReference]);
+                                                    columns.Add(model => model.WarrantyTypeText).Titled(translateItems[LanguageKeys.Warranty]);
+                                                    columns.Add(model => model.LoginType).Titled(translateItems[LanguageKeys.LoginType]);
+                                                    columns.Add(model => model.Cost).Titled(translateItems[LanguageKeys.Cost]);
+                                                })
+                                                .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                .Filterable()
+                                                .Sortable()
+                                                .Pageable()
                             )
                             @*}*@
                         </div>

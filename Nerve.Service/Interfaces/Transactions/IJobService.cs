@@ -9,6 +9,7 @@ namespace Nerve.Service
     public interface IJobService
     {
         Task<DateTime?> GetLastJobByImeiNumberAsync(string imeiNumber);
-        Task<List<JobAllocationDto>> GetPendingJobAllocationByLocationAsync(string locationCode);
+        Task<List<JobAllocationDto>> GetPendingJobAllocationByLocationAsync(string locationCode, string engineerCode, bool isAllPendingJobs = false);
+        Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(string locationCode, string engineerCode, DateTime jobDate);
     }
 }

@@ -79,6 +79,7 @@ namespace Nerve.Web
             public const string DispatchNote = "dispatchnote";
             public const string GetDealerInvoices = "dealerinvoices";
             public const string GetBrandByProductName = "product";
+            public const string GetEngineer = "engineers";
             public const string GetOptionByBrandAndProductAndCollectionPoint = "option";
             public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "servicecentre";
             public const string GetTrackingPrefix = "trackingprefix";
@@ -88,6 +89,7 @@ namespace Nerve.Web
         {
             public const string Brand = "Brand";
             public const string Device = "Device";
+            public const string Engineer = "Engineer";
             public const string Invoice = "Invoice";
             public const string Job = "Job";
             public const string VendorUpdation = "VendorUpdation";

@@ -63,14 +63,21 @@ LanguageKeys.Yes
                 </a>
             </li>
 
-            @*@if (actionPermission.UpdateOption == WebConstants.HasActionOptionAccess)
+
+            @if (Model.AdditionalMenus != null && Model.AdditionalMenus.Any())
+            {
+                @foreach (var item in Model.AdditionalMenus)
                 {
                     <li>
-                        <span id="@Model.ActionPrefix-update-click" class="glyphicon glyphicon-repeat" aria-hidden="true"></span> <span class="glyphicon-class">
-                            <label class="@persianFont cursor">@translateItems[LanguageKeys.Undo]</label>
-                        </span>
+                        <a href="#" id="@Model.ActionPrefix-@item.Name.ToLower()-click">
+                            <span class="glyphicon glyphicon-@item.Icon" aria-hidden="true"></span> <span class="glyphicon-class">
+                                <label class="@persianFont cursor">@translateItems[item.TranslateKey]</label>
+                            </span>
+                        </a>
                     </li>
-                }*@
+                }
+
+            }
 
             @if (actionPermission.DeleteOption == Model.HasDeleteActionAccess)
             {
@@ -94,20 +101,6 @@ LanguageKeys.Yes
                 </li>
             }
 
-            @if (Model.AdditionalMenus != null && Model.AdditionalMenus.Any())
-            {
-                @foreach (var item in Model.AdditionalMenus)
-                {
-                    <li>
-                        <a href="#" id="@Model.ActionPrefix-@item.Name.ToLower()-click">
-                            <span class="glyphicon glyphicon-@item.Icon" aria-hidden="true"></span> <span class="glyphicon-class">
-                                <label class="@persianFont cursor">@translateItems[item.TranslateKey]</label>
-                            </span>
-                        </a>
-                    </li>
-                }
-
-            }
 
             <li>
                 <a href="#" id="exit-click">
