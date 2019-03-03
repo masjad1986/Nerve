@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Nerve.Common;
 using Nerve.Common.Translations;
 using Nerve.Service;
+using Nerve.Web.Filters;
 
 namespace Nerve.Web.Controllers
 {
-    //[Authorize]
     [Route("[controller]")]
+    [NerveAuthorize]
+    [TypeFilter(typeof(NerveException))]
     public class EngineerController : Controller
     {
         private readonly ILogger _logger;
@@ -30,17 +32,8 @@ namespace Nerve.Web.Controllers
         [Route(WebConstants.PageRoute.GetEngineer + "/{location}")]
         public async Task<IActionResult> GetEngineersAsync(string location)
         {
-            try
-            {
-                var result = await _engineerService.GetByLocationAsync(location);
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(WebConstants.Controllers.Engineer, WebConstants.PageRoute.GetEngineer, ex);
-                return View(WebConstants.ViewPage.Error);
-            }
+            var result = await _engineerService.GetByLocationAsync(location);
+            return Json(result);
         }
-
     }
 }

@@ -1,0 +1,16 @@
+﻿@model Nerve.Web.ViewModels.ErrorViewModel
+@{
+    ViewData["Title"] = "Unauthorized";
+    Layout = "_LayoutExternal";
+}
+
+<div id="notfound">
+    <div class="notfound">
+        <div class="notfound-404">
+            <h1>Oops!</h1>
+        </div>
+        <h2>401 - Unauthorized Access</h2>
+        <p>You do not have the sufficient permission to access the page or resource. Please logged into the application with your valid user name and password.</p>
+        Click here to <a asp-action="@WebConstants.PageRoute.Login" asp-controller="@WebConstants.Controllers.Users">Login</a>
+    </div>
+</div>

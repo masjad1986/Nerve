@@ -32,9 +32,9 @@ namespace Nerve.Service
         /// <param name="engineerCode"></param>
         /// <param name="isAllPendingJobs"></param>
         /// <returns></returns>
-        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByLocationAsync(string locationCode, string engineerCode, bool isAllPendingJobs = false)
+        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByParamsAsync(JobAllocationDto jobAllocationDto, bool isAllPendingJobs = false)
         {
-            return await _jobRepository.GetPendingJobAllocationByLocationAsync(locationCode, engineerCode, isAllPendingJobs);
+            return await _jobRepository.GetPendingJobAllocationByParamsAsync(jobAllocationDto, isAllPendingJobs);
         }
 
         /// <summary>
@@ -44,9 +44,20 @@ namespace Nerve.Service
         /// <param name="engineerCode"></param>
         /// <param name="isAllPendingJobs"></param>
         /// <returns></returns>
-        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(string locationCode, string engineerCode, DateTime jobDate)
+        public async Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(JobAllocationDto jobAllocationDto, DateTime jobDate)
         {
-            return await _jobRepository.GetPendingJobAllocationByDateAsync(locationCode, engineerCode, jobDate);
+            return await _jobRepository.GetPendingJobAllocationByDateAsync(jobAllocationDto, jobDate);
+        }
+
+        /// <summary>
+        /// Save job allocation.
+        /// </summary>
+        /// <param name="jobAllocation"></param>
+        /// <param name="selectedTrackingNumbers"></param>
+        /// <returns></returns>
+        public async Task<bool> SaveJobAllocationAsync(JobAllocationDto jobAllocationDto, List<string> trackingNumbers)
+        {
+            return await _jobRepository.SaveJobAllocationAsync(jobAllocationDto, trackingNumbers);
         }
     }
 }

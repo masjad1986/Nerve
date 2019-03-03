@@ -1,7 +1,6 @@
 ﻿using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Nerve.Repository
@@ -10,7 +9,8 @@ namespace Nerve.Repository
     {
         Task<KeyValuePair<string, string>> GetJobReferenceNumberAsync(string locationCode);
         Task<DateTime?> GetLastJobByImeiNumberAsync(string imeiNumber);
-        Task<List<JobAllocationDto>> GetPendingJobAllocationByLocationAsync(string locationCode, string engineerCode, bool isAllPendingJobs = false);
-        Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(string locationCode, string engineerCode, DateTime jobDate);
+        Task<List<JobAllocationDto>> GetPendingJobAllocationByParamsAsync(JobAllocationDto jobAllocationDto, bool isAllPendingJobs = false);
+        Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(JobAllocationDto jobAllocationDto, DateTime jobDate);
+        Task<bool> SaveJobAllocationAsync(JobAllocationDto jobAllocationDto, List<string> trackingNumbers);
     }
 }

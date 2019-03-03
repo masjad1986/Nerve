@@ -224,7 +224,8 @@ namespace Nerve.Common
         public const string ErrorFieldJobNuberNotFound = "error-field-job-number-not-maintained";
         public const string ErrorFieldSelectionRequired = "error-field-selection-required";
         public const string ErrorFieldRequiredInvoiceNumber = "error-field-invoice-number-required";
-        public const string ErrorFieldRequiredAllocatedTo= "error-field-allocated-to-required";
+        public const string ErrorFieldRequiredAllocatedTo = "error-field-allocated-to-required";
+        public const string ErrorFieldRequiredEngineerCode = "error-field-engineer-code-required";
         //invalid
         public const string ErrorInvalidImeiLength = "error-invalid-imei-number-length";
         public const string ErrorFieldInvalidEmail = "error-invalid-email-format";

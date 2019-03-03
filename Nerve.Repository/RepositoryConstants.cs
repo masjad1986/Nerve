@@ -10,6 +10,7 @@ namespace Nerve.Repository
         public const string HamiDatabase = "HAMI_DATA";
         public const string ScpDatabase = "HAMI_SCP";
         public const int DefaultDocumentNumber = 100000;
+        public const string DefaultSelectItem = "-1";
     }
 
     public class SCP

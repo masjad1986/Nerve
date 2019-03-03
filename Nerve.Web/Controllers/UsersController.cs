@@ -30,7 +30,7 @@ namespace Nerve.Web.Controllers
         }
 
         [AllowAnonymous]
-        [Route("Login")]
+        [Route(WebConstants.PageRoute.Login)]
         public async Task<IActionResult> Login()
         {
             var user = await Task.FromResult(new User());
@@ -39,7 +39,7 @@ namespace Nerve.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("Login")]
+        [Route(WebConstants.PageRoute.Login)]
         public async Task<IActionResult> Login(User user)
         {
             try

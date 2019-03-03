@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Nerve.Common;
 using Nerve.Common.Models;
 using Nerve.Common.Translations;
+using Nerve.Web.Filters;
 using NetCore.AutoRegisterDi;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -38,7 +40,8 @@ namespace Nerve.Web
             //});
 
             services.Configure<AppSettings>(Configuration.GetSection("ApplicationSettings"));
-            services.AddMvc().AddJsonOptions(option =>
+            services.AddMvc()
+                .AddJsonOptions(option =>
             {
                 option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             });
@@ -80,7 +83,7 @@ namespace Nerve.Web
                 RegisterRepository(builder, repositoryAssembly);
             }
 
-            if (commonAssemblies.Length> 0)
+            if (commonAssemblies.Length > 0)
             {
                 var commonAssembly = Assembly.Load(commonAssemblies[0]);
                 RegisterCommon(builder, commonAssembly);
@@ -108,7 +111,7 @@ namespace Nerve.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(WebConstants.ViewPage.Error);
                 app.UseHsts();
             }
 
@@ -120,7 +123,7 @@ namespace Nerve.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Users}/{action=Login}/{id?}");
+                    template: "{controller=" + WebConstants.Controllers.Users + "}/{action=" + WebConstants.PageRoute.Login + "}/{id?}");
             });
         }
 

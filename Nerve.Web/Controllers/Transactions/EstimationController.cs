@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Nerve.Common;
 using Nerve.Common.Translations;
 using Nerve.Service;
+using Nerve.Web.Filters;
 using static Nerve.Web.WebConstants;
 
 namespace Nerve.Web.Controllers.Transactions
 {
-    //[NerveAuthorize]
     [Route("[controller]")]
+    [NerveAuthorize]
+    [TypeFilter(typeof(NerveException))]
     public class EstimationController : Controller
     {
         private const string _controller = "Estimation";

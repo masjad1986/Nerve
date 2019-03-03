@@ -6,6 +6,7 @@ using Nerve.Common.Enums;
 using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
 using Nerve.Service;
+using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
 using Nerve.Web.ViewModels;
 using System;
@@ -17,8 +18,9 @@ using static Nerve.Web.WebConstants;
 
 namespace Nerve.Web
 {
-    //[Authorize]
     [Route("[controller]")]
+    [NerveAuthorize]
+    [TypeFilter(typeof(NerveException))]
     public class InvoiceController : Controller
     {
         private readonly ILogger _logger;

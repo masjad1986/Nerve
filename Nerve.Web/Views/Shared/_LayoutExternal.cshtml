@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Nerve.Repository
+@using Nerve.Common.Enums
+@using System.Web
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nerve : @ViewData["Title"]</title>
+    <environment>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link href="~/lib/bootstrap-datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link href="~/css/color.css" rel="stylesheet" />
+
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    @RenderSection("Scripts", required: false)
+    <script type="text/javascript">
+        let ENTER_KEYCODE = 13;
+        $(document).ready(function () {
+            let height = screen.height;
+            let layoutHeight = height ? height - 198 : 710;
+            $("#content-body").attr('min-height', layoutHeight);
+        });
+    </script>
+</head>
+<body>
+    <div class="main-container">
+        <img style="width:100%;height:100px;" src="~/images/banner.jpg" />
+        <div id="content-body" class="col-md-12">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>

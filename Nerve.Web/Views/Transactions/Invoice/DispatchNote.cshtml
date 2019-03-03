@@ -95,9 +95,10 @@ LanguageKeys.UnselectAll
 
         //select all or unselect all
         $(".dispatch-note-grid-header-checkbox").on("click", function () {
+            let checked = $(this).prop("checked") === true;
             let count = $('input.dispatch-note-grid-checkbox').length;
-            $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', $(this).prop("checked") === true);
-            $("#text-quantity").val(count > 0 && !checked ? count : '');
+            $('input#checkbox.dispatch-note-grid-checkbox').prop('checked', );
+            $("#text-quantity").val(count > 0 && checked ? count : '');
             checkboxSelection();
         });
 

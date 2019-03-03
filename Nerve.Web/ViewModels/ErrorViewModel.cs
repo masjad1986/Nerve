@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 
 namespace Nerve.Web.ViewModels
 {

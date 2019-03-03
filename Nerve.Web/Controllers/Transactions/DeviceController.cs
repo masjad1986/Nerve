@@ -9,6 +9,7 @@ using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
 using Nerve.Repository.Helpers;
 using Nerve.Service;
+using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
 using Nerve.Web.ViewModels;
 using System;
@@ -21,8 +22,9 @@ using static Nerve.Web.WebConstants;
 
 namespace Nerve.Web.Controllers
 {
-    //[NerveAuthorize]
     [Route("[controller]")]
+    [NerveAuthorize]
+    [TypeFilter(typeof(NerveException))]
     public class DeviceController : Controller
     {
         private const string _controller = "Device";
@@ -86,79 +88,71 @@ namespace Nerve.Web.Controllers
                     UndoActionUrl = Url.Action("Index", "Device") + "?id=" + id
                 }
             };
-            try
+
+            //remove after testing
+            //model.Device = LoadDevice();
+            // get types
+            var typeItems = await _warrantyService.GetTypesAsync();
+            if (typeItems != null && typeItems.Any())
             {
-                //remove after testing
-                //model.Device = LoadDevice();
-                // get types
-                var typeItems = await _warrantyService.GetTypesAsync();
-                if (typeItems != null && typeItems.Any())
+                model.TypeItems = typeItems.Select(x => new SelectListItem
                 {
-                    model.TypeItems = typeItems.Select(x => new SelectListItem
-                    {
-                        Text = x.Name,
-                        Value = Convert.ToString(x.Id)
-                    }).ToList();
-                }
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Id)
+                }).ToList();
+            }
 
-                //get forwarder or delivery agent
-                var deliveryAgents = await _deliveryService.GetDeliveryAgentsAsync();
-                if (deliveryAgents != null && deliveryAgents.Any())
+            //get forwarder or delivery agent
+            var deliveryAgents = await _deliveryService.GetDeliveryAgentsAsync();
+            if (deliveryAgents != null && deliveryAgents.Any())
+            {
+                model.DeliveryAgentItems = deliveryAgents.Select(x => new SelectListItem
                 {
-                    model.DeliveryAgentItems = deliveryAgents.Select(x => new SelectListItem
-                    {
-                        Text = x.Name,
-                        Value = Convert.ToString(x.Code),
-                    }).ToList();
-                }
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Code),
+                }).ToList();
+            }
 
-                //get list of brands
-                model.BrandItems = new List<SelectListItem>();
-                //get list of model
-                model.ModelItems = new List<SelectListItem>();
-                //get list of service centre
-                model.ServiceCentreItems = new List<SelectListItem>();
-                //get list of transfer to
-                model.TransferItems = new List<SelectListItem>();
-                //get list of products
-                var products = await _productService.GetAllAsync();
-                model.ProductItems = new List<SelectListItem>();
-                if (products != null && products.Any())
+            //get list of brands
+            model.BrandItems = new List<SelectListItem>();
+            //get list of model
+            model.ModelItems = new List<SelectListItem>();
+            //get list of service centre
+            model.ServiceCentreItems = new List<SelectListItem>();
+            //get list of transfer to
+            model.TransferItems = new List<SelectListItem>();
+            //get list of products
+            var products = await _productService.GetAllAsync();
+            model.ProductItems = new List<SelectListItem>();
+            if (products != null && products.Any())
+            {
+                model.ProductItems = products.Select(x => new SelectListItem
                 {
-                    model.ProductItems = products.Select(x => new SelectListItem
-                    {
-                        Text = x.Name,
-                        Value = Convert.ToString(x.Id),
-                    }).ToList();
-                }
-                //get list of warranty type
-                model.WarrantyTypeItems = new List<SelectListItem>() {
+                    Text = x.Name,
+                    Value = Convert.ToString(x.Id),
+                }).ToList();
+            }
+            //get list of warranty type
+            model.WarrantyTypeItems = new List<SelectListItem>() {
                     new SelectListItem("Warranty", Convert.ToString((int)WarrantyType.Warranty)),
                     new SelectListItem("Non-Warranty", Convert.ToString((int)WarrantyType.NonWarranty))
                 };
-                //get list of physical condition
-                var conditions = await _genericMasterService.GetPhysicalConditionsAsync();
-                model.PhysicalConditionItems = new List<SelectListItem>();
-                if (conditions != null && conditions.Any())
-                {
-                    model.PhysicalConditionItems = conditions.Select(x => new SelectListItem
-                    {
-                        Text = $"{x.Description} ({x.FarsiDescription})",
-                        Value = Convert.ToString(x.Id)
-                    }).ToList();
-                }
-
-                //get list of fault code
-                model.FaultCodeItems = new List<SelectListItem>();
-                //get list of accessories
-                model.AccessoryItems = new List<SelectListItem>();
-            }
-            catch (Exception ex)
+            //get list of physical condition
+            var conditions = await _genericMasterService.GetPhysicalConditionsAsync();
+            model.PhysicalConditionItems = new List<SelectListItem>();
+            if (conditions != null && conditions.Any())
             {
-                model.IsValid = false;
-                model.ErrorMessage = $"{LanguageKeys.ContactAdministrator}";
-                _logger.Log(_controller, WebConstants.PageRoute.DeviceAuthenticate, ex);
+                model.PhysicalConditionItems = conditions.Select(x => new SelectListItem
+                {
+                    Text = $"{x.Description} ({x.FarsiDescription})",
+                    Value = Convert.ToString(x.Id)
+                }).ToList();
             }
+
+            //get list of fault code
+            model.FaultCodeItems = new List<SelectListItem>();
+            //get list of accessories
+            model.AccessoryItems = new List<SelectListItem>();
 
             return View(WebConstants.ViewPage.DeviceLogin, model);
         }
@@ -167,25 +161,8 @@ namespace Nerve.Web.Controllers
         [Route(WebConstants.PageRoute.DeviceAuthenticate + "/{imeiNumber}")]
         public async Task<bool> AuthenticateAsync(string imeiNumber)
         {
-            try
-            {
-                var result = await _deviceService.DeviceAuthenticateAsync(imeiNumber);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(_controller, WebConstants.PageRoute.DeviceAuthenticate, ex);
-                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
-                    {
-                        LanguageKeys.DeviceLogin,
-                        LanguageKeys.ContactAdministrator
-                    });
-
-                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
-                    translateItems[LanguageKeys.ContactAdministrator],
-                    NotificationType.Error);
-            }
-            return false;
+            var result = await _deviceService.DeviceAuthenticateAsync(imeiNumber);
+            return result;
         }
 
         /// <summary>
@@ -194,7 +171,7 @@ namespace Nerve.Web.Controllers
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route(WebConstants.PageRoute.DeviceCollectionPoint +"/{search?}")]
+        [Route(WebConstants.PageRoute.DeviceCollectionPoint + "/{search?}")]
         public async Task<PartialViewResult> CollectionPointAsync(string search)
         {
             try
@@ -276,7 +253,6 @@ namespace Nerve.Web.Controllers
             var translateItems = new Dictionary<string, string>();
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
@@ -340,17 +316,6 @@ namespace Nerve.Web.Controllers
             {
                 var title = await _languageTranslator.TranslateAsync(LanguageKeys.ValidationFailureSummary);
                 TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(title, iex.Message, NotificationType.Error);
-                deviceViewModel = await PrepareDeviceModelAsync(deviceViewModel);
-                return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(_controller, WebConstants.PageRoute.Save, ex);
-
-                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.DeviceLogin],
-                    translateItems[LanguageKeys.ContactAdministrator],
-                    NotificationType.Error);
-
                 deviceViewModel = await PrepareDeviceModelAsync(deviceViewModel);
                 return View(WebConstants.ViewPage.DeviceLogin, deviceViewModel);
             }

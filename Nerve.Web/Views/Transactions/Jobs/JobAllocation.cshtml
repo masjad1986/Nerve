@@ -19,6 +19,8 @@ LanguageKeys.Engineer,
 LanguageKeys.ErrorFieldRequiredVendorRmaNumber,
 LanguageKeys.ErrorFieldRequiredImeiNumber,
 LanguageKeys.ErrorFieldRequiredImeiOrTrackingNumber,
+LanguageKeys.ErrorFieldRequiredEngineerCode,
+LanguageKeys.ErrorFieldSelectionRequired,
 LanguageKeys.ExceptionTitle,
 LanguageKeys.Find,
 LanguageKeys.LocationCode,
@@ -41,8 +43,10 @@ LanguageKeys.WarrantyType
 
 <script>
     $(document).ready(function () {
-        @*$("#radio-pending-jobs").attr("value", '@Model.ShowPendingJobs' === 'True');
-        $("#radio-today-jobs").attr("value", '@Model.ShowTodayJobs' === 'True');*@
+        let pendingJobs = $("#pending-jobs").val() === "true";
+        let todayJobs = $("#today-jobs").val() === "true";
+        $("#radio-pending-jobs").prop("checked", pendingJobs);
+        $("#radio-today-jobs").prop("checked", todayJobs);
 
         //find click
         $("#job-allocation-find-click").on("click", function () {
@@ -55,12 +59,42 @@ LanguageKeys.WarrantyType
             clearJobAllocations();
         });
 
-        $("#dropdown-location-code").on('change', function () { 
+        //save click
+        $("#job-allocation-save-click").on("click", function () {
+            let errors = [];
+            $("#is-save-request").val(true);
+
+            let engineerCode = $("#dropdown-engineer-code").val();
+            if (!engineerCode || parseInt(engineerCode) < 0) {
+                errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredEngineerCode]');
+            }
+
+            let quantity = $("#text-quantity").val();
+            if (checkNullOrEmpty(quantity) || parseInt(quantity) === 0) {
+                errors.push('@translateItems[LanguageKeys.ErrorFieldSelectionRequired]');
+            }
+
+            if (!!errors && errors.length > 0) {
+                let errorHtml = "<div><b>@Html.Raw(translateItems[LanguageKeys.ValidationFailureDescription])</b><br><ul>";
+                for (var i = 0; i < errors.length; i++) {
+                    errorHtml += `<li class='red'>${errors[i]}</li>`;
+                }
+                errorHtml + "</ul></div>";
+                $("#validation-summary-item").html(errorHtml);
+                $("#validation-summary-modal").modal('show');
+            } else {
+                $("#validation-summary-modal").modal('hide');
+                $("#validation-summary-item").empty();
+                $("#job-allocation-form").submit();
+            }
+        });
+
+        $("#dropdown-location-code").on('change', function () {
             showSpinner();
             let url = '@Url.Action(WebConstants.PageRoute.GetEngineer, WebConstants.Controllers.Engineer)';
             let locationName = $(this).find("option:selected").text();
             let locationCode = $(this).find("option:selected").val();
-            
+
             let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
             $("#dropdown-engineer-code").empty();
             $("#dropdown-engineer-code").append($("<option     />").val("-1").text(select));
@@ -95,11 +129,12 @@ LanguageKeys.WarrantyType
             let url = '@Url.Action(WebConstants.PageRoute.GetBrandByProductName, WebConstants.Controllers.Brand)';
             let productName = $(this).find("option:selected").text();
             let productId = $(this).find("option:selected").val();
-            $("#product-name").val(productName);
             let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
             $("#dropdown-brand").empty();
             $("#brand-name").val('');
             $("#dropdown-model").empty();
+            $("#product-name").val('');
+            $("#dropdown-brand").append($("<option     />").val("-1").text(select));
             $("#dropdown-model").append($("<option     />").val("-1").text(select));
 
             if (!productId || productId < 0) {
@@ -107,6 +142,8 @@ LanguageKeys.WarrantyType
                 return;
             }
 
+            $("#product-name").val(productName);
+            
             $.ajax({
                 'url': url + '/' + productName,
                 'type': 'GET',
@@ -134,9 +171,10 @@ LanguageKeys.WarrantyType
 
         //select all or unselect all
         $(".job-allocation-grid-header-checkbox").on("click", function () {
+            let checked = $(this).prop("checked") === true;
             let count = $('input.job-allocation-grid-checkbox').length;
             $('input#checkbox.job-allocation-grid-checkbox').prop('checked', $(this).prop("checked") === true);
-            $("#text-quantity").val(count > 0 && !checked ? count : '');
+            $("#text-quantity").val(count > 0 && checked ? count : '');
             checkboxSelection();
         });
 
@@ -144,14 +182,14 @@ LanguageKeys.WarrantyType
         $('input.job-allocation-grid-checkbox').on("click", function () {
             let checkedAll = $('input.job-allocation-grid-checkbox').length == $('input.job-allocation-grid-checkbox:checked').length;
             $(".job-allocation-grid-header-checkbox").prop("checked", checkedAll);
-            let gridCheckbox = $('input.job-allocation-grid-checkbox:checked').length;
-            $("#text-quantity").val(gridCheckbox > 0 ? gridCheckbox : '');
+            let count = $('input.job-allocation-grid-checkbox:checked').length;
+            $("#text-quantity").val(count > 0 ? count : '');
             checkboxSelection();
         });
 
         $("input.filter-job-items").on("change", function () {
-            $("#pending-jobs").val($(this).attr('id') === "pending-jobs");
-            $("#today-jobs").val($(this).attr('id') === "today-jobs");
+            $("#pending-jobs").val($(this).attr('id') === "radio-pending-jobs");
+            $("#today-jobs").val($(this).attr('id') === "radio-today-jobs");
         });
 
         function checkboxSelection() {
@@ -187,14 +225,22 @@ LanguageKeys.WarrantyType
         function bindOption() {
             showSpinner();
             let url = '@Url.Action(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, WebConstants.Controllers.Brand)';
+            let brand = $("#dropdown-brand").find("option:selected").val();
             let brandName = $("#dropdown-brand").find("option:selected").text();
             let productName = $("#dropdown-product").find("option:selected").text();
             let select = '@Html.Raw(await _languageTranslator.TranslateAsync(LanguageKeys.DropDownSelectOption))';
 
-            $("#brand-name").val(brandName);
+            $("#brand-name").val('');
             $("#dropdown-model").empty();
-
             $("#dropdown-model").append($("<option     />").val("-1").text(select));
+
+            if (!brand || brand === "-1") {
+                hideSpinner();
+                return;
+            }
+
+            $("#brand-name").val(brandName);
+
             $.ajax({
                 'url': `${url}/${brandName}/${productName}`,
                 'type': 'GET',
@@ -287,28 +333,30 @@ LanguageKeys.WarrantyType
         <div class="panel-body">
             @Html.ListBoxFor(model => model.SelectedTrackingNumbers, new List<SelectListItem>(), new { @id = "multiselect-tracking-number", @class = "hidden" })
             @(Html.Grid(Model.JobAllocations)
-                                                                            .Build(columns =>
-                                                                            {
-                                                                                columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "job-allocation-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "job-allocation-grid-header-checkbox" }));
-                                                                                columns.Add(model => model.WarrantyType).Titled(translateItems[LanguageKeys.WarrantyType]);
-                                                                                columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
-                                                                                columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.VendorRmaNumber]);
-                                                                                columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
-                                                                                columns.Add(model => model.UnitReceivedDate).Titled(translateItems[LanguageKeys.LogDate]);
-                                                                                columns.Add(model => model.Product).Titled(translateItems[LanguageKeys.Product]);
-                                                                                columns.Add(model => model.Brand).Titled(translateItems[LanguageKeys.Brand]);
-                                                                                columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
-                                                                                columns.Add(model => model.WarrantyStatus).Titled(translateItems[LanguageKeys.WarrantyStatus]);
-                                                                                columns.Add(model => model.Ageing).Titled(translateItems[LanguageKeys.AgeingHrs]);
-                                                                                columns.Add(model => model.DoAStatus).Titled(translateItems[LanguageKeys.DoAStatus]);
-                                                                            })
-                                                                            .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
-                                                                            .Filterable()
-                                                                            .Sortable()
-                                                                            .Pageable()
+                                                                                                    .Build(columns =>
+                                                                                                    {
+                                                                                                        columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "job-allocation-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "job-allocation-grid-header-checkbox" }));
+                                                                                                        columns.Add(model => model.WarrantyType).Titled(translateItems[LanguageKeys.WarrantyType]);
+                                                                                                        columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
+                                                                                                        columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.VendorRmaNumber]);
+                                                                                                        columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
+                                                                                                        columns.Add(model => model.UnitReceivedDate).Titled(translateItems[LanguageKeys.LogDate]);
+                                                                                                        columns.Add(model => model.Product).Titled(translateItems[LanguageKeys.Product]);
+                                                                                                        columns.Add(model => model.Brand).Titled(translateItems[LanguageKeys.Brand]);
+                                                                                                        columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
+                                                                                                        columns.Add(model => model.WarrantyStatus).Titled(translateItems[LanguageKeys.WarrantyStatus]);
+                                                                                                        columns.Add(model => model.Ageing).Titled(translateItems[LanguageKeys.AgeingHrs]);
+                                                                                                        columns.Add(model => model.DoAStatus).Titled(translateItems[LanguageKeys.DoAStatus]);
+                                                                                                    })
+                                                                                                    .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                                                                    .Filterable()
+                                                                                                    .Sortable()
+                                                                                                    .Pageable()
             )
         </div>
     </div>
+
+    @Html.Hidden("Quantity", 0, new { @id = "text-quantity" })
     <button type="submit" name="update-job-allocation" class="hidden"></button>
 </form>
 <partial name="@WebConstants.ViewPage.Partial.ValidationSummary" model="@translateItems[LanguageKeys.ValidationFailureSummary]" />

@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nerve.Common;
 using Nerve.Common.Enums;
 using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
 using Nerve.Service;
+using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
 using Nerve.Web.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using static Nerve.Web.WebConstants;
 
 namespace Nerve.Web.Controllers.Transactions
 {
-    //[Authorize]
     [Route("[controller]")]
+    [NerveAuthorize]
+    [TypeFilter(typeof(NerveException))]
     public class VendorUpdationController : Controller
     {
         private readonly ILogger _logger;
@@ -76,21 +76,6 @@ namespace Nerve.Web.Controllers.Transactions
             catch (InvalidOperationException)
             {
                 return StatusCode((int)HttpStatusCode.BadRequest);
-            } 
-            catch (Exception ex)
-            {
-                _logger.Log(WebConstants.Controllers.VendorUpdation, WebConstants.PageRoute.Find, ex);
-                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
-                    {
-                        LanguageKeys.VendorRmaUpdation,
-                        LanguageKeys.ContactAdministrator
-                    });
-
-                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.VendorRmaUpdation],
-                    translateItems[LanguageKeys.ContactAdministrator],
-                    NotificationType.Error);
-
-                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 
@@ -104,48 +89,21 @@ namespace Nerve.Web.Controllers.Transactions
         public async Task<IActionResult> UpdateAsync(VendorUpdateViewModel vendorUpdateViewModel)
         {
             var translateItems = new Dictionary<string, string>();
-            try
-            {
-                var vendorUpdationDto = vendorUpdateViewModel.VendorUpdation;
-                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
+            var vendorUpdationDto = vendorUpdateViewModel.VendorUpdation;
+            translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
                     {
                         LanguageKeys.VendorRmaUpdation,
                         LanguageKeys.ContactAdministrator,
                         LanguageKeys.SaveRecordMessage
                     });
-                var result = await _vendorUpdationService.UpdateAsync(vendorUpdationDto.VendorRmaNumber, vendorUpdationDto.ImeiNumber, vendorUpdationDto.TrackingNumber);
+            var result = await _vendorUpdationService.UpdateAsync(vendorUpdationDto.VendorRmaNumber, vendorUpdationDto.ImeiNumber, vendorUpdationDto.TrackingNumber);
 
-                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.VendorRmaUpdation],
-                    translateItems[LanguageKeys.SaveRecordMessage],
-                    NotificationType.Success);
-                return RedirectToAction("Index", new { id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId) });
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(WebConstants.Controllers.VendorUpdation, WebConstants.PageRoute.Find, ex);
-                translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
-                {
-                    LanguageKeys.VendorRmaUpdation,
-                    LanguageKeys.ContactAdministrator
-                });
+            TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.VendorRmaUpdation],
+                translateItems[LanguageKeys.SaveRecordMessage],
+                NotificationType.Success);
 
-                TempData[WebConstants.TempDataKeys.Notification] = NotificationHelper.GetJsonNotification(translateItems[LanguageKeys.VendorRmaUpdation],
-                    translateItems[LanguageKeys.ContactAdministrator],
-                    NotificationType.Error);
+            return RedirectToAction("Index", new { id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId) });
 
-                var id = HttpContext.Session.GetInt32(SessionKeys.CurrentMenuId);
-                vendorUpdateViewModel.PageActionBarModel = new PageActionBarModel
-                {
-                    ActionPrefix = "vendor-updation",
-                    HasDeleteActionAccess = WebConstants.HasDeleteActionOptionAccess,
-                    MenuId = id ?? 0,
-                    ActionName = "",
-                    ControllerName = WebConstants.Controllers.VendorUpdation,
-                    UndoActionUrl = Url.Action("Index", WebConstants.Controllers.VendorUpdation) + "?id=" + id
-                };
-
-                return View(WebConstants.ViewPage.VendorUpdation, vendorUpdateViewModel);
-            }
         }
     }
 }

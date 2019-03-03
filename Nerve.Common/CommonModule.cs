@@ -1,8 +1,5 @@
 ﻿using Autofac;
 using Nerve.Common.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Nerve.Common
 {
@@ -10,7 +7,7 @@ namespace Nerve.Common
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<Logger>().As<ILogger>();
+            builder.RegisterType<Logger>().As<ILogger>().SingleInstance();
             builder.RegisterType(typeof(DynamicSqlBuilderHelper)).AsImplementedInterfaces();
             base.Load(builder);
         }

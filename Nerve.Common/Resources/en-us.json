@@ -194,6 +194,7 @@
   "error-field-selection-required": "Please select item from the list.",
   "error-field-invoice-number-required": "Invoice number is required.",
   "error-field-allocated-to-required": "Allocated to is required.",
+  "error-field-engineer-code-required": "Engineer code is required.",
   "swap-imei-number": "Swap Imei Number",
   "delivery": "Delivery",
   "shipment-details": "Shipment Details",
