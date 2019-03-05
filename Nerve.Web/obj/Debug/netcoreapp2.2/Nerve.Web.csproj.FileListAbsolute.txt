@@ -31,9 +31,11 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Home\Privacy.g
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Error.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\MvcGrid\_Grid.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\MvcGrid\_Pager.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Unauthorized.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_Actions.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_Layout.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_LayoutExternal.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_menus.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_ValidationScriptsPartial.g.cshtml.cs
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_ValidationSummary.g.cshtml.cs
@@ -50,5 +52,3 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.Views.pdb
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.csproj.CopyComplete
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.dll
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Nerve.Web.pdb
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Unauthorized.g.cshtml.cs
-D:\Asjad\Apps\Nerve\Nerve.Web\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_LayoutExternal.g.cshtml.cs

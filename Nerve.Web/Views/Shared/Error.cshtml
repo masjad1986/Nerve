@@ -13,3 +13,23 @@
         <a asp-action="Index" asp-controller="Home">Go To Homepage</a>
     </div>
 </div>
+@if (TempData["Error"] != null && Convert.ToBoolean(TempData["ShowPageError"]) == true)
+{
+    <style>
+        .error {
+            top: 430px;
+            position: absolute;
+        }
+
+        .list {
+            list-style-type: none;
+        }
+    </style>
+    <div class="panel-body error">
+        <ul class="list">
+            <li><b>Controller</b> : @Convert.ToString(TempData["Controller"])</li>
+            <li><b>Action</b> : @Convert.ToString(TempData["Action"])</li>
+            <li><b>Exception</b> : @Convert.ToString(TempData["Error"])</li>
+        </ul>
+    </div>
+}

@@ -1,4 +1,5 @@
-﻿using Nerve.Repository;
+﻿using Nerve.Common.Dtos;
+using Nerve.Repository;
 using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
@@ -7,12 +8,32 @@ using System.Threading.Tasks;
 
 namespace Nerve.Service
 {
-    public class JobService: IJobService
+    public class JobService : IJobService
     {
         private readonly IJobRepository _jobRepository;
         public JobService(IJobRepository jobRepository)
         {
             _jobRepository = jobRepository;
+        }
+
+        /// <summary>
+        /// Get job by number.
+        /// </summary>
+        /// <param name="jobNumber"></param>
+        /// <returns></returns>
+        public async Task<JobAllocationDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber)
+        {
+            return await _jobRepository.GetByLocationAndNumberAsync(locationCode, jobNumber);
+        }
+
+        /// <summary>
+        /// Get list of job status types.
+        /// </summary>
+        /// <param name="excludeItems"></param>
+        /// <returns></returns>
+        public async Task<List<ItemDto>> GetJobStatusTypesAsync(List<int> excludeItems)
+        {
+            return await _jobRepository.GetJobStatusTypesAsync(excludeItems);
         }
 
         /// <summary>

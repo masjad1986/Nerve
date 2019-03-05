@@ -15,6 +15,7 @@ namespace Nerve.Web
         public const int ImeiLength = 16;
         public const string StdCodePrefix = "+98";
         public const int WarrantyBounceDays = 15;
+        public const decimal TaxPercent = 9;
         public class SessionKeys
         {
             public const string User = "user";
@@ -72,6 +73,7 @@ namespace Nerve.Web
             public const string DeviceAuthenticate = "authenticate";
             public const string DeviceCollectionPoint = "collectionpoint";
             public const string Devices = "devices";
+            public const string Estimation = "index";
             public const string Find = "find";
             public const string Login = "login";
             public const string JobAllocation = "allocation";
@@ -91,6 +93,7 @@ namespace Nerve.Web
             public const string Brand = "Brand";
             public const string Device = "Device";
             public const string Engineer = "Engineer";
+            public const string Estimation = "Estimation";
             public const string Invoice = "Invoice";
             public const string Job = "Job";
             public const string Users = "Users";

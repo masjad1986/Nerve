@@ -46,3 +46,9 @@ D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Nerve.Web.csproj.CopyCom
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Nerve.Web.dll
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Nerve.Web.pdb
 D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Transactions\Invoice\DispatchNote.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\MvcGrid\_Grid.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\MvcGrid\_Pager.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\Unauthorized.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Shared\_LayoutExternal.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Transactions\Invoice\_Invoices.g.cshtml.cs
+D:\Asjad\Apps\Nerve\Nerve.Web\obj\Release\netcoreapp2.2\Razor\Views\Transactions\Jobs\JobAllocation.g.cshtml.cs

@@ -385,3 +385,19 @@ input[type=radio], input[type=checkbox] {
 .input-xl {
     width: 100%;
 }
+
+.nav-pills > li > a {
+    border-radius: 0 !important;
+}
+.tab-content > .active {
+    border: 1px solid #ddd;
+}
+
+.radio-button-list {
+}
+
+    .radio-button-list label {
+        padding-left: 5px;
+        padding-right: 5px;
+        font-weight: normal;
+    }

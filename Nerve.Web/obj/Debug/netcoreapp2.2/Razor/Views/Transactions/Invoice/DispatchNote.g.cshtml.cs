@@ -18,6 +18,11 @@ using Nerve.Web;
 
 #line default
 #line hidden
+#line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\_ViewImports.cshtml"
+using Nerve.Web.Extensions;
+
+#line default
+#line hidden
 #line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\Transactions\Invoice\DispatchNote.cshtml"
 using Microsoft.AspNetCore.Http;
 
@@ -39,7 +44,7 @@ using NonFactors.Mvc.Grid;
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"3e10f825644a5fd8513480fa0377d27446f8f850", @"/Views/Transactions/Invoice/DispatchNote.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"0b4ad927f8ad8b4c65681b12622429f55ec7cd77", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"6f4246cd722c431f8282f683ae25bbc3db727493", @"/Views/_ViewImports.cshtml")]
     public class Views_Transactions_Invoice_DispatchNote : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<Nerve.Web.ViewModels.DispatchNoteViewModel>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("data-ajax", new global::Microsoft.AspNetCore.Html.HtmlString("true"), global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
@@ -335,7 +340,7 @@ LanguageKeys.UnselectAll
 ");
             EndContext();
             BeginContext(7821, 91, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "3e10f825644a5fd8513480fa0377d27446f8f85016077", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "3e10f825644a5fd8513480fa0377d27446f8f85016204", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_TagHelpers_PartialTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.PartialTagHelper>();
@@ -367,7 +372,7 @@ __Microsoft_AspNetCore_Mvc_TagHelpers_PartialTagHelper.Model = Model.PageActionB
             WriteLiteral("\r\n");
             EndContext();
             BeginContext(7914, 8803, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3e10f825644a5fd8513480fa0377d27446f8f85018184", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3e10f825644a5fd8513480fa0377d27446f8f85018311", async() => {
                 BeginContext(8176, 102, true);
                 WriteLiteral("\r\n    <div class=\"panel panel-default\">\r\n        <div id=\"ajaxpanel\" class=\"panel-body\">\r\n            ");
                 EndContext();
@@ -845,7 +850,7 @@ WriteAttributeValue("", 17560, persianFont, 17560, 12, false);
 ");
             EndContext();
             BeginContext(18098, 130, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "3e10f825644a5fd8513480fa0377d27446f8f85044436", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("partial", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "3e10f825644a5fd8513480fa0377d27446f8f85044563", async() => {
             }
             );
             __Microsoft_AspNetCore_Mvc_TagHelpers_PartialTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.PartialTagHelper>();

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
+using Nerve.Common.Dtos;
 using Nerve.Common.Enums;
 using Nerve.Common.Extensions;
+using Nerve.Common.Helpers;
 using Nerve.Common.Models;
 using Nerve.Repository.Dtos;
 using System;
@@ -19,6 +21,63 @@ namespace Nerve.Repository
         public JobRepository(IOptions<AppSettings> appSettings)
         {
             _appSettings = appSettings;
+        }
+
+        /// <summary>
+        /// Get job by number.
+        /// </summary>
+        /// <param name="jobNumber"></param>
+        /// <returns></returns>
+        public async Task<JobAllocationDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber)
+        {
+            var query = $@"";
+            var parameters = new SqlParameter[]
+            {
+                new SqlParameter { ParameterName = "@location_code",Value = locationCode },
+                new SqlParameter { ParameterName = "@job_number",Value = jobNumber }
+            };
+
+            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE);
+            var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query, parameters);
+
+            if (!reader.HasRows)
+                return new JobAllocationDto();
+
+            var table = new DataTable();
+            table.Load(reader);
+
+            var item = (from row in table.AsEnumerable()
+                         select new JobAllocationDto
+                         {
+                             JobNumber = row.Field<decimal?>("JobNumber"),
+                             LocationCode = row.Field<string>("LocationCode"),
+                             Product = row.Field<string>("Product"),
+                             Brand = row.Field<string>("Brand"),
+                             Model = row.Field<string>("Model"),
+                             WarrantyType = row.Field<string>("WarrantyType"),
+                             WarrantyStatus = row.Field<string>("Warranty") != null ? row.Field<string>("Warranty") : string.Empty,
+                             TrackingNumber = row.Field<string>("TrackingNumber"),
+                             RmaNumber = row.Field<string>("RmaNumber"),
+                             UnitReceivedDate = row.Field<DateTime?>("UnitRecievedDate"),
+                             Ageing = row.Field<int?>("Ageing"),
+                             DoAStatus = row.Field<string>("DOAStatus")
+                         }).FirstOrDefault();
+
+            return item;
+        }
+
+        /// <summary>
+        /// Get list of job status types.
+        /// </summary>
+        /// <param name="excludeTypes"></param>
+        /// <returns></returns>
+        public async Task<List<ItemDto>> GetJobStatusTypesAsync(List<int> excludeItems)
+        {
+            var ignoreItems = excludeItems != null && excludeItems.Any() ? excludeItems.Cast<object>().ToList() : new List<object>();
+            var items = EnumHelper.ToList<JobStatusType>(ignoreItems);
+            if (items != null && items.Any())
+                items = items.OrderBy(x => x.Name).ToList();
+            return await Task.FromResult(items);
         }
 
         /// <summary>

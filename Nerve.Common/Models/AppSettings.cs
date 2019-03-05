@@ -11,5 +11,6 @@ namespace Nerve.Common.Models
         public string HAMI_DATA_DATABASE { get; set; }
         public string HAMI_SCP_DATABASE { get; set; }
         public string HAMI_VM_DATABASE { get; set; }
+        public bool DISPLAY_PAGE_ERROR { get; set; }
     }
 }

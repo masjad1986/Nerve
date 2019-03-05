@@ -19,7 +19,7 @@ using Nerve.Web;
 #line default
 #line hidden
 #line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\_ViewImports.cshtml"
-using Nerve.Web.Models;
+using Nerve.Web.Extensions;
 
 #line default
 #line hidden
@@ -39,7 +39,7 @@ using Nerve.Common.Enums;
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"b49dfe261fe4c98e98d1a4e43738103516b2d3d4", @"/Views/Shared/_menus.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"99594d08e9904441231da0f54667e41be0b4da55", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"6f4246cd722c431f8282f683ae25bbc3db727493", @"/Views/_ViewImports.cshtml")]
     public class Views_Shared__menus : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<Nerve.Web.ViewModels.MenuViewModel>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("asp-action", "Index", global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
@@ -81,7 +81,7 @@ using Nerve.Common.Enums;
             WriteLiteral("\r\n<nav class=\"navbar navbar-inverse\">\r\n    <div class=\"container-fluid\">\r\n        <ul class=\"nav navbar-nav\">\r\n            <li>\r\n                ");
             EndContext();
             BeginContext(443, 244, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b49dfe261fe4c98e98d1a4e43738103516b2d3d45184", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b49dfe261fe4c98e98d1a4e43738103516b2d3d45188", async() => {
                 BeginContext(508, 22, true);
                 WriteLiteral("\r\n                    ");
                 EndContext();
@@ -263,7 +263,7 @@ WriteAttributeValue("", 1909, child.MenuId, 1909, 13, false);
             WriteLiteral("</a></li>\r\n            <li>");
             EndContext();
             BeginContext(2634, 250, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b49dfe261fe4c98e98d1a4e43738103516b2d3d413661", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b49dfe261fe4c98e98d1a4e43738103516b2d3d413665", async() => {
                 BeginContext(2680, 5, true);
                 WriteLiteral("<span");
                 EndContext();

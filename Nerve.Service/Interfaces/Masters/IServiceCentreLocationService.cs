@@ -1,4 +1,5 @@
-﻿using Nerve.Repository.Dtos;
+﻿using Nerve.Common.Dtos;
+using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;

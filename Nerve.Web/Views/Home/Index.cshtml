@@ -1,12 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Http
 @using Nerve.Common
 @using Nerve.Common.Enums
+@using Nerve.Web.Extensions
 @inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 @{
     ViewData["Title"] = "Home Page";
     var welcome = await _languageTranslator
                 .TranslateAsync(LanguageKeys.WelcomeToNerveLogistics,
                 (LanguageType)Context.Session.GetInt32(WebConstants.SessionKeys.Language));
+
+    var items = new List<SelectListItem>
+{
+new SelectListItem { Text = "Male", Value = "1", Selected = false },
+new SelectListItem { Text = "Female", Value = "2", Selected = false },
+new SelectListItem { Text = "Others", Value = "3", Selected = false }
+};
 }
 
 @{ var persianFont = Context.Session.GetInt32(WebConstants.SessionKeys.Language).Value == (int)LanguageType.Farsi ? "persion-font-size" : "";}

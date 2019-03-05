@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
 using Nerve.Common;
 using Nerve.Common.Models;
@@ -15,11 +16,15 @@ namespace Nerve.Web.Filters
     {
         private readonly ILogger _logger;
         private readonly IOptions<AppSettings> _appSettings;
+        private readonly ITempDataProvider _provider;
 
-        public NerveException(ILogger logger, IOptions<AppSettings> appSettings)
+        public NerveException(ILogger logger,
+            IOptions<AppSettings> appSettings,
+            ITempDataProvider provider)
         {
             _appSettings = appSettings;
             _logger = logger;
+            _provider = provider;
         }
 
         /// <summary>
@@ -48,6 +53,13 @@ namespace Nerve.Web.Filters
                     context.Result = new ViewResult()
                     {
                         ViewName = WebConstants.ViewPage.Error,
+                        TempData = new TempDataDictionary(context.HttpContext, _provider)
+                        {
+                            { "ShowPageError" , _appSettings.Value.DISPLAY_PAGE_ERROR},
+                            { "Error" , context.Exception.StackTrace},
+                            { "Controller" , context.RouteData.Values["controller"]},
+                            { "Action" , context.RouteData.Values["action"]}
+                        }
                     };
                 }
             }

@@ -1,4 +1,185 @@
-﻿@page
-@model int
+﻿@model Nerve.Web.ViewModels.EstimationViewModel
+@using Microsoft.AspNetCore.Http
+@using Nerve.Common.Enums
+@using Nerve.Common
+@using NonFactors.Mvc.Grid
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
 @{
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var resourceKeys = new List<string>
+{
+LanguageKeys.Amount,
+LanguageKeys.Brand,
+LanguageKeys.Cancelled,
+LanguageKeys.CollectionReferenceNumberShort,
+LanguageKeys.CollectionLocation,
+LanguageKeys.Customer,
+LanguageKeys.CustomerApproved,
+LanguageKeys.Date,
+LanguageKeys.Delivered,
+LanguageKeys.Discount,
+LanguageKeys.Engineer,
+LanguageKeys.Estimation,
+LanguageKeys.EstimationDetails,
+LanguageKeys.ExpectedDeliveryDate,
+LanguageKeys.Location,
+LanguageKeys.LabourChargeType,
+LanguageKeys.Invoiced,
+LanguageKeys.ItemTotal,
+LanguageKeys.ImeiNumber,
+LanguageKeys.MsnNumber,
+LanguageKeys.JobNumber,
+LanguageKeys.JobStatus,
+LanguageKeys.LiquidDamageSlashBer,
+LanguageKeys.Model,
+LanguageKeys.ModelLinking,
+LanguageKeys.NetTotal,
+LanguageKeys.NoRecodsAvaiable,
+LanguageKeys.Open,
+LanguageKeys.PartCode,
+LanguageKeys.PartDescription,
+LanguageKeys.PhysicalCondition,
+LanguageKeys.Product,
+LanguageKeys.Remarks,
+LanguageKeys.RepairCharges,
+LanguageKeys.ServiceType,
+LanguageKeys.SalesTax,
+LanguageKeys.Total,
+LanguageKeys.QCPassed,
+LanguageKeys.Quantity,
+LanguageKeys.UnitRate,
+LanguageKeys.UnitDetails,
+LanguageKeys.WaitingForPart,
+LanguageKeys.WarrantyType
+};
+    var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
+
+<script>
+    $(document).ready(function () {
+        //estimation date calender
+        setCalender("#estimation-date-calender", "#text-estimation-date");
+
+        $("#job-number-search").on("click", function () {
+            $("#is-save-request").val(false);
+        });
+    });
+</script>
+<partial name="@WebConstants.ViewPage.Partial.Actions" model="@Model.PageActionBarModel" />
+<form asp-action="@WebConstants.PageRoute.JobAllocation" asp-controller="@WebConstants.Controllers.Job"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-mode="replace"
+      data-ajax-update="#ajaxpanel"
+      id="estimation-form">
+    <div class="panel panel-default">
+        @Html.HiddenFor(model => model.IsSaveRequest, new { @id = "is-save-request" })
+        <div id="ajaxpanel" class="panel-body">
+            <div class="row row-space">
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.Location])
+                </div>
+                <div class="col-sm-4 has-feedback">
+                    @Html.TextBoxFor(model => model.Estimation.LocationCode, new { @class = "form-control", @id = "text-tracking-number", @readonly = "readonly" })
+                </div>
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.Date])
+                </div>
+                <div class="col-sm-4 has-feedback">
+                    <div class='input-group date'>
+                        @Html.TextBoxFor(model => model.Estimation.Date, new { @class = "form-control disabled", @id = "text-estimation-date", @readonly = "readonly" })
+                        <span span class="input-group-addon cursor" id="estimation-date-calender">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-space">
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.JobNumber])
+                </div>
+                <div class="col-sm-4 has-feedback">
+                    @Html.TextBoxFor(model => model.Estimation.JobNumber, new { @class = "form-control", @id = "text-job-number" })
+                    <span id="job-number-search" class="glyphicon glyphicon-search cursor form-control-feedback btn-primary"></span>
+                </div>
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.Customer])
+                </div>
+                <div class="col-sm-1">
+                    @Html.DropDownListFor(model => model.Estimation.CustomerType, new SelectList(Model.CustomerTypes, "Value", "Text"), "Select...", new { @class = "form-control", @id = "text-estimation-date" })
+                </div>
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(model => model.Estimation.CustomerName, new { @id = "text-estimation-date", @class = "form-control" })
+                </div>
+            </div>
+            <div class="row row-space">
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.Product])
+                </div>
+                <div class="col-sm-4 has-feedback">
+                    @Html.DropDownListFor(model => model.Estimation.Product, new SelectList(Model.Products, "Value", "Text"), "Select...", new { @class = "input-control input-xl", @id = "dropdown-product" })
+                    @Html.HiddenFor(model => model.Estimation.ProductName, new { @id = "product-name" })
+                </div>
+            </div>
+            <div class="row row-space">
+                <div class="col-sm-2 text-right @persianFont">
+                    @Html.Raw(translateItems[LanguageKeys.Brand])
+                </div>
+                <div class="col-sm-4 has-feedback">
+                    @Html.DropDownListFor(model => model.Estimation.Brand, new SelectList(Model.Brands, "Value", "Text"), "Select...", new { @class = "input-control input-xl", @id = "dropdown-brand" })
+                    @Html.HiddenFor(model => model.Estimation.BrandName, new { @id = "brand-name" })
+                </div>
+            </div>
+            <div class="row row-space">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-10">
+                    @Html.RadioButtonList("JobStatus", Model.JobStatusItems, 3)
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div id="ajaxpanel" class="panel-body">
+                <ul class="nav nav-pills">
+                    <li class="active">
+                        <a href="#login-details" class="@persianFont" data-toggle="tab">@Html.Raw(translateItems[LanguageKeys.EstimationDetails])</a>
+                    </li>
+                    <li>
+                        <a href="#imei-history" class="@persianFont" data-toggle="tab">@Html.Raw(translateItems[LanguageKeys.UnitDetails])</a>
+                    </li>
+                </ul>
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="login-details">
+                        <div class="panel-body">
+                            @*@Html.ListBoxFor(model => null, new List<SelectListItem>(), new { @id = "multiselect-tracking-number", @class = "hidden" })*@
+                            @(Html.Grid(Model.PartEstimations).Build(columns =>
+                                                                                                                                                {
+                                                                                                                                                    columns.Add(model => Html.CheckBox("checkbox", new { @value = model.PartCode, @class = "estimation-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "estimation-grid-header-checkbox" }));
+                                                                                                                                                    columns.Add(model => model.PartCode).Titled(translateItems[LanguageKeys.PartCode]);
+                                                                                                                                                    columns.Add(model => model.PartDescription).Titled(translateItems[LanguageKeys.PartDescription]);
+                                                                                                                                                    columns.Add(model => model.Quantity).Titled(translateItems[LanguageKeys.Quantity]);
+                                                                                                                                                    columns.Add(model => model.UnitRateFc).Titled(translateItems[LanguageKeys.UnitRate]);
+                                                                                                                                                    columns.Add(model => model.UnitRateBc).Titled(translateItems[LanguageKeys.UnitRate]);
+                                                                                                                                                    columns.Add(model => model.Amount).Titled(translateItems[LanguageKeys.Amount]);
+                                                                                                                                                })
+                                                                                                                                                .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                                                                                                                .Filterable()
+                                                                                                                                                .Sortable()
+                                                                                                                                                .Pageable()
+                            )
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="imei-history">
+                        <div class="row">
+                            @*<div class="col-sm-2">@Html.Raw(translateItems[LanguageKeys.CollectionReferenceNumberShort])</div>
+                            <div class="col-sm-2">@Html.TextBoxFor(model => model.ReferenceNumber)</div>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-2"></div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -18,6 +18,11 @@ using Nerve.Web;
 
 #line default
 #line hidden
+#line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\_ViewImports.cshtml"
+using Nerve.Web.Extensions;
+
+#line default
+#line hidden
 #line 2 "D:\Asjad\Apps\Nerve\Nerve.Web\Views\FrontDesk\Device\_LoginDetail.cshtml"
 using Microsoft.AspNetCore.Http;
 
@@ -34,7 +39,7 @@ using Nerve.Common;
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"8d063d4ea445ed0bc9628acddd4111047ee0a23e", @"/Views/FrontDesk/Device/_LoginDetail.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"0b4ad927f8ad8b4c65681b12622429f55ec7cd77", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"6f4246cd722c431f8282f683ae25bbc3db727493", @"/Views/_ViewImports.cshtml")]
     public class Views_FrontDesk_Device__LoginDetail : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<Nerve.Web.ViewModels.DeviceViewModel>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("data-ajax", new global::Microsoft.AspNetCore.Html.HtmlString("true"), global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
@@ -981,7 +986,7 @@ WriteAttributeValue(" ", 21585, persianFont, 21586, 12, false);
             WriteLiteral(" </button>\r\n        </div>\r\n    </div>\r\n</div>\r\n\r\n");
             EndContext();
             BeginContext(22165, 16594, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "8d063d4ea445ed0bc9628acddd4111047ee0a23e48344", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "8d063d4ea445ed0bc9628acddd4111047ee0a23e48471", async() => {
                 BeginContext(22411, 151, true);
                 WriteLiteral("\r\n    <div class=\"panel panel-default\">\r\n        <div id=\"ajaxpanel\" class=\"panel-body\">\r\n            <div class=\"row row-space\">\r\n                <div");
                 EndContext();

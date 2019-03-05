@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nerve.Common;
+using Nerve.Common.Dtos;
 using Nerve.Common.Enums;
 using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
