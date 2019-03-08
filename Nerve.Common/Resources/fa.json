@@ -242,5 +242,6 @@
   "UnitRate": "unit-rate",
   "unit-details": "UnitDetails",
   "waiting-for-part": "WaitingForPart",
-  "customer": "Customer"
+  "customer": "Customer",
+  "job-numbers": "Job Numbers"
 }

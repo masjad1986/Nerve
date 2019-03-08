@@ -137,7 +137,7 @@ LanguageKeys.UnselectAll
             let imeiNumber = $("#text-imei-number").val();
 
             let invoiceNumber = $("#text-invoice-number").val();
-            if (checkNullOrEmpty(invoiceNumber) && checkNullOrEmpty(invoiceNumber)) {
+            if (checkNullOrEmpty(invoiceNumber)) {
                 errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredInvoiceNumber]');
             }
 

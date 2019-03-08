@@ -1,0 +1,49 @@
+﻿@model List<Nerve.Repository.Dtos.JobAllocationDto>
+@using Microsoft.AspNetCore.Http
+@using Nerve.Common.Enums
+@using Nerve.Common
+@using NonFactors.Mvc.Grid
+@inject Nerve.Common.Translations.ILanguageTranslator _languageTranslator
+@{
+    var languageId = (LanguageType)ViewContext.HttpContext.Session.GetInt32(WebConstants.SessionKeys.Language);
+    var persianFont = ViewContext.HttpContext.Session.GetString(WebConstants.SessionKeys.PersianFont);
+    var resourceKeys = new List<string>
+{
+LanguageKeys.Brand,
+LanguageKeys.ImeiHistory,
+LanguageKeys.JobNumber,
+LanguageKeys.Model,
+LanguageKeys.NoRecodsAvaiable,
+LanguageKeys.Product,
+LanguageKeys.TrackingNumber,
+LanguageKeys.VendorRmaNumber
+
+};
+    var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
+}
+<div class="panel-body">
+    @(Html.Grid(Model)
+        .Build(columns =>
+        {
+            columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "job-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "job-grid-header-checkbox" }));
+            columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
+            columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.ImeiHistory]);
+            columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
+            columns.Add(model => model.RmaNumber).Titled(translateItems[LanguageKeys.VendorRmaNumber]);
+            columns.Add(model => model.ProductName).Titled(translateItems[LanguageKeys.Product]);
+            columns.Add(model => model.Brand).Titled(translateItems[LanguageKeys.Brand]);
+            columns.Add(model => model.Model).Titled(translateItems[LanguageKeys.Model]);
+        })
+        .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+        .Filterable()
+        .Sortable()
+        .Pageable(pager =>
+        {
+            pager.PageSizes = new Dictionary<int, String > { { 10, "10" }, { 50, "50" }, { 100, "100" }, { 500, "500" } };
+            pager.ShowPageSizes = true;
+            pager.PagesToDisplay = 3;
+            pager.CurrentPage = 2;
+            pager.RowsPerPage = 2;
+        })
+    )
+</div>

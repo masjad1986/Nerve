@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nerve.Common;
+using Nerve.Common.Dtos.Grid;
 using Nerve.Common.Enums;
 using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
@@ -127,6 +128,15 @@ namespace Nerve.Web.Controllers
 
             return View(WebConstants.ViewPage.JobAllocation, jobAllocationViewModel);
         }
+
+        [HttpGet]
+        [Route(WebConstants.PageRoute.GetJobByLocation + "/{locationCode}/{jobNumber?}")]
+        public async Task<IActionResult> GetJobPartialAsync(string locationCode, decimal? jobNumber, [FromQuery] PagingDto paging)
+        {
+            var allocations = await _jobService.GetByLocationAndNumberAsync(locationCode, jobNumber, paging);
+            return PartialView(WebConstants.ViewPage.Partial.Jobs, allocations);
+        }
+
 
         [HttpPost]
         [Route(WebConstants.PageRoute.JobAllocation)]

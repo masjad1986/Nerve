@@ -59,6 +59,7 @@ namespace Nerve.Web
                 public const string DevicePopUpload = "~/Views/FrontDesk/Device/_PopUpload.cshtml";
                 public const string DeviceImeiHistory = "~/Views/FrontDesk/Device/_ImeiHistory.cshtml";
                 public const string Invoice = "Views/Transactions/Invoice/_Invoices.cshtml";
+                public const string Jobs = "Views/Transactions/Jobs/_Job.cshtml";
                 public const string ValidationSummary = "_ValidationSummary";
             }
         }
@@ -76,6 +77,7 @@ namespace Nerve.Web
             public const string Estimation = "index";
             public const string Find = "find";
             public const string Login = "login";
+            public const string Jobs = "jobs";
             public const string JobAllocation = "allocation";
             public const string Save = "save";
             public const string Update = "update";
@@ -83,6 +85,7 @@ namespace Nerve.Web
             public const string GetDealerInvoices = "dealerinvoices";
             public const string GetBrandByProductName = "product";
             public const string GetEngineer = "engineers";
+            public const string GetJobByLocation = "jobbylocation";
             public const string GetOptionByBrandAndProductAndCollectionPoint = "option";
             public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "servicecentre";
             public const string GetTrackingPrefix = "trackingprefix";

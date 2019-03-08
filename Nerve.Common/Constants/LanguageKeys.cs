@@ -72,6 +72,7 @@ namespace Nerve.Common
         public const string JobAllocation = "job-allocation";
         public const string JobClosing = "job-closing";
         public const string JobNumber = "job-number";
+        public const string JobNumbers = "job-numbers";
         public const string Location = "location";
         public const string LocationCode = "location-code";
         public const string LocationName = "location-name";
@@ -256,6 +257,7 @@ namespace Nerve.Common
         public const string ErrorFieldRequiredInvoiceNumber = "error-field-invoice-number-required";
         public const string ErrorFieldRequiredAllocatedTo = "error-field-allocated-to-required";
         public const string ErrorFieldRequiredEngineerCode = "error-field-engineer-code-required";
+        public const string ErrorFieldRequiredLocationCode = "error-field-location-code-required";
         //invalid
         public const string ErrorInvalidImeiLength = "error-invalid-imei-number-length";
         public const string ErrorFieldInvalidEmail = "error-invalid-email-format";

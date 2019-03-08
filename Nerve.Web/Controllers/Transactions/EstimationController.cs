@@ -57,7 +57,12 @@ namespace Nerve.Web.Controllers.Transactions
             HttpContext.Session.SetInt32(SessionKeys.CurrentMenuId, id ?? 0);
             var estimationViewModel = new EstimationViewModel
             {
-                PartEstimations = new List<PartEstimationDto>(),
+                Estimation = new EstimationDto
+                {
+                    LocationCode= HttpContext.Session.GetString(SessionKeys.DefaultStockLocation)
+                },
+                PartEstimations = new List<PartEstimationDto>() {
+                },
                 PageActionBarModel = new PageActionBarModel
                 {
                     ActionPrefix = LanguageKeys.Estimation,

@@ -75,8 +75,8 @@ textarea {
 }
 
 .normal-row {
-    padding-right: 0!important;
-    padding-left: 0!important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
 }
 
 
@@ -201,7 +201,7 @@ textarea {
 }
 
 .hide {
-    display:none;
+    display: none;
 }
 
 .modal {
@@ -226,7 +226,7 @@ textarea {
 .no-records-message {
     padding: 20px;
     text-align: center;
-    font-style:initial;
+    font-style: initial;
 }
 
 .popup-grid-container {
@@ -375,13 +375,16 @@ input[type=radio], input[type=checkbox] {
 .input-sm {
     width: 30%;
 }
+
 .input-md {
     width: 50%;
 }
+
 .input-lg {
     width: 70% !important;
     border-radius: 0 !important;
 }
+
 .input-xl {
     width: 100%;
 }
@@ -389,15 +392,17 @@ input[type=radio], input[type=checkbox] {
 .nav-pills > li > a {
     border-radius: 0 !important;
 }
+
 .tab-content > .active {
     border: 1px solid #ddd;
 }
 
-.radio-button-list {
+.radio-button-list label {
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: normal;
 }
 
-    .radio-button-list label {
-        padding-left: 5px;
-        padding-right: 5px;
-        font-weight: normal;
-    }
+.no-right-padding {
+    padding-right: 0 !important;
+}

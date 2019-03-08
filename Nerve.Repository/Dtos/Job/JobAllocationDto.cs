@@ -6,6 +6,7 @@ namespace Nerve.Repository.Dtos
 {
     public class JobAllocationDto: BaseDto
     {
+        public string Date { get; set; }
         public int? Ageing { get; set; }
         public string EngineerCode { get; set; }
         public string WarrantyType { get; set; }

@@ -195,6 +195,7 @@
   "error-field-invoice-number-required": "Invoice number is required.",
   "error-field-allocated-to-required": "Allocated to is required.",
   "error-field-engineer-code-required": "Engineer code is required.",
+  "error-field-location-code-required": "Location code is required.",
   "swap-imei-number": "Swap Imei Number",
   "delivery": "Delivery",
   "shipment-details": "Shipment Details",
@@ -245,5 +246,6 @@
   "UnitRate": "unit-rate",
   "unit-details": "UnitDetails",
   "waiting-for-part": "WaitingForPart",
-  "customer":  "Customer"
+  "customer": "Customer",
+  "job-numbers": "Job Numbers"
 }

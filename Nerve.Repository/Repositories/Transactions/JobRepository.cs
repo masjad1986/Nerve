@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Nerve.Common.Dtos;
+using Nerve.Common.Dtos.Grid;
 using Nerve.Common.Enums;
 using Nerve.Common.Extensions;
 using Nerve.Common.Helpers;
@@ -24,46 +25,82 @@ namespace Nerve.Repository
         }
 
         /// <summary>
-        /// Get job by number.
+        /// Get job by location and number.
         /// </summary>
-        /// <param name="jobNumber"></param>
+        /// <param name="locationCode">Pass location code.</param>
+        /// <param name="jobNumber">Pass job number.</param>
         /// <returns></returns>
-        public async Task<JobAllocationDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber)
+        public async Task<List<JobAllocationDto>> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PagingDto paging = null)
         {
-            var query = $@"";
-            var parameters = new SqlParameter[]
+            var query = $@"SELECT 
+                               j.jobno AS [JobNumber], j.DEALERREF AS [TrackingNumber], CAST(j.JobAll_Date AS VARCHAR) AS [Date], j.CCODE AS [LocationCode],
+	                           j.Product AS [ProductName], CAST(ISNULL(p.ProductID,0) AS VARCHAR) AS [Product], j.BRAND, j.MODEL, j.JobAll_EnggCode AS [EngineerCode],
+	                           j.UnitReceiveDate, d.RMANo AS [RmaNumber]
+                           FROM [{RepositoryConstants.HamiDatabase}].[{RepositoryConstants.SchemaName}].[{HAMI.MasterTables.JobRepair}] j
+                           LEFT JOIN [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.Product}] p ON j.Product = p.ProductName
+                           LEFT JOIN [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DealerLog}] d ON d.Docno=j.DEALERREF AND d.LocationCode = j.CCODE
+                           WHERE j.ccode = @location_code";
+
+            if (jobNumber.HasValue && jobNumber.Value > 0)
+            {
+                query += " AND CHARINDEX(CAST(@job_number AS VARCHAR), CAST(j.JOBNO AS VARCHAR), 1) > 0";
+            }
+
+            var parameters = new List<SqlParameter>
             {
                 new SqlParameter { ParameterName = "@location_code",Value = locationCode },
                 new SqlParameter { ParameterName = "@job_number",Value = jobNumber }
             };
 
-            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_DATA_DATABASE);
-            var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query, parameters);
+            if (paging != null)
+            {
+                if (paging.PageIndex < 1)
+                {
+                    paging.PageIndex = 1;
+                }
+
+                if (paging.PageSize < 1)
+                {
+                    paging.PageSize = 10;
+                }
+
+                query += $@" ORDER BY j.jobno
+                          OFFSET @page_index ROWS
+                          FETCH NEXT @page_size ROWS ONLY
+                        ";
+
+                parameters.AddRange(new List<SqlParameter>{
+                    new SqlParameter { ParameterName = "@page_index", Value = (paging.PageIndex * paging.PageSize) - 1 },
+                    new SqlParameter { ParameterName = "@page_size", Value = paging.PageSize }
+                });
+            }
+
+
+            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE);
+            var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query, parameters.ToArray());
 
             if (!reader.HasRows)
-                return new JobAllocationDto();
+                return new List<JobAllocationDto>();
 
             var table = new DataTable();
             table.Load(reader);
 
-            var item = (from row in table.AsEnumerable()
+            var items = (from row in table.AsEnumerable()
                          select new JobAllocationDto
                          {
                              JobNumber = row.Field<decimal?>("JobNumber"),
                              LocationCode = row.Field<string>("LocationCode"),
+                             Date = row.Field<string>("Date"),
                              Product = row.Field<string>("Product"),
                              Brand = row.Field<string>("Brand"),
                              Model = row.Field<string>("Model"),
-                             WarrantyType = row.Field<string>("WarrantyType"),
-                             WarrantyStatus = row.Field<string>("Warranty") != null ? row.Field<string>("Warranty") : string.Empty,
+                             EngineerCode = row.Field<string>("EngineerCode"),
                              TrackingNumber = row.Field<string>("TrackingNumber"),
                              RmaNumber = row.Field<string>("RmaNumber"),
-                             UnitReceivedDate = row.Field<DateTime?>("UnitRecievedDate"),
-                             Ageing = row.Field<int?>("Ageing"),
-                             DoAStatus = row.Field<string>("DOAStatus")
-                         }).FirstOrDefault();
+                             UnitReceivedDate = row.Field<DateTime?>("UnitReceiveDate")
+                         }).ToList();
 
-            return item;
+            return items;
         }
 
         /// <summary>
@@ -88,8 +125,8 @@ namespace Nerve.Repository
         public async Task<KeyValuePair<string, string>> GetJobReferenceNumberAsync(string locationCode)
         {
             var query = $@"DECLARE @jobno INT, @jobref VARCHAR(50)
-                        SELECT @jobno = ISNULL(MAX(jobno),100000)+1 FROM [dbo].[jbrepair] WITH(TABLOCKX) WHERE CCODE=@location_code; 
-                        SELECT @jobref= TRIM(locprefix) + '-' + TRIM(STR(@jobno)) FROM hami_data.dbo.glumast WHERE locode=@location_code;
+                        SELECT @jobno = ISNULL(MAX(jobno),100000)+1 FROM [{RepositoryConstants.SchemaName}].[{HAMI.MasterTables.JobRepair}] WITH(TABLOCKX) WHERE CCODE=@location_code; 
+                        SELECT @jobref= TRIM(locprefix) + '-' + TRIM(STR(@jobno)) FROM [{RepositoryConstants.SchemaName}].[{HAMI.MasterTables.GluMaster}] WHERE locode=@location_code;
                         SELECT @jobno AS [JobNumber], @jobref AS [JobRefNumber]";
 
             var parameters = new SqlParameter[]

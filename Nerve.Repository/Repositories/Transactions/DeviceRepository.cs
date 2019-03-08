@@ -299,7 +299,7 @@ namespace Nerve.Repository
                             @customer_name,@mobile_number,@fault_code,@unit_dropped_date,  
                             @doc_date,'1',@doc_date,@warranty,@warranty,@warranty,  
                             @physical_condition,@type_of_warranty,@user_id,'P',  
-                            @doc_date,@product,@login_type,@location_code,  
+                            @doc_date,@product_name,@login_type,@location_code,  
                             @type_of_warranty,@job_reference_number,@doa,@qrs,@mobile_number,@phone
                         )";
 

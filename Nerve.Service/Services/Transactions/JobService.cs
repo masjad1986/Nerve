@@ -1,4 +1,5 @@
 ﻿using Nerve.Common.Dtos;
+using Nerve.Common.Dtos.Grid;
 using Nerve.Repository;
 using Nerve.Repository.Dtos;
 using System;
@@ -21,9 +22,9 @@ namespace Nerve.Service
         /// </summary>
         /// <param name="jobNumber"></param>
         /// <returns></returns>
-        public async Task<JobAllocationDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber)
+        public async Task<List<JobAllocationDto>> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PagingDto paging = null)
         {
-            return await _jobRepository.GetByLocationAndNumberAsync(locationCode, jobNumber);
+            return await _jobRepository.GetByLocationAndNumberAsync(locationCode, jobNumber, paging);
         }
 
         /// <summary>

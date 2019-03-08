@@ -1,4 +1,5 @@
 ﻿using Nerve.Common.Dtos;
+using Nerve.Common.Dtos.Grid;
 using Nerve.Repository.Dtos;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace Nerve.Repository
 {
     public interface IJobRepository
     {
-        Task<JobAllocationDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber);
+        Task<List<JobAllocationDto>> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PagingDto paging = null);
         Task<List<ItemDto>> GetJobStatusTypesAsync(List<int> excludeItems);
         Task<KeyValuePair<string, string>> GetJobReferenceNumberAsync(string locationCode);
         Task<DateTime?> GetLastJobByImeiNumberAsync(string imeiNumber);
