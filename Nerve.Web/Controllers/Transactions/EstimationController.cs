@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -59,7 +60,8 @@ namespace Nerve.Web.Controllers.Transactions
             {
                 Estimation = new EstimationDto
                 {
-                    LocationCode= HttpContext.Session.GetString(SessionKeys.DefaultStockLocation)
+                    LocationCode= HttpContext.Session.GetString(SessionKeys.DefaultStockLocation),
+                    Date = DateTime.Now.ToShortDateString()
                 },
                 PartEstimations = new List<PartEstimationDto>() {
                 },
@@ -79,7 +81,16 @@ namespace Nerve.Web.Controllers.Transactions
                 }
             };
 
-            var jobStatusTypes = await _jobService.GetJobStatusTypesAsync(new List<int>());
+            var jobStatusTypes = await _jobService.GetJobStatusTypesByItemsAsync(new List<int>() {
+                (int)JobStatusType.Open,
+                (int)JobStatusType.Cancelled,
+                (int)JobStatusType.Estimation,
+                (int)JobStatusType.WaitingForPart,
+                (int)JobStatusType.CustomerApproved,
+                (int)JobStatusType.QcPassed,
+                (int)JobStatusType.Invoiced,
+                (int)JobStatusType.Delivered
+            });
             if (jobStatusTypes != null && jobStatusTypes.Any())
             {
                 estimationViewModel.JobStatusItems = _mapper.Map<List<SelectListItem>>(jobStatusTypes);
@@ -134,14 +145,31 @@ namespace Nerve.Web.Controllers.Transactions
 
                 return RedirectToAction(WebConstants.PageRoute.Estimation, new { id });
             }
-            else
-            {
-                //find job number details
-                var jobDetails = await _jobService.GetByLocationAndNumberAsync(estimationViewModel.Estimation.LocationCode, estimationViewModel.Estimation.JobNumber);
-            }
-
 
             return View(WebConstants.ViewPage.Estimation, estimationViewModel);
         }
+
+        /// <summary>
+        /// Update estimation start date.
+        /// </summary>
+        /// <param name="locationCode"></param>
+        /// <param name="jobNumber"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(WebConstants.PageRoute.UpdateEstimationDate + "/{locationCode}/{jobNumber}")]
+        public async Task<IActionResult> UpdateEstimationDateAsync(string locationCode, decimal jobNumber)
+        {
+            try
+            {
+                await _estimationService.UpdateEstimationDateAsync(locationCode, jobNumber);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(WebConstants.Controllers.Estimation, WebConstants.PageRoute.UpdateEstimationDate, ex);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
     }
 }

@@ -10,8 +10,9 @@ namespace Nerve.Service
 {
     public interface IJobService
     {
-        Task<List<JobAllocationDto>> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PagingDto paging = null);
+        Task<JobGridDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PaginationDto paging = null);
         Task<List<ItemDto>> GetJobStatusTypesAsync(List<int> excludeItems);
+        Task<List<ItemDto>> GetJobStatusTypesByItemsAsync(List<int> filterItems);
         Task<DateTime?> GetLastJobByImeiNumberAsync(string imeiNumber);
         Task<List<JobAllocationDto>> GetPendingJobAllocationByParamsAsync(JobAllocationDto jobAllocationDto, bool isAllPendingJobs = false);
         Task<List<JobAllocationDto>> GetPendingJobAllocationByDateAsync(JobAllocationDto jobAllocationDto, DateTime jobDate);

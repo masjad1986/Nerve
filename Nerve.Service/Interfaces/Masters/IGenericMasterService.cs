@@ -8,11 +8,6 @@ namespace Nerve.Service
 {
     public interface IGenericMasterService
     {
-        //Model
-        Task<List<ProductModelDto>> GetAllProductModelAsync();
-        Task<List<ProductModelDto>> GetProductModelAsync(string productName);
-        Task<List<ProductModelDto>> GetProductModelByNameAndBrandAsync(string productName, string brandName);
-
         //Fault Code
         Task<List<FaultDetailDto>> GetFaultCodesByBrandAsync(string brandName);
         

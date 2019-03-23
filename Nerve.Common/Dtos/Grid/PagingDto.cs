@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Nerve.Common.Dtos.Grid
 {
-    public class PagingDto
+    public class PaginationDto
     {
         public int PageSize { get; set; }
         public int PageIndex { get; set; }

@@ -22,7 +22,7 @@ namespace Nerve.Service
         /// </summary>
         /// <param name="jobNumber"></param>
         /// <returns></returns>
-        public async Task<List<JobAllocationDto>> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PagingDto paging = null)
+        public async Task<JobGridDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PaginationDto paging = null)
         {
             return await _jobRepository.GetByLocationAndNumberAsync(locationCode, jobNumber, paging);
         }
@@ -35,6 +35,16 @@ namespace Nerve.Service
         public async Task<List<ItemDto>> GetJobStatusTypesAsync(List<int> excludeItems)
         {
             return await _jobRepository.GetJobStatusTypesAsync(excludeItems);
+        }
+
+        /// <summary>
+        /// Get list of job status types by filter enum.
+        /// </summary>
+        /// <param name="excludeItems"></param>
+        /// <returns></returns>
+        public async Task<List<ItemDto>> GetJobStatusTypesByItemsAsync(List<int> filterItems)
+        {
+            return await _jobRepository.GetJobStatusTypesByItemsAsync(filterItems);
         }
 
         /// <summary>

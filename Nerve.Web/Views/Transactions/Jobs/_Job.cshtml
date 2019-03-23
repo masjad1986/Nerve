@@ -1,4 +1,4 @@
-﻿@model List<Nerve.Repository.Dtos.JobAllocationDto>
+﻿@model Nerve.Repository.Dtos.JobGridDto
 @using Microsoft.AspNetCore.Http
 @using Nerve.Common.Enums
 @using Nerve.Common
@@ -10,6 +10,7 @@
     var resourceKeys = new List<string>
 {
 LanguageKeys.Brand,
+LanguageKeys.ExceptionTitle,
 LanguageKeys.ImeiHistory,
 LanguageKeys.JobNumber,
 LanguageKeys.Model,
@@ -17,15 +18,79 @@ LanguageKeys.NoRecodsAvaiable,
 LanguageKeys.Product,
 LanguageKeys.TrackingNumber,
 LanguageKeys.VendorRmaNumber
-
 };
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
-<div class="panel-body">
-    @(Html.Grid(Model)
+
+<script>
+    $(document).ready(function () {
+        $(".mvc-grid-pager > button").on("click", function () {
+            if ($(this).hasClass('disabled'))
+                return;
+
+            let pageIndex = $(this).data("page");
+            let pageSize = $(".mvc-grid-pager-rows").val();
+
+            if (!pageIndex || parseInt(pageIndex) === 0)
+                pageIndex = 1;
+
+            changePage(pageIndex, pageSize);
+        });
+
+        $(".mvc-grid-pager-rows").on("change", function () {
+            let pageIndex = $(".mvc-grid-pager > button.active").data("page");
+            let pageSize = $(this).val();
+
+            if (!pageIndex || parseInt(pageIndex) === 0)
+                pageIndex = 1;
+
+            changePage(pageIndex, pageSize);
+        });
+
+        function changePage(pageIndex, pageSize) {
+            showSpinner();
+            let locationCode = $("#search-location-code").val();
+            let searchValue = $("#search-job-number").val();
+            let url = `@Url.Action(WebConstants.PageRoute.GetJobByLocation, WebConstants.Controllers.Job)/${encodeURI(locationCode)}`;
+            if (!!searchValue)
+                url = encodeURI(`${url}/${searchValue}`);
+
+            $.ajax({
+                'url': url,
+                'type': 'GET',
+                'async': false,
+                'dataType': 'application/json',
+                'data': { 'pageSize' : pageSize, 'pageIndex': pageIndex },
+                complete: function (response) {
+                    if (!!response && response.status == @StatusCodes.Status200OK) {
+                        $("#job-grid").html(response.responseText);
+                    }
+                    else {
+                        var title = '@Html.Raw(translateItems[LanguageKeys.ExceptionTitle])';
+                        showNotification(title, response.statusText,@Convert.ToInt32(NotificationType.Error), false);
+                    }
+                    hideSpinner();
+                }
+            });
+        }
+    });
+
+</script>
+<div class="panel-body" id="job-grid">
+    @Html.HiddenFor(model => model.JobNumber, new { id = "search-job-number" })
+    @Html.HiddenFor(model => model.LocationCode, new { id = "search-location-code" })
+    @(Html.Grid(Model.DataSource)
         .Build(columns =>
         {
-            columns.Add(model => Html.CheckBox("checkbox", new { @value = model.TrackingNumber, @class = "job-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "job-grid-header-checkbox" }));
+            if (Model.AllowMultipleSelection)
+            {
+                columns.Add(model => Html.CheckBox("checkbox", new { @value = model.JobNumber, @class = "job-grid-checkbox" })).
+                                Titled(Html.CheckBox("checkbox", new { @class = "job-grid-header-checkbox" }));
+            } else
+            {
+                columns.Add(model => Html.RadioButton("radio", model.JobNumber, new { @class = "job-grid-radio" })).
+                                Titled("#");
+            }
             columns.Add(model => model.JobNumber).Titled(translateItems[LanguageKeys.JobNumber]);
             columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.ImeiHistory]);
             columns.Add(model => model.TrackingNumber).Titled(translateItems[LanguageKeys.TrackingNumber]);
@@ -39,11 +104,11 @@ LanguageKeys.VendorRmaNumber
         .Sortable()
         .Pageable(pager =>
         {
-            pager.PageSizes = new Dictionary<int, String > { { 10, "10" }, { 50, "50" }, { 100, "100" }, { 500, "500" } };
+            pager.PageSizes = Model.PageSizes;
             pager.ShowPageSizes = true;
-            pager.PagesToDisplay = 3;
-            pager.CurrentPage = 2;
-            pager.RowsPerPage = 2;
+            pager.RowsPerPage = Model.Pagination.PageSize;
+            pager.CurrentPage = Model.Pagination.PageIndex;
+            pager.TotalRows = Model.Count;
         })
     )
 </div>

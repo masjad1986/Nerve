@@ -8,5 +8,6 @@ namespace Nerve.Repository
     public interface IEstimationRepository
     {
         Task<bool> SaveAsync();
+        Task<bool> UpdateEstimationDateAsync(string locationCode, decimal jobNumber);
     }
 }

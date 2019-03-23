@@ -14,6 +14,7 @@ LanguageKeys.Brand,
 LanguageKeys.Cancelled,
 LanguageKeys.CollectionReferenceNumberShort,
 LanguageKeys.CollectionLocation,
+LanguageKeys.Confirm,
 LanguageKeys.Customer,
 LanguageKeys.CustomerApproved,
 LanguageKeys.Date,
@@ -24,6 +25,7 @@ LanguageKeys.ErrorFieldRequiredLocationCode,
 LanguageKeys.Engineer,
 LanguageKeys.Estimation,
 LanguageKeys.EstimationDetails,
+LanguageKeys.EstimationStartDateConfirmationMessage,
 LanguageKeys.ExpectedDeliveryDate,
 LanguageKeys.ExceptionTitle,
 LanguageKeys.Location,
@@ -39,6 +41,7 @@ LanguageKeys.LiquidDamageSlashBer,
 LanguageKeys.Model,
 LanguageKeys.ModelLinking,
 LanguageKeys.NetTotal,
+LanguageKeys.No,
 LanguageKeys.NoRecodsAvaiable,
 LanguageKeys.Open,
 LanguageKeys.PartCode,
@@ -49,15 +52,19 @@ LanguageKeys.Remarks,
 LanguageKeys.RepairCharges,
 LanguageKeys.ServiceType,
 LanguageKeys.SalesTax,
+LanguageKeys.Stock,
 LanguageKeys.Total,
+LanguageKeys.TotalItem,
 LanguageKeys.QCPassed,
 LanguageKeys.Quantity,
-LanguageKeys.UnitRate,
+LanguageKeys.UnitRateFc,
+LanguageKeys.UnitRateBc,
 LanguageKeys.UnitDetails,
 LanguageKeys.ValidationFailureDescription,
 LanguageKeys.ValidationFailureSummary,
 LanguageKeys.WaitingForPart,
-LanguageKeys.WarrantyType
+LanguageKeys.WarrantyType,
+LanguageKeys.Yes
 };
     var translateItems = await _languageTranslator.TranslateManyAsync(resourceKeys, languageId);
 }
@@ -66,6 +73,8 @@ LanguageKeys.WarrantyType
     $(document).ready(function () {
         //estimation date calender
         setCalender("#estimation-date-calender", "#text-estimation-date");
+        //expected delivery date calender
+        setCalender("#delivery-date-calender", "#text-delivery-date");
 
         //prevent form default
         $("#estimation-form").on("keypress", function (event) {
@@ -88,27 +97,45 @@ LanguageKeys.WarrantyType
         });
 
         $("button[name=select-job-number]").click(function () {
-            let point = $('input[name=job-number-radio]:checked');
-            if (point && point.length > 0) {
-                $("#job-number-number").val(point.val());
+            let locationCode = $("#text-location-code").val();
+            if (checkNullOrEmpty(locationCode)) {
+                let errors = [];
+                errors.push('@translateItems[LanguageKeys.ErrorFieldRequiredLocationCode]');
                 $("#job-numbers-modal").modal('hide');
-                let url = `@Url.Action(WebConstants.PageRoute.Jobs, WebConstants.Controllers.Job)/${point.val()}`;
+                $("#job-numbers-error").addClass('hide');
+                displayErrors(errors);
+                hideSpinner();
+                return;
+            }
+            let point = $('input.job-grid-radio:checked');
+            if (point && point.length > 0) {
+                $("#text-job-number").val(point.val());
+                $("#job-numbers-modal").modal('hide');
+                let url = `@Url.Action(WebConstants.PageRoute.Jobs, WebConstants.Controllers.Job)/${locationCode}/${point.val()}`;
                 $.ajax({
-                'url': url,
-                'type': 'GET',
-                'async': false,
-                'dataType': 'application/json',
-                complete: function (response) {
-                    if (!!response && response.status == @StatusCodes.Status200OK) {
-                        //set all the parameters
+                    'url': url,
+                    'type': 'GET',
+                    'async': false,
+                    'dataType': 'application/json',
+                    complete: function (response) {
+                        if (!!response && response.status == @StatusCodes.Status200OK) {
+                            //set all the parameters
+                            let job = JSON.parse(response.responseText);
+                            if (job) {
+                                if (!job.estimationStartDate) {
+                                    $("#estimation-date-confirm-modal").modal('show');
+                                } else {
+
+                                }
+                            }
+                        }
+                        else {
+                            var title = '@Html.Raw(translateItems[LanguageKeys.ExceptionTitle])';
+                            showNotification(title, response.statusText,@Convert.ToInt32(NotificationType.Error), false);
+                        }
+                        hideSpinner();
                     }
-                    else {
-                        var title = '@Html.Raw(translateItems[LanguageKeys.ExceptionTitle])';
-                        showNotification(title, response.statusText,@Convert.ToInt32(NotificationType.Error), false);
-                    }
-                    hideSpinner();
-                }
-            });
+                });
             } else {
                 $("#job-numbers-error").removeClass('hide');
             }
@@ -118,9 +145,32 @@ LanguageKeys.WarrantyType
             $("#job-numbers-error").addClass('hide');
         });
 
+        $("#estimation-date-confirm-modal-yes").on("click", function () {
+            showSpinner();
+            let locationCode = $("#text-location-code").val();
+            let jobNumber = $("#text-job-number").val();
+            let url = `@Url.Action(WebConstants.PageRoute.UpdateEstimationDate, WebConstants.Controllers.Estimation)/${locationCode}/${jobNumber}`;
+            $.ajax({
+                'url': url,
+                'type': 'GET',
+                'async': false,
+                'dataType': 'application/json',
+                complete: function (response) {
+                    if (!!response && response.status == @StatusCodes.Status500InternalServerError) {
+                        var title = '@Html.Raw(translateItems[LanguageKeys.ExceptionTitle])';
+                        showNotification(title, response.statusText,@Convert.ToInt32(NotificationType.Error), false);
+                    }
+
+                    $("#estimation-date-confirm-modal").modal('hide');
+                    hideSpinner();
+                }
+            });
+        });
+
 
         function bindJobNumbers() {
             showSpinner();
+            $("#text-job-number").val('');
             let locationCode = $("#text-location-code").val();
             if (checkNullOrEmpty(locationCode)) {
                 let errors = [];
@@ -236,40 +286,133 @@ LanguageKeys.WarrantyType
             <div id="ajaxpanel" class="panel-body">
                 <ul class="nav nav-pills">
                     <li class="active">
-                        <a href="#login-details" class="@persianFont" data-toggle="tab">@Html.Raw(translateItems[LanguageKeys.EstimationDetails])</a>
+                        <a href="#estimation-details" class="@persianFont" data-toggle="tab">@Html.Raw(translateItems[LanguageKeys.EstimationDetails])</a>
                     </li>
                     <li>
-                        <a href="#imei-history" class="@persianFont" data-toggle="tab">@Html.Raw(translateItems[LanguageKeys.UnitDetails])</a>
+                        <a href="#unit-details" class="@persianFont" data-toggle="tab">@Html.Raw(translateItems[LanguageKeys.UnitDetails])</a>
                     </li>
                 </ul>
                 <div class="tab-content clearfix">
-                    <div class="tab-pane active" id="login-details">
+                    <div class="tab-pane active" id="estimation-details">
                         <div class="panel-body">
-                            @*@Html.ListBoxFor(model => null, new List<SelectListItem>(), new { @id = "multiselect-tracking-number", @class = "hidden" })*@
                             @(Html.Grid(Model.PartEstimations).Build(columns =>
-                                                                        {
-                                                                            columns.Add(model => Html.CheckBox("checkbox", new { @value = model.PartCode, @class = "estimation-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "estimation-grid-header-checkbox" }));
-                                                                            columns.Add(model => model.PartCode).Titled(translateItems[LanguageKeys.PartCode]);
-                                                                            columns.Add(model => model.PartDescription).Titled(translateItems[LanguageKeys.PartDescription]);
-                                                                            columns.Add(model => model.Quantity).Titled(translateItems[LanguageKeys.Quantity]);
-                                                                            columns.Add(model => model.UnitRateFc).Titled(translateItems[LanguageKeys.UnitRate]);
-                                                                            columns.Add(model => model.UnitRateBc).Titled(translateItems[LanguageKeys.UnitRate]);
-                                                                            columns.Add(model => model.Amount).Titled(translateItems[LanguageKeys.Amount]);
-                                                                        })
-                                                                        .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
-                                                                        .Filterable()
-                                                                        .Sortable()
-                                                                        .Pageable()
+                                                                                                                {
+                                                                                                                    columns.Add(model => Html.CheckBox("checkbox", new { @value = model.PartCode, @class = "estimation-grid-checkbox" })).Titled(Html.CheckBox("checkbox", new { @class = "estimation-grid-header-checkbox" }));
+                                                                                                                    columns.Add(model => model.PartCode).Titled(translateItems[LanguageKeys.PartCode]);
+                                                                                                                    columns.Add(model => model.PartDescription).Titled(translateItems[LanguageKeys.PartDescription]);
+                                                                                                                    columns.Add(model => model.Quantity).Titled(translateItems[LanguageKeys.Quantity]);
+                                                                                                                    columns.Add(model => model.UnitRateFc).Titled(translateItems[LanguageKeys.UnitRateFc]);
+                                                                                                                    columns.Add(model => model.UnitRateBc).Titled(translateItems[LanguageKeys.UnitRateBc]);
+                                                                                                                    columns.Add(model => model.Amount).Titled(translateItems[LanguageKeys.Amount]);
+                                                                                                                })
+                                                                                                                .Empty(translateItems[LanguageKeys.NoRecodsAvaiable])
+                                                                                                                .Filterable()
+                                                                                                                .Sortable()
+                                                                                                                .Pageable()
                             )
                         </div>
                     </div>
-                    <div class="tab-pane" id="imei-history">
+                    <div class="tab-pane" id="unit-details">
                         <div class="row">
-                            @*<div class="col-sm-2">@Html.Raw(translateItems[LanguageKeys.CollectionReferenceNumberShort])</div>
-                                <div class="col-sm-2">@Html.TextBoxFor(model => model.ReferenceNumber)</div>
-                                <div class="col-sm-2"></div>
-                                <div class="col-sm-2"></div>*@
+
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row row-space">
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.Stock])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Estimation.Stock, new { @class = "form-control" })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.TotalItem])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Estimation.TotalItems, new { @class = "form-control", @readonly = "readonly", @id = "text-total-item" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.Engineer])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Estimation.EngineerCode, new { @class = "form-control", @id = "text-engineer-code" })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.RepairCharges])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Estimation.RepairCharges, new { @class = "form-control", @readonly = "readonly", @id = "text-repair-charges" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.ExpectedDeliveryDate])
+                    </div>
+                    <div class="col-sm-4">
+                        <div class='input-group date'>
+                            @Html.TextBoxFor(model => model.Estimation.ExpectedDeliveryDate, new { @class = "form-control disabled", @id = "text-delivery-date", @readonly = "readonly" })
+                            <span span class="input-group-addon cursor" id="delivery-date-calender">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.Discount])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Estimation.Discount, new { @class = "form-control", @readonly = "readonly", @id = "text-discount" })
+                    </div>
+                </div>
+                <div class="row row-space">
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.Remarks])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextAreaFor(model => model.Estimation.Remarks, new { @class = "form-control", @id = "text-remarks" })
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                @Html.Raw(translateItems[LanguageKeys.Total])
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(model => model.Estimation.Amount, new { @class = "form-control", @readonly = "readonly", @id = "text-total-amount" })
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-sm-4">
+                                @Html.Raw(translateItems[LanguageKeys.SalesTax])
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(model => model.Estimation.SalesTax, new { @class = "form-control", @readonly = "readonly", @id = "text-sales-tax" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.ModelLinking])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.CheckBoxFor(model => model.Estimation.IsModelLinking, new { @id = "checkbox-model-linking" })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.NetTotal])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(model => model.Estimation.NetAmount, new { @class = "form-control", @readonly = "readonly", @id = "text-net-amount" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        @Html.Raw(translateItems[LanguageKeys.LiquidDamageSlashBer])
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.CheckBoxFor(model => model.Estimation.IsLiquidDamge, new { @id = "checkbox-liquid-damage" })
                     </div>
                 </div>
             </div>
@@ -300,6 +443,27 @@ LanguageKeys.WarrantyType
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" name="select-job-number" id="select-job-number">Select</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="estimation-date-confirm-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <span class="modal-title model-title-header">@Html.Raw(translateItems[LanguageKeys.Confirm])</span>
+            </div>
+            <div class="modal-body">
+                <span class="glyphicon glyphicon-warning-sign yellowgreen">
+                </span>
+                <span>
+                    @Html.Raw(translateItems[LanguageKeys.EstimationStartDateConfirmationMessage])
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Html.Raw(translateItems[LanguageKeys.No])</button>
+                <button type="button" class="btn btn-primary" id="estimation-date-confirm-modal-yes">@Html.Raw(translateItems[LanguageKeys.Yes])</button>
             </div>
         </div>
     </div>

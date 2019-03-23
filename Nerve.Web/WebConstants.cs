@@ -7,15 +7,16 @@ namespace Nerve.Web
 {
     public class WebConstants
     {
+        public const decimal TaxPercent = 9;
         public const string HasDeleteActionOptionAccess = "0";
         public const string HasActionOptionAccess = "1";
         public const string LoginType = "RETAIL";
         public const string ProductMobilePhone = "MOBILE PHONES";
         public const string BrandHuawei = "HUAWEI";
-        public const int ImeiLength = 16;
         public const string StdCodePrefix = "+98";
+        public const int ImeiLength = 16;
         public const int WarrantyBounceDays = 15;
-        public const decimal TaxPercent = 9;
+
         public class SessionKeys
         {
             public const string User = "user";
@@ -89,6 +90,7 @@ namespace Nerve.Web
             public const string GetOptionByBrandAndProductAndCollectionPoint = "option";
             public const string GetServiceCentreByCollectionPointAndBrandAndProduct = "servicecentre";
             public const string GetTrackingPrefix = "trackingprefix";
+            public const string UpdateEstimationDate = "estimationdate";
         }
 
         public class Controllers
@@ -99,6 +101,7 @@ namespace Nerve.Web
             public const string Estimation = "Estimation";
             public const string Invoice = "Invoice";
             public const string Job = "Job";
+            public const string ProductModel = "ProductModel";
             public const string Users = "Users";
             public const string VendorUpdation = "VendorUpdation";
         }

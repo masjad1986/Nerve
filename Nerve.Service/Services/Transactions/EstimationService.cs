@@ -22,5 +22,16 @@ namespace Nerve.Service
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Update estimation start date.
+        /// </summary>
+        /// <param name="locationCode"></param>
+        /// <param name="jobNumber"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateEstimationDateAsync(string locationCode, decimal jobNumber)
+        {
+            return await _estimationRepository.UpdateEstimationDateAsync(locationCode, jobNumber);
+        }
     }
 }

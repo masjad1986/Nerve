@@ -240,12 +240,17 @@
   "repair-charges": "Repair Charges",
   "service-type": "Service Type",
   "sales-tax": "Sales Tax",
-  "Total": "Total",
+  "total": "Total",
   "qc-passed": "QC Passed",
   "Quantity": "quantity",
   "UnitRate": "unit-rate",
   "unit-details": "UnitDetails",
   "waiting-for-part": "WaitingForPart",
   "customer": "Customer",
-  "job-numbers": "Job Numbers"
+  "job-numbers": "Job Numbers",
+  "esitmation-start-date-confirmation": "Estimation date not specified for job. Are sure you want to start the job?",
+  "total-item": "Total Item",
+  "stock": "Stock",
+  "unit-rate-fc": "Unit Rate (FC)",
+  "unit-rate-bc": "Unit Rate (BC)"
 }

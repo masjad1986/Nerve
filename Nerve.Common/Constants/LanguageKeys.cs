@@ -179,7 +179,7 @@ namespace Nerve.Common
         public const string SaveDeviceMessage = "save-device-message";
         public const string SaveRecordMessage = "save-record-message";
         public const string SearchItemNotFound = "no-search-record-found";
-
+        public const string Stock = "stock";
         public const string SwapImeiNumber = "swap-imei-number";
         public const string Delivery = "delivery";
         public const string ShipmentDetails = "shipment-details";
@@ -188,6 +188,7 @@ namespace Nerve.Common
         public const string Warranty = "warranty";
         public const string LoginType = "login-type";
         public const string Cost = "cost";
+        public const string TotalItem = "total-item";
         public const string TotalQuantity = "total-quantity";
         public const string PendingJobs = "pending-jobs";
         public const string WarrantyStatus = "warranty-status";
@@ -215,9 +216,14 @@ namespace Nerve.Common
         public const string Total = "total";
         public const string QCPassed = "qc-passed";
         public const string Quantity = "quantity";
-        public const string UnitRate = "unit-rate";
+        public const string UnitRateFc = "unit-rate-fc";
+        public const string UnitRateBc = "unit-rate-bc";
         public const string UnitDetails = "unit-details";
         public const string WaitingForPart = "waiting-for-part";
+
+        //confirmation message
+        public const string EstimationStartDateConfirmationMessage = "esitmation-start-date-confirmation";
+
         //all validation keys 
         public const string ErrorFieldRequiredImeiNumber = "error-field-required-imei-number";
         public const string ErrorFieldRequiredImeiOrTrackingNumber = "error-field-required-imei-tracking-number";

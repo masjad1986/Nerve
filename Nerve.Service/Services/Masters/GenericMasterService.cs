@@ -15,26 +15,6 @@ namespace Nerve.Service
             _genericMasterRepository = genericMasterRepository;
         }
 
-        #region Model
-
-        public async Task<List<ProductModelDto>> GetAllProductModelAsync()
-        {
-            return await _genericMasterRepository.GetAllProductModelAsync();
-        }
-
-        public async Task<List<ProductModelDto>> GetProductModelAsync(string productName)
-        {
-            return await _genericMasterRepository.GetProductModelAsync(productName);
-        }
-
-        public async Task<List<ProductModelDto>> GetProductModelByNameAndBrandAsync(string productName, string brandName)
-        {
-            return await _genericMasterRepository.GetProductModelByNameAndBrandAsync(productName, brandName);
-        }
-
-        #endregion
-
-
         #region Fault Codes
         public async Task<List<FaultDetailDto>> GetFaultCodesByBrandAsync(string brandName)
         {

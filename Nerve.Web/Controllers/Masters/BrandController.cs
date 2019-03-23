@@ -6,6 +6,7 @@ using Nerve.Common.Enums;
 using Nerve.Common.Translations;
 using Nerve.Repository.Dtos;
 using Nerve.Service;
+using Nerve.Web.Filters;
 using Nerve.Web.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ using System.Threading.Tasks;
 
 namespace Nerve.Web.Controllers
 {
+    [NerveAuthorize]
+    [TypeFilter(typeof(NerveException))]
     [Route("[controller]")]
     public class BrandController : Controller
     {
@@ -20,6 +23,7 @@ namespace Nerve.Web.Controllers
         private readonly ILogger _logger;
         private readonly ILanguageTranslator _languageTranslator;
         private readonly IBrandService _brandService;
+        private readonly IProductModelService _productModelService;
         private readonly IGenericMasterService _genericMasterService;
         private readonly IServiceCentreLocationService _serviceCentreLocationService;
         private readonly IAccessoryDetailService _accessoryDetailService;
@@ -27,6 +31,7 @@ namespace Nerve.Web.Controllers
         public BrandController(ILogger logger,
             ILanguageTranslator languageTranslator,
             IBrandService brandService,
+            IProductModelService productModelService,
             IGenericMasterService genericMasterService,
             IServiceCentreLocationService serviceCentreLocationService,
             IAccessoryDetailService accessoryDetailService)
@@ -34,6 +39,7 @@ namespace Nerve.Web.Controllers
             _logger = logger;
             _languageTranslator = languageTranslator;
             _brandService = brandService;
+            _productModelService = productModelService;
             _genericMasterService = genericMasterService;
             _serviceCentreLocationService = serviceCentreLocationService;
             _accessoryDetailService = accessoryDetailService;
@@ -83,7 +89,7 @@ namespace Nerve.Web.Controllers
         {
             try
             {
-                var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(productName, brandName);
+                var models = await _productModelService.GetByProductNameAndBrandNameAsync(productName, brandName);
                 var centres = new List<ServiceCentreLocationDto>();
                 if (collectionPoint.HasValue && collectionPoint.Value > 0)
                 {

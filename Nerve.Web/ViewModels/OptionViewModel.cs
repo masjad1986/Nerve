@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Nerve.Common.Dtos.Grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Nerve.Web.ViewModels
         public List<SelectListItem> Locations { get; set; }
         public List<SelectListItem> Engineers { get; set; }
         public PageActionBarModel PageActionBarModel { get; set; }
+        public PaginationDto Pagination { get; set; }
         public bool IsSaveRequest { get; set; }
     }
 }

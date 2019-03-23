@@ -35,6 +35,7 @@ namespace Nerve.Web.Controllers
         private readonly IJobService _jobService;
         private readonly IWarrantyService _warrantyService;
         private readonly IProductService _productService;
+        private readonly IProductModelService _productModelService;
         private readonly IBrandService _brandService;
         private readonly IGenericMasterService _genericMasterService;
         private readonly IServiceCentreLocationService _serviceCentreLocationService;
@@ -48,6 +49,7 @@ namespace Nerve.Web.Controllers
             IJobService jobService,
             IWarrantyService warrantyService,
             IProductService productService,
+            IProductModelService productModelService,
             IBrandService brandService,
             IGenericMasterService genericMasterService,
             IServiceCentreLocationService serviceCentreLocationService,
@@ -61,6 +63,7 @@ namespace Nerve.Web.Controllers
             _jobService = jobService;
             _warrantyService = warrantyService;
             _productService = productService;
+            _productModelService = productModelService;
             _brandService = brandService;
             _genericMasterService = genericMasterService;
             _serviceCentreLocationService = serviceCentreLocationService;
@@ -411,7 +414,7 @@ namespace Nerve.Web.Controllers
             }
 
             //get list of model
-            var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(model.Device.ProductName, model.Device.BrandName);
+            var models = await _productModelService.GetByProductNameAndBrandNameAsync(model.Device.ProductName, model.Device.BrandName);
             model.ModelItems = new List<SelectListItem>();
             if (models != null && models.Any())
             {

@@ -30,12 +30,18 @@ namespace Nerve.Repository
         /// <param name="locationCode">Pass location code.</param>
         /// <param name="jobNumber">Pass job number.</param>
         /// <returns></returns>
-        public async Task<List<JobAllocationDto>> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PagingDto paging = null)
+        public async Task<JobGridDto> GetByLocationAndNumberAsync(string locationCode, decimal? jobNumber, PaginationDto paging = null)
         {
+            var countQuery = $@"SELECT COUNT(1) AS [RowCount]
+                           FROM [{RepositoryConstants.HamiDatabase}].[{RepositoryConstants.SchemaName}].[{HAMI.MasterTables.JobRepair}] j
+                           LEFT JOIN [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.Product}] p ON j.Product = p.ProductName
+                           LEFT JOIN [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DealerLog}] d ON d.Docno=j.DEALERREF AND d.LocationCode = j.CCODE
+                           WHERE j.ccode = @location_code";
+
             var query = $@"SELECT 
                                j.jobno AS [JobNumber], j.DEALERREF AS [TrackingNumber], CAST(j.JobAll_Date AS VARCHAR) AS [Date], j.CCODE AS [LocationCode],
 	                           j.Product AS [ProductName], CAST(ISNULL(p.ProductID,0) AS VARCHAR) AS [Product], j.BRAND, j.MODEL, j.JobAll_EnggCode AS [EngineerCode],
-	                           j.UnitReceiveDate, d.RMANo AS [RmaNumber]
+	                           j.UnitReceiveDate, d.RMANo AS [RmaNumber], j.ESTSTARTDATE AS [EstimationStartDate]
                            FROM [{RepositoryConstants.HamiDatabase}].[{RepositoryConstants.SchemaName}].[{HAMI.MasterTables.JobRepair}] j
                            LEFT JOIN [{RepositoryConstants.SchemaName}].[{SCP.MasterTables.Product}] p ON j.Product = p.ProductName
                            LEFT JOIN [{RepositoryConstants.SchemaName}].[{SCP.TransactionTables.DealerLog}] d ON d.Docno=j.DEALERREF AND d.LocationCode = j.CCODE
@@ -43,6 +49,7 @@ namespace Nerve.Repository
 
             if (jobNumber.HasValue && jobNumber.Value > 0)
             {
+                countQuery += " AND CHARINDEX(CAST(@job_number AS VARCHAR), CAST(j.JOBNO AS VARCHAR), 1) > 0";
                 query += " AND CHARINDEX(CAST(@job_number AS VARCHAR), CAST(j.JOBNO AS VARCHAR), 1) > 0";
             }
 
@@ -51,6 +58,15 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName = "@location_code",Value = locationCode },
                 new SqlParameter { ParameterName = "@job_number",Value = jobNumber }
             };
+
+            //connection 
+            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE);
+
+            //row count 
+            var rowCount = (int)await SqlHelper.ExecuteScalarAsync(connection, CommandType.Text, countQuery, parameters.ToArray());
+
+            if (rowCount == 0)
+                return new JobGridDto { DataSource = new List<JobAllocationDto>() };
 
             if (paging != null)
             {
@@ -75,12 +91,13 @@ namespace Nerve.Repository
                 });
             }
 
-
-            var connection = SqlHelper.GetSqlConnectionAsync(_appSettings.Value.HAMI_SCP_DATABASE);
             var reader = await SqlHelper.ExecuteReaderAsync(connection, CommandType.Text, query, parameters.ToArray());
 
             if (!reader.HasRows)
-                return new List<JobAllocationDto>();
+                return new JobGridDto
+                {
+                    DataSource = new List<JobAllocationDto>()
+                };
 
             var table = new DataTable();
             table.Load(reader);
@@ -88,10 +105,12 @@ namespace Nerve.Repository
             var items = (from row in table.AsEnumerable()
                          select new JobAllocationDto
                          {
+                             EstimationStartDate = row.Field<DateTime?>("EstimationStartDate"),
                              JobNumber = row.Field<decimal?>("JobNumber"),
                              LocationCode = row.Field<string>("LocationCode"),
                              Date = row.Field<string>("Date"),
                              Product = row.Field<string>("Product"),
+                             ProductName = row.Field<string>("ProductName"),
                              Brand = row.Field<string>("Brand"),
                              Model = row.Field<string>("Model"),
                              EngineerCode = row.Field<string>("EngineerCode"),
@@ -100,7 +119,11 @@ namespace Nerve.Repository
                              UnitReceivedDate = row.Field<DateTime?>("UnitReceiveDate")
                          }).ToList();
 
-            return items;
+            return new JobGridDto
+            {
+                Count = rowCount,
+                DataSource = items
+            };
         }
 
         /// <summary>
@@ -112,6 +135,21 @@ namespace Nerve.Repository
         {
             var ignoreItems = excludeItems != null && excludeItems.Any() ? excludeItems.Cast<object>().ToList() : new List<object>();
             var items = EnumHelper.ToList<JobStatusType>(ignoreItems);
+            if (items != null && items.Any())
+                items = items.OrderBy(x => x.Name).ToList();
+            return await Task.FromResult(items);
+        }
+
+
+        /// <summary>
+        /// Get list of job status types.
+        /// </summary>
+        /// <param name="excludeTypes"></param>
+        /// <returns></returns>
+        public async Task<List<ItemDto>> GetJobStatusTypesByItemsAsync(List<int> filterItems)
+        {
+            var filters = filterItems != null && filterItems.Any() ? filterItems.Cast<object>().ToList() : new List<object>();
+            var items = EnumHelper.Filter<JobStatusType>(filters);
             if (items != null && items.Any())
                 items = items.OrderBy(x => x.Name).ToList();
             return await Task.FromResult(items);
@@ -350,7 +388,6 @@ namespace Nerve.Repository
                 new SqlParameter { ParameterName = "@job_number", Value = jobAllocationDto.JobNumber }
 
             };
-
 
             var baseQuery = $@"SELECT 
 	                            CAST(0 AS BIT) AS [Status], WarrantyType, docno AS [TrackingNumber], rmano AS [RmaNumber], 

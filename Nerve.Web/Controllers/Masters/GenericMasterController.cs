@@ -33,36 +33,6 @@ namespace Nerve.Web.Controllers
 
         #region Product Model Route
 
-        /// <summary>
-        /// Get list of model by product and brand
-        /// </summary>
-        /// <param name="brandName">Name of the brand.</param>
-        /// <param name="productName">Name of the product.</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route(WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint + "/{brandName}/{productName}")]
-        public async Task<IActionResult> GetModelByBrandAndProductAsync(string brandName, string productName)
-        {
-            try
-            {
-                var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(productName, brandName);
-                return Ok(models);
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(_controller, WebConstants.PageRoute.GetOptionByBrandAndProductAndCollectionPoint, ex);
-                var translateItems = await _languageTranslator.TranslateManyAsync(new List<string>
-                    {
-                        LanguageKeys.Model,
-                        LanguageKeys.ContactAdministrator
-                    });
-
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    NotificationHelper.GetNotification(translateItems[LanguageKeys.Model],
-                    translateItems[LanguageKeys.ContactAdministrator],
-                    NotificationType.Error));
-            }
-        }
 
         #endregion
 

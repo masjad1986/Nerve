@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace Nerve.Web.Controllers
         private readonly ILanguageTranslator _languageTranslator;
         private readonly IJobService _jobService;
         private readonly IProductService _productService;
+        private readonly IProductModelService _productModelService;
         private readonly IBrandService _brandService;
         private readonly IEngineerService _engineerService;
         private readonly ILocationService _locationService;
@@ -34,6 +36,7 @@ namespace Nerve.Web.Controllers
             ILanguageTranslator languageTranslator,
             IJobService jobService,
             IProductService productService,
+            IProductModelService productModelService,
             IBrandService brandService,
             IEngineerService engineerService,
             ILocationService locationService,
@@ -47,7 +50,7 @@ namespace Nerve.Web.Controllers
             _genericMasterService = genericMasterService;
             _locationService = locationService;
             _productService = productService;
-
+            _productModelService = productModelService;
         }
 
         /// <summary>
@@ -131,12 +134,40 @@ namespace Nerve.Web.Controllers
 
         [HttpGet]
         [Route(WebConstants.PageRoute.GetJobByLocation + "/{locationCode}/{jobNumber?}")]
-        public async Task<IActionResult> GetJobPartialAsync(string locationCode, decimal? jobNumber, [FromQuery] PagingDto paging)
+        public async Task<IActionResult> GetJobPartialAsync(string locationCode, decimal? jobNumber, bool allowMultipleSelection, [FromQuery] PaginationDto paging)
         {
-            var allocations = await _jobService.GetByLocationAndNumberAsync(locationCode, jobNumber, paging);
-            return PartialView(WebConstants.ViewPage.Partial.Jobs, allocations);
+            var jobGrid = await _jobService.GetByLocationAndNumberAsync(locationCode, jobNumber, paging);
+            if (jobGrid !=null)
+            {
+                jobGrid.JobNumber = jobNumber;
+                jobGrid.LocationCode = locationCode;
+            }
+
+            jobGrid.AllowMultipleSelection = allowMultipleSelection;
+            jobGrid.Pagination = paging ?? new PaginationDto
+            {
+                PageIndex = 1,
+                PageSize = 10
+            };
+        
+            return PartialView(WebConstants.ViewPage.Partial.Jobs, jobGrid);
         }
 
+        [HttpGet]
+        [Route(WebConstants.PageRoute.Jobs + "/{locationCode}/{jobNumber?}")]
+        public async Task<IActionResult> GetJobsAsync(string locationCode, decimal? jobNumber)
+        {
+            try
+            {
+                var jobGrid = await _jobService.GetByLocationAndNumberAsync(locationCode, jobNumber, paging:null);
+                return Ok(jobGrid.DataSource);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(WebConstants.Controllers.Job, WebConstants.PageRoute.Jobs, ex);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
+        }
 
         [HttpPost]
         [Route(WebConstants.PageRoute.JobAllocation)]
@@ -242,7 +273,7 @@ namespace Nerve.Web.Controllers
                 }
 
                 //models
-                var models = await _genericMasterService.GetProductModelByNameAndBrandAsync(jobAllocationViewModel.JobAllocation.ProductName,
+                var models = await _productModelService.GetByProductNameAndBrandNameAsync(jobAllocationViewModel.JobAllocation.ProductName,
                     jobAllocationViewModel.JobAllocation.BrandName);
 
                 jobAllocationViewModel.Models = new List<SelectListItem>();
